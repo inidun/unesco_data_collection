@@ -50,3 +50,4 @@ def test_extract_text_lincs__given_a_valid_index_html__returns_list_of_conventio
     assert result is not None
     assert len(result) == 26
 
+
