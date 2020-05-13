@@ -127,3 +127,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# own settings
+.vscode/
+
+# backup files
+*.bak
+
+# project specific
+archive/
+tmp/
+data/
+notes/
+*.out

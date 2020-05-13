@@ -5,12 +5,19 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+pylint = "*"
+autoflake = "*"
+autopep8 = "*"
+black = "*"
+flake8 = "*"
+flake8-type-annotations = "*"
+isort = "*"
+rope = "*"
 
 [packages]
 bs4 = "*"
 requests = "*"
 jupyter = "*"
-jupyerlab = "*"
 jupyterlab = "*"
 
 [requires]
