@@ -18,26 +18,28 @@ def _scrape(url, item_type):
 def _to_df(items):
 
     return pd.DataFrame(
-        [ (x.id, x.filename, x.type, x.href, x.year, x.month, x.day, x.city, x.title) for x in items ],
-        columns = ['id', 'filename', 'type', 'href', 'year', 'month', 'day', 'city', 'x.title' ]
+        [ (x.section_id, x.unesco_id, x.filename, x.type, x.href, x.date.year, x.date, x.city, x.title) for x in items ],
+        columns = ['section_id', 'unesco_id', 'filename', 'type', 'href', 'year', 'date', 'city', 'x.title' ]
     )
 
-def scrape_pages(urls):
+def extract_pages(urls):
 
     for (url, item_type) in urls:
         yield _scrape(url, item_type)
 
-def extract_links(pages):
+def extract_items(pages, *extra_items):
+
+    for item in extra_items:
+        yield item
 
     for (page, _, item_type) in pages:
-        for item in parser.extract_links(page, item_type):
+        for item in parser.extract_items(page, item_type):
             yield item
 
 def extract_text(items):
 
     for item in items:
         (page, _, _) = _scrape(item.href, item.type)
-        print("downloaded: {}".format(item.filename))
         yield (item, parser.extract_text(page))
 
 def progress(items):

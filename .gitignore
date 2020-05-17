@@ -137,6 +137,5 @@ dmypy.json
 # project specific
 archive/
 tmp/
-data/
 notes/
 *.out

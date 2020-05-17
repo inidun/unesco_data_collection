@@ -3,6 +3,7 @@ import sys
 import os
 #import sure
 import httpretty
+import datetime
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 
@@ -22,6 +23,7 @@ def get_sample_convention_html():
         return fp.read()
 
 def get_sample_convention_index_html():
+    # http://portal.unesco.org/en/ev.php-URL_ID=12025&URL_DO=DO_TOPIC&URL_SECTION=-471.html
     with open("{}/src/tests/fixtures/sample_response_index_page.html".format(project_root()), "r") as fp:
         return fp.read()
 
@@ -31,22 +33,26 @@ def test_if_test_working():
 def test_extract_where_and_when_with_city_succeeds():
 
     info = "Paris, 13 November 2017"
-    where_and_when = parser.extract_where_and_when(info)
+    date, city = parser.extract_where_and_when(info)
 
-    assert where_and_when.year == 2017
-    assert where_and_when.month == 11
-    assert where_and_when.day == 13
-    assert where_and_when.city == "Paris"
+    assert datetime.date(2017, 11, 13) == date
+    assert city == "Paris"
+
+def test_extract_where_and_when_with_spajsy_city_succeeds():
+
+    info = "New York, 13 November 2017"
+    date, city = parser.extract_where_and_when(info)
+
+    assert datetime.date(2017, 11, 13) == date
+    assert city == "New York"
 
 def test_extract_where_and_when_without_city_succeeds():
 
     info = "13 November 2017"
-    where_and_when = parser.extract_where_and_when(info)
+    date, city = parser.extract_where_and_when(info)
 
-    assert where_and_when.year == 2017
-    assert where_and_when.month == 11
-    assert where_and_when.day == 13
-    assert where_and_when.city == ""
+    assert datetime.date(2017, 11, 13) == date
+    assert city == ""
 
 def test_extract_text_when_valid_page_returns_text():
 
@@ -63,17 +69,34 @@ def test_extract_text_when_valid_page_returns_text():
 
 def test_extract_links_when_valid_page_returns_links():
 
-    # http://portal.unesco.org/en/ev.php-URL_ID=12025&URL_DO=DO_TOPIC&URL_SECTION=-471.html
-
     # Arrange
     page = get_sample_convention_index_html()
 
     # Act
-    result = list(parser.extract_links(page, "DUMMY"))
+    result = list(parser.extract_items(page, "DUMMY"))
 
     # Assert
     assert result is not None
     assert len(result) == 32
+
+def test_can_create_item():
+
+    # Arrange
+    item_type = "XYZ"
+    href = 'http://portal.unesco.org/en/ev.php-URL_ID=12025&URL_DO=DO_TOPIC&URL_SECTION=-471.html'
+    date = datetime.date(2017, 11, 13)
+    city = "Umeå"
+    title = "Important meeting"
+
+    # Act
+    item = parser.create_item(item_type, href, date, city, title)
+
+    # Assert
+    item.date = date
+    item.section_id = 471
+    item.unesco_id = 12025
+    item.filename = "XYZ_0471_012025_2017_city.txt"
+
 
 @httpretty.activate
 def test_can_mock_http_request():
@@ -107,8 +130,8 @@ def test_pipeline():
 
     # Act
     pipeline = Pipeline()\
-        .add(task.scrape_pages)\
-        .add(task.extract_links)\
+        .add(task.extract_pages)\
+        .add(task.extract_items)\
         .add(spoof_url)\
         .add(task.extract_text)\
         .add(task.progress)\
