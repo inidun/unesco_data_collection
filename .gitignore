@@ -139,3 +139,5 @@ archive/
 tmp/
 notes/
 *.out
+
+data/legal_instrument_corpus.txt/
