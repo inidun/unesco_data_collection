@@ -1,7 +1,8 @@
 #!/bin/bash
 
+# Run tesseract inside Docker container
 docker run --mount type=bind,source="$(pwd)",target=/home/work \
     -u $(id -u ${USER}):$(id -g ${USER}) \
     --mount "type=bind,src=/etc/passwd,dst=/etc/passwd,readonly" \
     --mount "type=bind,src=/etc/group,dst=/etc/group,readonly" \
-    --rm -it tesseractshadow/tesseract4re $@
+    --rm -it tesseractshadow/tesseract4re /usr/bin/tesseract $@
