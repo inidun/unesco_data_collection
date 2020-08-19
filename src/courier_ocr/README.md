@@ -1,4 +1,4 @@
-#!/bin/bash
+# courier_ocr
 
 ## Prerequisites
 
