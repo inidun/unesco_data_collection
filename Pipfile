@@ -17,12 +17,14 @@ sure = "*"
 ftfy = "*"
 
 [packages]
+six = "==1.10.0"
 bs4 = "*"
 requests = "*"
 jupyter = "*"
 jupyterlab = "*"
 click = "*"
 pandas = "*"
+pdf2image = "*"
 
 [requires]
 python_version = "3.7"
