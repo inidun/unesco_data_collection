@@ -89,7 +89,7 @@ Article 11: Ratification, acceptance, accession
 
 2. This Convention shall be subject to ratification or acceptance by the signatory States. It shall be open for accession by any State referred to in paragraph 1 of this Article.
 
-3. Instruments of ratification, acceptance or assession shall be deposited with the Secretary-General of the United Nations. 
+3. Instruments of ratification, acceptance or accession shall be deposited with the Secretary-General of the United Nations. 
 
 4. It is understood that, at the time a State becomes bound by this Convention, it will be in a position in accordance with its domestic law to give effect to the provisions of this Convention. 
 
@@ -105,7 +105,7 @@ Article 13: Entry into force
 
 Article 14: Denunciation 
 
-1. Any Contracting State may denounce this Convention by a written notifi-cation addressed to the Secretary-General of the United Nations.
+1. Any Contracting State may denounce this Convention by a written notification addressed to the Secretary-General of the United Nations.
 
 2. Such denunciation shall take effect twelve months after the date of receipt of the notification by the Secretary-General of the United Nations. 
 
@@ -272,7 +272,7 @@ Article IV : Resident
 
 (a) he shall be deemed to be a resident of the State in which he has a permanent home available to him. If he has a permanent home available to him in both States, he shall be deemed to be a resident of the State with which his personal and economic relations are closer (center of vital interests); 
 
-(b) if the State in which he has his center of vital interests cannot be determined, or if he has not a permament home available to him in either State, he shall be deemed to be a resident of the State in which he has an habitual abode;
+(b) if the State in which he has his center of vital interests cannot be determined, or if he has not a permanent home available to him in either State, he shall be deemed to be a resident of the State in which he has an habitual abode;
 
 (c) if he has an habitual abode in both States or in neither of them, he shall be deemed to be a resident of the State of which he is a national;
 
@@ -312,7 +312,7 @@ Article V: Permanent establishment-fixed base
 
 (e) the maintenance of a fixed place of business solely for the purpose of advertising, for the supply of information, for scientific research or for similar activities which have a preparatory or auxiliary character, for the enterprise. 
 
-4. Notwithstanding the provisions of paragraphs 1 and 2, a person acting in a Contracting State on behalf of an enterprise of the other Contracting State-other than an agent of an independent status, to whom paragraph 5 appliesshall be deemed to be a `permanent establishment' in the first-mentioned State: 
+4. Notwithstanding the provisions of paragraphs 1 and 2, a person acting in a Contracting State on behalf of an enterprise of the other Contracting State-other than an agent of an independent status, to whom paragraph 5 applies shall be deemed to be a `permanent establishment' in the first-mentioned State: 
 
 (a) 'if he has, and habitually exercises in that State, an authority to conclude contracts in the name of the enterprise, unless his activities are limited to the purchase of goods, or to the acquisition of rights, for the enterprise; or 
 
@@ -468,7 +468,7 @@ Article X: Exchange of information
 
 2. In no case shall the provisions of paragraph 1 be construed so as to impose on a Contracting State the obligation: 
 
-(a) to carry out administrative measures at variance with the laws and admin-istrative practice of that or of the other Contracting State; 
+(a) to carry out administrative measures at variance with the laws and administrative practice of that or of the other Contracting State; 
 
 (b) to supply information which is not obtainable under the laws or in the normal course of the administration of that or of the other Contracting State; 
 

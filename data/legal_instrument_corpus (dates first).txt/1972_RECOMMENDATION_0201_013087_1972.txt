@@ -35,7 +35,7 @@ monuments: architectural works, works of monumental sculpture and painting, incl
 
 groups of buildings: groups of separate or connected buildings which, because of their architecture, their homogeneity or their place in the landscape, are of special value from the point of view of history, art or science; 
 
-sites : topographical afeas, the combined works of man and of nature, which are of special value by reason of their beauty or their interest from the archaeological, historical, ethnological or anthropological points of view. 
+sites : topographical areas, the combined works of man and of nature, which are of special value by reason of their beauty or their interest from the archaeological, historical, ethnological or anthropological points of view. 
 
 2. For the purposes of this Recommendation, the following shall be considered as `natural heritage' :
 
@@ -51,7 +51,7 @@ II. National policy
 
 III. General principles 
 
-4. The cultural and natural heritage represents wealth, the protection, conservation and presentation of which impose responsibilities on the States in whose territory it is situated, both vis-a-vis their own nationals and vis-a-vis the international community as a whole; Member States should take such action as may be necessary to meet these responsibilites. 
+4. The cultural and natural heritage represents wealth, the protection, conservation and presentation of which impose responsibilities on the States in whose territory it is situated, both vis-a-vis their own nationals and vis-a-vis the international community as a whole; Member States should take such action as may be necessary to meet these responsibilities. 
 
 5. The cultural or natural heritage should be considered in its entirety as a homogeneous whole, comprising not only works of great intrinsic value, but also more modest items that have, with the passage of time, acquired cultural or natural value. 
 
@@ -141,7 +141,7 @@ Administrative measures
 
 36. Internal alterations to groups of buildings and the installation of modern conveniences should be allowed if they are needed for the well-being of their occupants and provided they do not drastically alter the real characteristic features of ancient dwellings. 
 
-37. Member States should develop short- and long-range plans, based on in-ventories of their natural heritage, to achieve a system of conservation to meet the needs of their countries. 
+37. Member States should develop short- and long-range plans, based on inventories of their natural heritage, to achieve a system of conservation to meet the needs of their countries. 
 
 38. Member States should provide an advisory service to guide non-governmental organizations and owners of land on national conservation policies consistent with the productive use of the land. 
 

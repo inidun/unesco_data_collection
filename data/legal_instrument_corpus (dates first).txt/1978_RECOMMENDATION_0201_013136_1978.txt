@@ -2,7 +2,7 @@ The General Conference of the United Nations Educational, Scientific and Cultura
 
 Considering that Article VIII of the Constitution of the Organization specifies that “each Member State shall report periodically to the Organization, in a manner to be determined by the General Conference, on its laws, regulations and statistics relating to educational, scientific and cultural life and institutions”,
 
-Convinced that it is highly desirable that the national authorities responsible for the compilationand reporting of statistics relating to education should be guided by certain standard definitions, classifications and tabulations, in order to improve the international comparability of their data,
+Convinced that it is highly desirable that the national authorities responsible for the compilation and reporting of statistics relating to education should be guided by certain standard definitions, classifications and tabulations, in order to improve the international comparability of their data,
 
 Having adopted for this purpose at its tenth session the Recommendation concerning the International Standardization of Educational Statistics,
 
@@ -51,7 +51,7 @@ Methods of measurement
 
 Classification 
 
-3. The population aged 10 years and over should be classified first into two groups: literatesand illiterates. Where appropriate, functional illiterates should also be distinguished.
+3. The population aged 10 years and over should be classified first into two groups: literates and illiterates. Where appropriate, functional illiterates should also be distinguished.
 
 4. Each of these groups should be classified by sex, and also by age in the following groups: 10-14, 15-19, 20-24, 25-34, 35-44, 45-54, 55-64, 65 years and over.
 

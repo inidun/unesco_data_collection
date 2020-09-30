@@ -29,7 +29,7 @@ Adopts, this twenty-sixth day of November 1976, the present Recommendation.
 
 The General Conference recommends that Member States apply the above provisions by adopting, as a national law or in some other form, measures with a view to giving effect to the principles and norms set out in this Recommendation in the territories under their jurisdiction. 
 
-The General Conference recommends that Member States bring this Recom-mendation to the attention of the national, regional and local authorities and of institutions, services or bodies and associations concerned with the safeguarding of historic areas and their environment. 
+The General Conference recommends that Member States bring this Recommendation to the attention of the national, regional and local authorities and of institutions, services or bodies and associations concerned with the safeguarding of historic areas and their environment. 
 
 The General Conference recommends that Member States report to it, at the dates and in the form determined by it, on action taken by them on this Recommendation. 
 
@@ -37,11 +37,11 @@ I. Definitions
 
 1. For the purposes of the present recommendation: 
 
-(a) `Historic and architectural (including vernacular) areas' shall be taken to mean any groups of buildings, structures and open spaces including ar-chaeological and palaeontological sites, constituting human settlements in an urban or rural environment, the cohesion and value of which, from the archaeological, architectural, prehistoric, historic, aesthetic or sociocultural point of view are recognized. Among these `areas', which are very varied in nature, it is possible to distinguish the following 'in particular : prehistoric sites, historic towns, old urban quarters, villages and hamlets as well as homogeneous monumental groups, it being understood that the latter should as a rule be carefully preserved unchanged. 
+(a) `Historic and architectural (including vernacular) areas' shall be taken to mean any groups of buildings, structures and open spaces including archaeological and palaeontological sites, constituting human settlements in an urban or rural environment, the cohesion and value of which, from the archaeological, architectural, prehistoric, historic, aesthetic or sociocultural point of view are recognized. Among these `areas', which are very varied in nature, it is possible to distinguish the following 'in particular : prehistoric sites, historic towns, old urban quarters, villages and hamlets as well as homogeneous monumental groups, it being understood that the latter should as a rule be carefully preserved unchanged. 
 
 (b) The `environment' shall be taken to mean the natural or man-made setting which influences the static or dynamic way these areas are perceived or which is directly linked to them in space or by social, economic or cultural ties.
 
-(c) `Safeguarding' shall be taken to mean the identification, protection, con-servation, restoration, renovation, maintenance and revitalization of historic or traditional areas and their environment. 
+(c) `Safeguarding' shall be taken to mean the identification, protection, conservation, restoration, renovation, maintenance and revitalization of historic or traditional areas and their environment. 
 
 II. General principles  
 
@@ -49,7 +49,7 @@ II. General principles
 
 3. Every historic area and its surroundings should be considered in their totality as a coherent whole whose balance and specific nature depend on the fusion of the parts of which it is composed and which include human activities as much as the buildings, the spatial organization and the surroundings. All valid elements, including human activities, however modest, thus have a significance in relation to the whole which must not be disregarded. 
 
-4. Historic areas and their surroundings should be actively protected, against damage of all kinds, particularly that resulting from unsuitable use, unnecessary additions and misguided or insensitive changes such as will impair their authenticity, and from damage due to any form of pollution. Any restoration work undertaken should be based on scientific principles. Similarly, great at tention should be paid to the harmony and aesthetic feeling produced by the linking or the contrasting of the various parts which make up the groups of buildings and which give to each group its particular character. 
+4. Historic areas and their surroundings should be actively protected, against damage of all kinds, particularly that resulting from unsuitable use, unnecessary additions and misguided or insensitive changes such as will impair their authenticity, and from damage due to any form of pollution. Any restoration work undertaken should be based on scientific principles. Similarly, great attention should be paid to the harmony and aesthetic feeling produced by the linking or the contrasting of the various parts which make up the groups of buildings and which give to each group its particular character. 
 
 5. In the conditions of modern urbanization, which leads to a considerable increase in the scale and density of buildings, apart from the danger of direct destruction of historic areas, there is a real danger that newly developed areas can ruin the environment and character of adjoining historic areas. Architects and town-planners should be careful to ensure that views from and to monuments and historic areas are not spoilt and that historic areas are integrated harmoniously into contemporary life. 
 
@@ -71,7 +71,7 @@ Legal and administrative measures
 
 11. Safeguarding plans and documents should define: the areas and items to be protected; the specific conditions and restrictions applicable to them; the standards to be observed in the work of maintenance, restoration and improvements ; the general conditions governing the establishment of the supply systems and services needed in urban or rural life; the conditions governing new constructions. 
 
-12. These laws should also in principle include provisions designed to prevent any infringement of the preservation laws, as well as any speculative rise in property values within the protected areas which could compromise protection and restoration planned in the interests of the community as a whole. These provisions could involve town-planning measures affording a means of influencing the price of building land, such as the establishment of neighborhood or smaller development plans, granting the right of pre-emption to a public body, compulsory purchase in the interests of safeguarding or rehabilitation or automatic intervention in the case of failure to act on the part of the owners, and could provide for effective penalties such as the suspension of operations, compulsory restoration and/or a suitable fine. 
+12. These laws should also in principle include provisions designed to prevent any infringement of the preservation laws, as well as any speculative rise in property values within the protected areas which could compromise protection and restoration planned in the interests of the community as a whole. These provisions could involve town-planning measures affording a means of influencing the price of building land, such as the establishment of neighborhood or smaller development plans, granting the right of preemption to a public body, compulsory purchase in the interests of safeguarding or rehabilitation or automatic intervention in the case of failure to act on the part of the owners, and could provide for effective penalties such as the suspension of operations, compulsory restoration and/or a suitable fine. 
 
 13. Public authorities as well as individuals must be obliged to comply with the measures for safeguarding. However, machinery for appeal against arbitrary or unjust decisions should be provided. 
 
@@ -96,7 +96,7 @@ and, more generally, all specialists in disciplines involved in the protection a
 
 (d) the safeguarding plans and documents should be approved by the body designated by law;
 
-(e) the public authorities reponsible for giving effect to the .safeguarding pro-visions and regulations at all levels, national, regional and local, should be provided with the necessary staff and given adequate technical, administrative and financial resources. 
+(e) the public authorities responsible for giving effect to the .safeguarding pro-visions and regulations at all levels, national, regional and local, should be provided with the necessary staff and given adequate technical, administrative and financial resources. 
 
 Technical, economic and social measures 
 

@@ -1,6 +1,6 @@
 The General Conference of the United Nations Educational, Scientific and Cultural Organization, meeting at New Delhi, from 5 November to 5 December 1956, at its ninth session, 
 
-Being of the opinion that the surest guarantee for the preservation of monuments and works of the past rests in the respect and affection felt for them by. the peoples themselves, and persuaded that such feelings may be greatly strengthened by adequate measures inspired by the wish of Member States to develop science and international relations, 
+Being of the opinion that the surest guarantee for the preservation of monuments and works of the past rests in the respect and affection felt for them by the peoples themselves, and persuaded that such feelings may be greatly strengthened by adequate measures inspired by the wish of Member States to develop science and international relations, 
 
 Convinced that the feelings aroused by the contemplation and study of works of the past do much to foster mutual understanding between nations, and that it is therefore highly desirable to secure international co-operation with regard to them and to further, in every possible way, the fulfillment of their social mission, 
 
@@ -41,7 +41,7 @@ Property protected
 
 (a) In the former case, the criterion based on preserving all objects originating before a certain date should be abandoned, and replaced by one whereby protection is extended to all objects belonging to a given period or of a minimum age fixed by law. 
 
-(b) In the latter case, each Member State should adopt far wider criteria, compelling the excavator or finder to declare any object, of archaeological character, whether -movable or immovable, which he may discover. 
+(b) In the latter case, each Member State should adopt far wider criteria, compelling the excavator or finder to declare any object, of archaeological character, whether movable or immovable, which he may discover. 
 
 II. General principles  
 
@@ -67,7 +67,7 @@ Protecting body: archaeological excavations
 
 6. Although differences of tradition and unequal financial resources make it impossible for all Member States to adopt a uniform system of organization in the administrative services responsible for excavations, certain common principles should nevertheless apply to all national archaeological services 
 
-(a) The archaeological service should, so far as possible, be a central State administration-or at any rate an organization provided by law with the necessary means for carrying out any emergency measures that may be required. In addition to the general administration of archaeological work, this service should co-operate with research institutes and universities in the technical training of excavators. This body should also set up a central documentation, including maps, of its movable and immovable monuments and additional documentation for every important museum or ceramic or iconographic collection, etc. 
+(a) The archaeological service should, so far as possible, be a central State administration or at any rate an organization provided by law with the necessary means for carrying out any emergency measures that may be required. In addition to the general administration of archaeological work, this service should co-operate with research institutes and universities in the technical training of excavators. This body should also set up a central documentation, including maps, of its movable and immovable monuments and additional documentation for every important museum or ceramic or iconographic collection, etc. 
 
 (b) Steps should be taken to ensure in particular the regular provision of funds: 
 
@@ -98,7 +98,7 @@ III. Regulations governing excavations and international collaboration
 
 Authority to excavate granted to foreigners 
 
-13. Each Member State on whose territory excavations are to take place should lay down general rules governing the granting of excavation con-cessions, the conditions to be observed by the excavator, in particular as concerns the supervision exercised by the national authorities, the period of the concession, the reasons which may justify its withdrawal, the suspension of work, or its transfer from the authorized excavator to the national archaeological service. 
+13. Each Member State on whose territory excavations are to take place should lay down general rules governing the granting of excavation concessions, the conditions to be observed by the excavator, in particular as concerns the supervision exercised by the national authorities, the period of the concession, the reasons which may justify its withdrawal, the suspension of work, or its transfer from the authorized excavator to the national archaeological service. 
 
 14. The conditions imposed upon a foreign excavator should be those applicable to nationals. Consequently, the deed of concession should omit special stipulations which are not imperative. 
 
