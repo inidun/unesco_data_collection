@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "unesco_data_collection"
+version = "0.2.0"
+description = "Curation of UNESCO documents for the INIDUN project."
+authors = ["aibakeneko <aibakeneko at gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+bs4 = "^0.0.1"
+pandas = "^1.2.3"
+requests = "^2.25.1"
+Jinja2 = "^2.11.3"
+untangle = "^1.1.1"
+ftfy = "^5.9"
+
+[tool.poetry.dev-dependencies]
+black = "^20.8b1"
+isort = "^5.8.0"
+mypy = "^0.812"
+pylint = "^2.7.2"
+pytest = "^6.2.2"
+rope = "^0.18.0"
+httpretty = "^1.0.5"
+ipykernel = "^5.5.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+[tool.dephell.main]
+from = {format = "poetry", path = "pyproject.toml"}
+to = {format = "setuppy", path = "setup.py"}
