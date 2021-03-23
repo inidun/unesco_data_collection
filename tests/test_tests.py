@@ -5,12 +5,12 @@ import os
 import httpretty
 import datetime
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+#sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 
-import src.legal_instruments.extract as parser
-import src.legal_instruments.tasks as task
+import legal_instruments.extract as parser
+import legal_instruments.tasks as task
 
-from src.legal_instruments.pipeline import Pipeline
+from legal_instruments.pipeline import Pipeline
 
 def project_root():
     folder = os.getcwd()
@@ -19,12 +19,12 @@ def project_root():
     return folder
 
 def get_sample_convention_html():
-    with open("{}/src/tests/fixtures/sample_response_page.html".format(project_root()), "r") as fp:
+    with open("{}/tests/fixtures/sample_response_page.html".format(project_root()), "r") as fp:
         return fp.read()
 
 def get_sample_convention_index_html():
     # http://portal.unesco.org/en/ev.php-URL_ID=12025&URL_DO=DO_TOPIC&URL_SECTION=-471.html
-    with open("{}/src/tests/fixtures/sample_response_index_page.html".format(project_root()), "r") as fp:
+    with open("{}/tests/fixtures/sample_response_index_page.html".format(project_root()), "r") as fp:
         return fp.read()
 
 def test_if_test_working():
