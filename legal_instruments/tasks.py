@@ -1,5 +1,5 @@
 import requests
-import src.legal_instruments.extract as parser
+import legal_instruments.extract as parser
 import zipfile
 import pandas as pd
 

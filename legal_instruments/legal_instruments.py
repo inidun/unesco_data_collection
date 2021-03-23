@@ -10,9 +10,9 @@ def project_root():
 
 sys.path.append(project_root())
 
-from src.legal_instruments.pipeline import Pipeline
-import src.legal_instruments.tasks as task
-import src.legal_instruments.extract as extract
+from legal_instruments.pipeline import Pipeline
+import legal_instruments.tasks as task
+import legal_instruments.extract as extract
 
 def collect_legal_instruments():
 
