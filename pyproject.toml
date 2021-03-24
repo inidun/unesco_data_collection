@@ -11,7 +11,6 @@ pandas = "^1.2.3"
 requests = "^2.25.1"
 Jinja2 = "^2.11.3"
 untangle = "^1.1.1"
-ftfy = "^5.9"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

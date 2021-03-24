@@ -156,17 +156,6 @@ optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*"
 
 [[package]]
-name = "ftfy"
-version = "5.9"
-description = "Fixes some problems with Unicode text after the fact"
-category = "main"
-optional = false
-python-versions = ">=3.5"
-
-[package.dependencies]
-wcwidth = "*"
-
-[[package]]
 name = "httpretty"
 version = "1.0.5"
 description = "HTTP client mock for Python"
@@ -706,7 +695,7 @@ brotli = ["brotlipy (>=0.6.0)"]
 name = "wcwidth"
 version = "0.2.5"
 description = "Measures the displayed width of unicode strings in a terminal"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -721,7 +710,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "19a0009b59220bedda542d74ac0900dec9f5a97359f5d0b2888b89d7f50950ac"
+content-hash = "98d2ea65682011b56e143b190004aaebbe84770291446c67443b04291465d3a5"
 
 [metadata.files]
 appdirs = [
@@ -817,9 +806,6 @@ colorama = [
 decorator = [
     {file = "decorator-4.4.2-py2.py3-none-any.whl", hash = "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760"},
     {file = "decorator-4.4.2.tar.gz", hash = "sha256:e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"},
-]
-ftfy = [
-    {file = "ftfy-5.9.tar.gz", hash = "sha256:8c4fb2863c0b82eae2ab3cf353d9ade268dfbde863d322f78d6a9fd5cefb31e9"},
 ]
 httpretty = [
     {file = "httpretty-1.0.5.tar.gz", hash = "sha256:e53c927c4d3d781a0761727f1edfad64abef94e828718e12b672a678a8b3e0b5"},
