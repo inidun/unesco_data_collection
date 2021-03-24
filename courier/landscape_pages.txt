@@ -1,0 +1,57 @@
+courier_pdfs/012656engo.pdf 18
+courier_pdfs/016653engo.pdf 18
+courier_pdfs/020805engo.pdf 18
+courier_pdfs/033144engo.pdf 64
+courier_pdfs/035706engo.pdf 4
+courier_pdfs/050495engo.pdf 18
+courier_pdfs/052257engo.pdf 18
+courier_pdfs/056740engo.pdf 18
+courier_pdfs/058738engo.pdf 18
+courier_pdfs/060488engo.pdf 14
+courier_pdfs/060510engo.pdf 60
+courier_pdfs/061468engo.pdf 10 17
+courier_pdfs/062195engo.pdf 18
+courier_pdfs/062313engo.pdf 18
+courier_pdfs/062404engo.pdf 18
+courier_pdfs/063738engo.pdf 34
+courier_pdfs/064074engo.pdf 22
+courier_pdfs/064331engo.pdf 18
+courier_pdfs/064933engo.pdf 18
+courier_pdfs/065221engo.pdf 18
+courier_pdfs/065278engo.pdf 18
+courier_pdfs/066148engo.pdf 18
+courier_pdfs/066285engo.pdf 18
+courier_pdfs/066613engo.pdf 18
+courier_pdfs/066970engo.pdf 26
+courier_pdfs/067211engo.pdf 18
+courier_pdfs/067562engo.pdf 18
+courier_pdfs/068956engo.pdf 18
+courier_pdfs/068988engo.pdf 18
+courier_pdfs/069029engo.pdf 18
+courier_pdfs/069853engo.pdf 22
+courier_pdfs/069904engo.pdf 18
+courier_pdfs/069916engo.pdf 10 11 24
+courier_pdfs/069962engo.pdf 18
+courier_pdfs/069982engo.pdf 18
+courier_pdfs/071059engo.pdf 8 9
+courier_pdfs/073487engo.pdf 11
+courier_pdfs/074116engo.pdf 13
+courier_pdfs/074589engo.pdf 8 9
+courier_pdfs/074815engo.pdf 18
+courier_pdfs/074823engo.pdf 18
+courier_pdfs/074880engo.pdf 18
+courier_pdfs/074881engo.pdf 18
+courier_pdfs/074885engo.pdf 18
+courier_pdfs/074891engo.pdf 14
+courier_pdfs/078145engo.pdf 22
+courier_pdfs/078148engo.pdf 18
+courier_pdfs/078161engo.pdf 18
+courier_pdfs/078179engo.pdf 18
+courier_pdfs/078187engo.pdf 18
+courier_pdfs/078208engo.pdf 18
+courier_pdfs/078210engo.pdf 18
+courier_pdfs/078226engo.pdf 20
+courier_pdfs/078274engo.pdf 18
+courier_pdfs/078370engo.pdf 18
+courier_pdfs/078382engo.pdf 18
+courier_pdfs/110425engo.pdf 44
