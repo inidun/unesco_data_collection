@@ -42,17 +42,20 @@ class Article:
 
 
 class CourierIssue:
-    def __init__(self, issue_index: pd.DataFrame, issue: untangle.Element):
+    def __init__(self, issue_index: pd.DataFrame, issue: untangle.Element, landscape_pages: List[int]):
         self.issue_index = issue_index
         self.issue = issue
+        self.landscape_pages = landscape_pages
 
     @property
     def articles(self) -> Iterator[Article]:
         for record in self.issue_index.to_dict("record"):
             yield Article(record, self)
 
+    # TODO: Test this
     def get_page(self, page_number: int) -> Page:
-        pages = [p for p in self.issue.document.page if p["number"] == str(page_number)]
+        page_delta = len([ x for x in self.landscape_pages if x < page_number ])
+        pages = [p for p in self.issue.document.page if p["number"] == str(page_number - page_delta)]
         return Page(page_number, pages[0].cdata if len(pages) > 0 else "")
 
     def find_pattern(self, pattern: str) -> List[Tuple]:
