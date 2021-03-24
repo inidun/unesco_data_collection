@@ -51,7 +51,8 @@ def test_find_title():
 
 
 def test_remove_control_chars():
-    element = read_xml("./data/courier/xml/191443eng.xml")
+    element = read_xml("./data/courier/xml/125736eng.xml")
+   
     assert element is not None
 
 

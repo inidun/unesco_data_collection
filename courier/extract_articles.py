@@ -7,7 +7,6 @@ import sys
 from typing import List
 import re
 
-import ftfy
 import pandas as pd
 import untangle
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -31,16 +30,12 @@ jinja_env = Environment(
 
 # %%
 
-# ftfy.fix_text(text, *, fix_entities='auto', remove_terminal_escapes=True, fix_encoding=True, fix_latin_ligatures=True, fix_character_width=True, uncurl_quotes=True, fix_line_breaks=True, fix_surrogates=True, remove_control_chars=True, remove_bom=True, normalization='NFC', max_decode_length=1000000)
+remove_re = re.compile(u'[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]')
 
-#remove_re = re.compile(u'[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F%s]')
-# FIXME: Fix illegal chars
 def read_xml(filename: str) -> untangle.Element:
     with open(filename, "r") as fp:
         content = fp.read()
-        # content, _ = remove_re.subn('', content)
-        content = ftfy.fixes.remove_terminal_escapes(content)
-        content = ftfy.fixes.remove_control_chars(content)
+        content = remove_re.sub('', content)
         xml = io.StringIO(content)
         element = untangle.parse(xml)
         return element
@@ -79,6 +74,7 @@ def extract_articles(folder: str, index: pd.DataFrame) -> None:
             print(f"Duplicate matches for: {issue}")
             continue
 
+        # FIXME: only calll read_xml when necessary
         try:
             extract_articles_from_issue(CourierIssue(index.loc[index["courier_id"] == issue], read_xml(filename[0])))
         except Exception as e:
@@ -92,17 +88,11 @@ def extract_articles(folder: str, index: pd.DataFrame) -> None:
     print("Missing courier_ids: ", *missing)
 
 
-# %%
-article_index = create_article_index("UNESCO_Courier_metadata.csv")
 
 # %%
-extract_articles("../data/courier/xml", article_index)
-# next(article_index.iterrows())[1]
+def main():
+    article_index = create_article_index("UNESCO_Courier_metadata.csv")
+    extract_articles("../data/courier/xml", article_index)
 
-# %%
-
-# %%
-
-# %%
 if __name__ == '__main__':
-    pass
+    main()
