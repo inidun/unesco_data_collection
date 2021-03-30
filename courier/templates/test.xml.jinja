@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<courier_id>{{ data.document["id"] }}</courier_id>
-{% for x in data.document.page[start:stop] %}
-<page number="{{ x.number }}">{{ x.cdata|trim }}</page>
-{%- endfor %}
