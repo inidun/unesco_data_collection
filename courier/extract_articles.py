@@ -1,20 +1,24 @@
-# %%
-
 import glob
 import io
 import os
 import re
-import sys
+
+# import sys
 from typing import Dict, List
 
 import pandas as pd
 import untangle
 from jinja2 import Environment, PackageLoader, select_autoescape
 
-sys.path.insert(0, "~/source/inidun/unesco_data_collection/")
-
 from courier.courier_metadata import create_article_index
 from courier.elements import CourierIssue
+
+
+DEFAULT_OUTPUT_FOLDER = "./data/courier/articles"
+DEFAULT_TEMPLATE_NAME = "article.xml.jinja"
+EXCLUDED_DOUBLE_PAGES = ["033144", "110425", "074589"]
+REMOVE_RE = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
+
 
 jinja_env = Environment(
     loader=PackageLoader("courier", "templates"),
@@ -23,41 +27,39 @@ jinja_env = Environment(
     lstrip_blocks=True,
 )
 
-remove_re = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
-data_folder = "./data/courier/articles"
-
 
 def read_xml(filename: str) -> untangle.Element:
     with open(filename, "r") as fp:
         content = fp.read()
-        content = remove_re.sub("", content)
+        content = REMOVE_RE.sub("", content)
         xml = io.StringIO(content)
         element = untangle.parse(xml)
         return element
 
 
-# TODO: add template as argument
-def extract_articles_from_issue(courier_issue: CourierIssue) -> None:
+def extract_articles_from_issue(
+    courier_issue: CourierIssue, template_name: str = None, output_folder: str = None
+) -> None:
 
-    template = jinja_env.get_template("article.xml.jinja")
+    template_name = template_name or DEFAULT_TEMPLATE_NAME
+    template = jinja_env.get_template(template_name)
+    ext = template_name.split(".")[-2]
+
+    output_folder = output_folder or DEFAULT_OUTPUT_FOLDER
+    os.makedirs(output_folder, exist_ok=True)
 
     for i, article in enumerate(courier_issue.articles, 1):
         # print(f"Processing {article.record_number}")
         article_text = template.render(article=article)
-        with open(
-            os.path.join(
-                data_folder, f"{article.courier_id}_{i:02}_{article.record_number}.xml"
-            ),
-            "w",
-        ) as fp:
+        with open(os.path.join(output_folder, f"{article.courier_id}_{i:02}_{article.record_number}.{ext}"), "w") as fp:
             fp.write(article_text)
 
 
-def extract_articles(folder: str, index: pd.DataFrame, landscape_pages: str) -> None:
+def extract_articles(folder: str, index: pd.DataFrame, double_pages: dict) -> None:
 
     missing = set()
 
-    for issue in index["courier_id"].unique():  # FIXME: remove head
+    for issue in index["courier_id"].unique():
 
         filename_pattern = os.path.join(folder, f"{issue}eng*.xml")
         filename = glob.glob(filename_pattern)
@@ -71,56 +73,48 @@ def extract_articles(folder: str, index: pd.DataFrame, landscape_pages: str) -> 
             print(f"Duplicate matches for: {issue}")
             continue
 
-        # FIXME: only call read_xml when necessary
         try:
             extract_articles_from_issue(
                 CourierIssue(
                     index.loc[index["courier_id"] == issue],
                     read_xml(filename[0]),
-                    landscape_pages.get(issue, []),
+                    double_pages.get(issue, []),
                 )
             )
         except Exception as e:
             print(filename[0], e)
 
-        # extract_articles_from_issue(filename, index.loc[index["courier_id"] == issue])
-        # TODO: Check pages for possible mismatch
-        # TODO: Check overlapping pages
-
     print("Missing courier_ids: ", *missing)
 
 
-def find_article_titles(folder: str, index: pd.DataFrame, landscape_pages: str) -> List:
+def create_regexp(title: str) -> str:
+    tokens = re.findall("[a-zåäö]+", title.lower())
+    expr = "[^a-zåäö]+".join(tokens)
+    return expr[1:]
+
+
+def find_article_titles(folder: str, index: pd.DataFrame, double_pages: dict) -> List:
 
     items = []
-
     for issue in index["courier_id"].unique():
-
         filename_pattern = os.path.join(folder, f"{issue}eng*.xml")
         filename = glob.glob(filename_pattern)
 
         if len(filename) == 0:
             print(f"no match for {issue}")
             continue
-
         if len(filename) > 1:
             print(f"Duplicate matches for: {issue}")
             continue
 
         courier_issue = CourierIssue(
-            index.loc[index["courier_id"] == issue],
-            read_xml(filename[0]),
-            landscape_pages.get(issue, [])
+            index.loc[index["courier_id"] == issue], read_xml(filename[0]), double_pages.get(issue, [])
         )
 
         for article in courier_issue.articles:
-
             try:
-
                 expr = create_regexp(article.title)
-
                 page_numbers = courier_issue.find_pattern(expr)
-
                 items.append(
                     {
                         "title": article.title,
@@ -129,37 +123,28 @@ def find_article_titles(folder: str, index: pd.DataFrame, landscape_pages: str) 
                         "page_numbers": page_numbers,
                     }
                 )
-
-            except:
-                pass
+            except Exception as e:
+                print(filename[0], e)
 
     df = pd.DataFrame(items)
     df.to_csv("./data/article_titles.csv", sep="\t")
-
     return items
 
+# FIXME: #23 Exclude non double pages
+def read_double_pages_from_file(filename: str, exclude: List[str] = None) -> Dict:
 
-def create_regexp(title):
-
-    tokens = re.findall("[a-zåäö]+", title.lower())
-    expr = "[^a-zåäö]+".join(tokens)
-
-    return expr[1:]
-
-
-def read_landscape_pages(filename: str) -> Dict:
+    exclude = exclude or EXCLUDED_DOUBLE_PAGES
     with open(filename, "r") as fp:
         data = fp.readlines()
-        pages = {
-            os.path.basename(x)[:6]: list(map(int, x.split(" ")[1:])) for x in data
-        }
+        filtered_data = [line for line in data if all(e not in line for e in exclude)]
+        pages = {os.path.basename(line)[:6]: list(map(int, line.split(" ")[1:])) for line in filtered_data}
     return pages
 
 
 def main():
     article_index = create_article_index("./data/UNESCO_Courier_metadata.csv")
-    landscape_pages = read_landscape_pages("./courier/landscape_pages.txt")
-    extract_articles("./data/courier/xml", article_index, landscape_pages)
+    double_pages = read_double_pages_from_file("./data/double_pages.txt")
+    extract_articles("./data/courier/xml", article_index, double_pages)
     # find_article_titles("./data/courier/xml", article_index)
 
 
