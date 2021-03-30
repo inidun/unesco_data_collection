@@ -14,7 +14,7 @@ from courier.courier_metadata import create_article_index
 from courier.elements import CourierIssue
 
 
-DEFAULT_OUTPUT_FOLDER = "./data/courier/articles"
+DEFAULT_OUTPUT_FOLDER = "../data/courier/articles"
 DEFAULT_TEMPLATE_NAME = "article.xml.jinja"
 EXCLUDED_DOUBLE_PAGES = ["033144", "110425", "074589"]
 REMOVE_RE = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
@@ -127,7 +127,7 @@ def find_article_titles(folder: str, index: pd.DataFrame, double_pages: dict) ->
                 print(filename[0], e)
 
     df = pd.DataFrame(items)
-    df.to_csv("./data/article_titles.csv", sep="\t")
+    df.to_csv("../courier/data/article_titles.csv", sep="\t")
     return items
 
 # FIXME: #23 Exclude non double pages
@@ -142,9 +142,9 @@ def read_double_pages_from_file(filename: str, exclude: List[str] = None) -> Dic
 
 
 def main():
-    article_index = create_article_index("./data/UNESCO_Courier_metadata.csv")
-    double_pages = read_double_pages_from_file("./data/double_pages.txt")
-    extract_articles("./data/courier/xml", article_index, double_pages)
+    article_index = create_article_index("../data/UNESCO_Courier_metadata.csv")
+    double_pages = read_double_pages_from_file("../data/double_pages.txt")
+    extract_articles("../data/courier/xml", article_index, double_pages)
     # find_article_titles("./data/courier/xml", article_index)
 
 
