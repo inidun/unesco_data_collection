@@ -2,7 +2,6 @@ import itertools
 import re
 from typing import List
 
-import argh
 import pandas as pd
 
 
@@ -45,10 +44,9 @@ def extract_english_host_item(host_item: str) -> str:
     return items[0]
 
 
-# FIXME: Rename to load
 def create_article_index(filename: str) -> pd.DataFrame:
 
-    df = pd.read_csv(filename, sep=";")
+    df = pd.read_csv(filename, sep=";")  # 8313
 
     df.columns = [
         "record_number",
@@ -64,8 +62,8 @@ def create_article_index(filename: str) -> pd.DataFrame:
         "notes",
     ]
 
-    df = df[df["document_type"] == "article"]
-    df = df[df.languages.str.contains("eng")]
+    df = df[df["document_type"] == "article"]  # 7639
+    df = df[df.languages.str.contains("eng")]  # 7612
 
     df["eng_host_item"] = df["host_item"].apply(extract_english_host_item)
     df = df.copy()
@@ -80,6 +78,8 @@ def create_article_index(filename: str) -> pd.DataFrame:
     df["courier_id"] = df.eng_host_item.apply(extract_courier_id)
     df["pages"] = df.page_ref.apply(expand_article_pages)
     df["year"] = df.publication_date.apply(lambda x: int(x[:4]))
+
+    df["notes"] = df.notes.fillna("").str.replace("\n", " ")
 
     return df[
         [
@@ -100,20 +100,3 @@ def create_article_index(filename: str) -> pd.DataFrame:
             "notes",
         ]
     ]
-
-
-def save_article_index(input_file='../data/courier/UNESCO_Courier_metadata.csv', output_file='../data/courier/article_index.csv'):
-    """Creates article index from Courier metadata file
-
-    Args:
-        input_file (str, optional): Path to courier metadata index file. Defaults to '../data/courier/UNESCO_Courier_metadata.csv'.
-        output_file (str, optional): Path to output article metadata file. Defaults to '../data/courier/article_index.csv'.
-    """
-
-    article_index = create_article_index(input_file)
-    article_index.to_csv(output_file, sep='\t')
-
-
-# TODO: #17 Add command line arguments
-if __name__ == "__main__":
-    argh.dispatch_command(save_article_index)
