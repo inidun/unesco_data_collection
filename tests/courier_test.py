@@ -13,15 +13,15 @@ TEST_OUTPUT_FOLDER = './tests/output'
 
 # TODO: Use fixtures
 def get_article_index() -> pd.DataFrame:
-    return pd.read_csv("./courier/article_index.csv", sep="\t")
+    return pd.read_csv("./data/courier/article_index.csv", sep="\t")
 
 
 # def test_extract():
 
-#     article_index = create_article_index("./courier/UNESCO_Courier_metadata.csv")
+#     article_index = create_article_index("./data/courier/UNESCO_Courier_metadata.csv")
 #     issue_index = article_index.loc[article_index["courier_id"] == "012656"]
 #     issue = untangle.parse("./data/courier/xml/012656engo.xml")
-#     double_pages = read_double_pages("./data/double_pages.txt")
+#     double_pages = read_double_pages("./data/courier/double_pages/double_pages.txt")
 
 #     courier_issue = CourierIssue(issue_index, issue, double_pages.get("012656", []))
 
@@ -38,10 +38,10 @@ def test_convert():
 
     os.makedirs(TEST_OUTPUT_FOLDER, exist_ok=True)
 
-    article_index = create_article_index("./courier/UNESCO_Courier_metadata.csv")
+    article_index = create_article_index("./data/courier/UNESCO_Courier_metadata.csv")
     issue_index = article_index.loc[article_index["courier_id"] == "061468"]
     issue = untangle.parse("./data/courier/xml/061468engo.xml")
-    double_pages = read_double_pages_from_file("./data/double_pages.txt")
+    double_pages = read_double_pages_from_file("./data/courier/double_pages/double_pages.txt")
     courier_issue = CourierIssue(issue_index, issue, double_pages.get("061468", []))
 
     extract_articles_from_issue(courier_issue, "article.txt.jinja", TEST_OUTPUT_FOLDER)
@@ -80,8 +80,8 @@ def test_read_xml_removes_control_chars():
 
 def test_read_double_data_returns_expected_data():
 
-    # pages = read_double_pages("./data/double_pages.txt", ["033144", "110425"])
-    pages = read_double_pages_from_file("./data/double_pages.txt")
+    # pages = read_double_pages("./data/courier/double_pages/double_pages.txt", ["033144", "110425"])
+    pages = read_double_pages_from_file("./data/courier/double_pages/double_pages.txt")
 
     assert isinstance(pages, dict)
 

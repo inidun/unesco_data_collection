@@ -3,7 +3,7 @@
 import pandas as pd
 import ast
 
-df = pd.read_csv("article_index.csv", sep="\t")
+df = pd.read_csv("../data/courier/article_index.csv", sep="\t")
 df = df[["courier_id", "record_number", "pages"]]
 
 df["pages"] = df["pages"].apply(lambda x: ast.literal_eval(x))

@@ -102,12 +102,12 @@ def create_article_index(filename: str) -> pd.DataFrame:
     ]
 
 
-def save_article_index(input_file='UNESCO_Courier_metadata.csv', output_file='article_index.csv'):
+def save_article_index(input_file='../data/courier/UNESCO_Courier_metadata.csv', output_file='../data/courier/article_index.csv'):
     """Creates article index from Courier metadata file
 
     Args:
-        input_file (str, optional): Path to courier metadata index file. Defaults to 'UNESCO_Courier_metadata.csv'.
-        output_file (str, optional): Path to output article metadata file. Defaults to 'article_index.csv'.
+        input_file (str, optional): Path to courier metadata index file. Defaults to '../data/courier/UNESCO_Courier_metadata.csv'.
+        output_file (str, optional): Path to output article metadata file. Defaults to '../data/courier/article_index.csv'.
     """
 
     article_index = create_article_index(input_file)

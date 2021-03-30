@@ -142,8 +142,8 @@ def read_double_pages_from_file(filename: str, exclude: List[str] = None) -> Dic
 
 
 def main():
-    article_index = create_article_index("../data/UNESCO_Courier_metadata.csv")
-    double_pages = read_double_pages_from_file("../data/double_pages.txt")
+    article_index = create_article_index("../data/courier/UNESCO_Courier_metadata.csv")
+    double_pages = read_double_pages_from_file("../data/courier/double_pages/double_pages.txt")
     extract_articles("../data/courier/xml", article_index, double_pages)
     # find_article_titles("./data/courier/xml", article_index)
 
