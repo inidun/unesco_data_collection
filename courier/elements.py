@@ -1,13 +1,17 @@
-from typing import Iterator, Tuple, List
+import re
+from typing import Iterator, List, Tuple
+
 import pandas as pd
 import untangle
-import re
 
 
 class Page:
     def __init__(self, page_number: int, text: str):
         self.page_number = page_number
         self.text = text
+
+    def __repr__(self):
+        return repr(self.text)
 
 
 class Article:
@@ -42,28 +46,33 @@ class Article:
 
 
 class CourierIssue:
-    def __init__(self, issue_index: pd.DataFrame, issue: untangle.Element, landscape_pages: List[int]):
+    def __init__(self, issue_index: pd.DataFrame, issue: untangle.Element, double_pages: List[int]):
         self.issue_index = issue_index
         self.issue = issue
-        self.landscape_pages = landscape_pages
+        self.double_pages = double_pages
 
     @property
     def articles(self) -> Iterator[Article]:
         for record in self.issue_index.to_dict("record"):
             yield Article(record, self)
 
-    # TODO: Test this
+    @property
+    def num_articles(self) -> int:
+        return len(self.issue_index)
+
+    @property
+    def num_pages(self) -> int:
+        return len(self.issue.document.page)
+
     def get_page(self, page_number: int) -> Page:
-        page_delta = len([ x for x in self.landscape_pages if x < page_number ])
+        page_delta = len([x for x in self.double_pages if x < page_number])
         pages = [p for p in self.issue.document.page if p["number"] == str(page_number - page_delta)]
         return Page(page_number, pages[0].cdata if len(pages) > 0 else "")
 
     def find_pattern(self, pattern: str) -> List[Tuple]:
-
         page_numbers = []
         for i, page in enumerate(self.issue.document.page, 1):
             m = re.search(pattern, page.cdata, re.IGNORECASE)
             if m:
                 page_numbers.append((i, page["number"]))
-
         return page_numbers
