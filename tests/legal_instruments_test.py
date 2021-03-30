@@ -1,16 +1,15 @@
-import requests
-import sys
-import os
-#import sure
-import httpretty
 import datetime
+import os
 
-#sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+import httpretty
+import requests
 
 import legal_instruments.extract as parser
 import legal_instruments.tasks as task
-
 from legal_instruments.pipeline import Pipeline
+
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+
 
 def project_root():
     folder = os.getcwd()
@@ -18,17 +17,21 @@ def project_root():
         folder, _ = os.path.split(folder)
     return folder
 
+
 def get_sample_convention_html():
     with open("{}/tests/fixtures/sample_response_page.html".format(project_root()), "r") as fp:
         return fp.read()
+
 
 def get_sample_convention_index_html():
     # http://portal.unesco.org/en/ev.php-URL_ID=12025&URL_DO=DO_TOPIC&URL_SECTION=-471.html
     with open("{}/tests/fixtures/sample_response_index_page.html".format(project_root()), "r") as fp:
         return fp.read()
 
+
 def test_if_test_working():
     assert True
+
 
 def test_extract_where_and_when_with_city_succeeds():
 
@@ -38,6 +41,7 @@ def test_extract_where_and_when_with_city_succeeds():
     assert datetime.date(2017, 11, 13) == date
     assert city == "Paris"
 
+
 def test_extract_where_and_when_with_spajsy_city_succeeds():
 
     info = "New York, 13 November 2017"
@@ -46,6 +50,7 @@ def test_extract_where_and_when_with_spajsy_city_succeeds():
     assert datetime.date(2017, 11, 13) == date
     assert city == "New York"
 
+
 def test_extract_where_and_when_without_city_succeeds():
 
     info = "13 November 2017"
@@ -53,6 +58,7 @@ def test_extract_where_and_when_without_city_succeeds():
 
     assert datetime.date(2017, 11, 13) == date
     assert city == ""
+
 
 def test_extract_text_when_valid_page_returns_text():
 
@@ -67,6 +73,7 @@ def test_extract_text_when_valid_page_returns_text():
     assert len(result) > 0
     assert "Article" in result
 
+
 def test_extract_links_when_valid_page_returns_links():
 
     # Arrange
@@ -78,6 +85,7 @@ def test_extract_links_when_valid_page_returns_links():
     # Assert
     assert result is not None
     assert len(result) == 32
+
 
 def test_can_create_item():
 
@@ -109,8 +117,9 @@ def test_can_mock_http_request():
     # Act
     response = requests.get(url)
 
-    #Asserts
+    # Asserts
     assert response.content.decode() == body
+
 
 @httpretty.activate
 def test_pipeline():
@@ -129,14 +138,16 @@ def test_pipeline():
             yield x
 
     # Act
-    pipeline = Pipeline()\
-        .add(task.extract_pages)\
-        .add(task.extract_items)\
-        .add(spoof_url)\
-        .add(task.extract_text)\
-        .add(task.progress)\
-        .add(task.store_text, "legal_instruments_corpus.txt.zip")\
-        .add(task.store_index, "legal_instruments_index.csv")
+    pipeline = (
+        Pipeline()
+        .add(task.extract_pages)
+        .add(task.extract_items)
+        .add(spoof_url)
+        .add(task.extract_text)
+        .add(task.progress)
+        .add(task.store_text, "./tests/output/legal_instruments_corpus.txt.zip")
+        .add(task.store_index, "./tests/output/legal_instruments_index.csv")
+    )
 
     result = pipeline.apply([(url_index, 'CONVENTION')])
 
