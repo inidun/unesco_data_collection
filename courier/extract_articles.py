@@ -2,8 +2,8 @@ import glob
 import io
 import os
 import re
+import csv
 
-# import sys
 from typing import Dict, List
 
 import pandas as pd
@@ -13,11 +13,15 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from courier.courier_metadata import create_article_index
 from courier.elements import CourierIssue
 
-
+# TODO: Move to config file
+# EXCLUDED_DOUBLE_PAGES = ["033144", "110425", "074589"]
 DEFAULT_OUTPUT_FOLDER = "../data/courier/articles"
 DEFAULT_TEMPLATE_NAME = "article.xml.jinja"
-EXCLUDED_DOUBLE_PAGES = ["033144", "110425", "074589"]
+DOUBLE_PAGES_FILE = "../data/courier/double_pages/double_pages.txt"
+EXCLUSIONS_FILE = "../data/courier/double_pages/exclude.txt"
+METADATA_FILE = "../data/courier/UNESCO_Courier_metadata.csv"
 REMOVE_RE = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
+XML_INPUT_FOLDER = "../data/courier/input/xml"
 
 
 jinja_env = Environment(
@@ -55,13 +59,13 @@ def extract_articles_from_issue(
             fp.write(article_text)
 
 
-def extract_articles(folder: str, index: pd.DataFrame, double_pages: dict) -> None:
+def extract_articles(xml_input_folder: str, article_index: pd.DataFrame, double_pages: dict) -> None:
 
     missing = set()
 
-    for issue in index["courier_id"].unique():
+    for issue in article_index["courier_id"].unique():
 
-        filename_pattern = os.path.join(folder, f"{issue}eng*.xml")
+        filename_pattern = os.path.join(xml_input_folder, f"{issue}eng*.xml")
         filename = glob.glob(filename_pattern)
 
         if len(filename) == 0:
@@ -76,7 +80,7 @@ def extract_articles(folder: str, index: pd.DataFrame, double_pages: dict) -> No
         try:
             extract_articles_from_issue(
                 CourierIssue(
-                    index.loc[index["courier_id"] == issue],
+                    article_index.loc[article_index["courier_id"] == issue],
                     read_xml(filename[0]),
                     double_pages.get(issue, []),
                 )
@@ -130,11 +134,19 @@ def find_article_titles(folder: str, index: pd.DataFrame, double_pages: dict) ->
     df.to_csv("../courier/data/article_titles.csv", sep="\t")
     return items
 
-# FIXME: #23 Exclude non double pages
-def read_double_pages_from_file(filename: str, exclude: List[str] = None) -> Dict:
 
-    exclude = exclude or EXCLUDED_DOUBLE_PAGES
-    with open(filename, "r") as fp:
+def read_exclusions_from_file(filename: str) -> list:
+    with open(filename, newline='') as f:
+        reader = csv.reader(f, delimiter=';')
+        exclusions = [x[0] for x in reader]
+    return exclusions
+
+
+# FIXME: #23 Exclude non double pages
+def read_double_pages_from_file(double_pages_file: str, exclusions_file: str) -> Dict:
+
+    exclude = read_exclusions_from_file(exclusions_file)
+    with open(double_pages_file, "r") as fp:
         data = fp.readlines()
         filtered_data = [line for line in data if all(e not in line for e in exclude)]
         pages = {os.path.basename(line)[:6]: list(map(int, line.split(" ")[1:])) for line in filtered_data}
@@ -142,9 +154,15 @@ def read_double_pages_from_file(filename: str, exclude: List[str] = None) -> Dic
 
 
 def main():
-    article_index = create_article_index("../data/courier/UNESCO_Courier_metadata.csv")
-    double_pages = read_double_pages_from_file("../data/courier/double_pages/double_pages.txt")
-    extract_articles("../data/courier/xml", article_index, double_pages)
+    article_index = create_article_index(METADATA_FILE)
+
+    os.makedirs(DEFAULT_OUTPUT_FOLDER, exist_ok=True)
+    article_index.to_csv(os.path.join(DEFAULT_OUTPUT_FOLDER, "article_index.csv"), sep="\t", index=False)
+
+    double_pages = read_double_pages_from_file(DOUBLE_PAGES_FILE, EXCLUSIONS_FILE)
+
+    # FIXME: FIX indata - input folder containing courier issues in xml-format
+    extract_articles(XML_INPUT_FOLDER, article_index, double_pages)
     # find_article_titles("./data/courier/xml", article_index)
 
 
