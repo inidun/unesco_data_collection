@@ -139,6 +139,7 @@ archive/
 tmp/
 notes/
 *.out
+tests/output/*
 
 data/legal_instrument_corpus.txt/
 src/courier_ocr/data/
