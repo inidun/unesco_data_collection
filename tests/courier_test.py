@@ -1,8 +1,5 @@
 import os
-import csv
 import tempfile
-from typing import List
-import pandas as pd
 import untangle
 
 from courier.courier_metadata import create_article_index
@@ -11,9 +8,17 @@ from courier.extract_articles import create_regexp, extract_articles_from_issue,
 
 TEST_OUTPUT_FOLDER = './tests/output'
 
-# TODO: Use fixtures
-def get_article_index() -> pd.DataFrame:
-    return pd.read_csv("./data/courier/article_index.csv", sep="\t")
+# INPUT
+# overlapping_pages.csv
+XML_INPUT_FOLDER = "data/courier/input/xml"
+METADATA_FILE = "data/courier/UNESCO_Courier_metadata.csv"
+
+
+def test_input_dir_contains_all_files():
+
+    num_files = len([f for f in os.listdir(XML_INPUT_FOLDER) if os.path.isfile(os.path.join(XML_INPUT_FOLDER, f))])
+
+    assert num_files == 664
 
 
 # def test_extract():
@@ -38,10 +43,12 @@ def test_convert():
 
     os.makedirs(TEST_OUTPUT_FOLDER, exist_ok=True)
 
-    article_index = create_article_index("./data/courier/UNESCO_Courier_metadata.csv")
+    article_index = create_article_index(METADATA_FILE)
     issue_index = article_index.loc[article_index["courier_id"] == "061468"]
-    issue = untangle.parse("./data/courier/xml/061468engo.xml")
-    double_pages = read_double_pages_from_file("./data/courier/double_pages/double_pages.txt")
+    issue = untangle.parse(os.path.join(XML_INPUT_FOLDER, "061468engo.xml"))
+    double_pages = read_double_pages_from_file(
+        "data/courier/double_pages/double_pages.txt", "./data/courier/double_pages/exclude.txt"
+    )
     courier_issue = CourierIssue(issue_index, issue, double_pages.get("061468", []))
 
     extract_articles_from_issue(courier_issue, "article.txt.jinja", TEST_OUTPUT_FOLDER)
@@ -54,10 +61,10 @@ def test_convert():
 
 def test_find_title():
 
-    article_index = get_article_index()
+    article_index = create_article_index(METADATA_FILE)
 
     issue_index = article_index.loc[article_index["courier_id"] == "074891"]
-    issue = untangle.parse("./data/courier/xml/074891engo.xml")
+    issue = untangle.parse(os.path.join(XML_INPUT_FOLDER, "074891engo.xml"))
     courier_issue = CourierIssue(issue_index, issue, [])
 
     title = "drought over africa"
@@ -80,8 +87,9 @@ def test_read_xml_removes_control_chars():
 
 def test_read_double_data_returns_expected_data():
 
-    # pages = read_double_pages("./data/courier/double_pages/double_pages.txt", ["033144", "110425"])
-    pages = read_double_pages_from_file("./data/courier/double_pages/double_pages.txt")
+    pages = read_double_pages_from_file(
+        "data/courier/double_pages/double_pages.txt", "./data/courier/double_pages/exclude.txt"
+    )
 
     assert isinstance(pages, dict)
 
@@ -89,28 +97,6 @@ def test_read_double_data_returns_expected_data():
     assert pages.get("061468") == [10, 17]
 
     assert len(pages) == 54
-    assert pages.get("033144") is None
-    assert pages.get("110425") is None
-    assert pages.get("074589") is None
-
-
-# FIXME: Read from config instead (or something better)
-def read_exclusions_from_file(filename: str) -> list:
-    with open(filename, newline='') as f:
-        reader = csv.reader(f, delimiter=';')
-        exclusions = [x[0] for x in reader]
-    return exclusions
-
-
-def test_read_exclusions():
-
-    exclusions = read_exclusions_from_file("./data/courier/double_pages/exclude.txt")
-
-    assert isinstance(exclusions, list)
-
-    pages = read_double_pages_from_file("data/courier/double_pages/double_pages.txt", exclusions)
-
-    assert isinstance(pages, dict)
     assert pages.get("033144") is None
     assert pages.get("110425") is None
     assert pages.get("074589") is None
