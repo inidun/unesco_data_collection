@@ -98,13 +98,13 @@ def extract_articles(
 
     print("Missing courier_ids: ", *missing)
 
-
+# FIXME Move maybe
 def create_regexp(title: str) -> str:
     tokens = re.findall("[a-zåäö]+", title.lower())
     expr = "[^a-zåäö]+".join(tokens)
     return expr[1:]
 
-
+# FIXME Move
 def find_article_titles(folder: str, index: pd.DataFrame, double_pages: dict) -> List:
 
     items = []
