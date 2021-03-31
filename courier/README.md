@@ -23,3 +23,17 @@ Following courier issues does not have double pages:
     074589engo.pdf
 
 Further investigation needed.
+
+**Documents**
+
+	in metadata index   8313
+	 - of type article  7639
+	 - in english       7612
+    Output              7505
+    Missing             107
+
+**TODO**
+
+- [ ] Check missing pages
+- [ ] Complete double pages exclusions
+- [ ] Investgate overlapping articles
