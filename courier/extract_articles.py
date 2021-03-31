@@ -59,13 +59,19 @@ def extract_articles_from_issue(
             fp.write(article_text)
 
 
-def extract_articles(xml_input_folder: str, article_index: pd.DataFrame, double_pages: dict) -> None:
+def extract_articles(
+    input_folder: str,
+    article_index: pd.DataFrame,
+    double_pages: dict,
+    template_name: str = None,
+    output_folder: str = None,
+) -> None:
 
     missing = set()
 
     for issue in article_index["courier_id"].unique():
 
-        filename_pattern = os.path.join(xml_input_folder, f"{issue}eng*.xml")
+        filename_pattern = os.path.join(input_folder, f"{issue}eng*.xml")
         filename = glob.glob(filename_pattern)
 
         if len(filename) == 0:
@@ -79,11 +85,13 @@ def extract_articles(xml_input_folder: str, article_index: pd.DataFrame, double_
 
         try:
             extract_articles_from_issue(
-                CourierIssue(
+                courier_issue=CourierIssue(
                     article_index.loc[article_index["courier_id"] == issue],
                     read_xml(filename[0]),
                     double_pages.get(issue, []),
-                )
+                ),
+                template_name=template_name,
+                output_folder=output_folder,
             )
         except Exception as e:
             print(filename[0], e)
@@ -142,7 +150,6 @@ def read_exclusions_from_file(filename: str) -> list:
     return exclusions
 
 
-# FIXME: #23 Exclude non double pages
 def read_double_pages_from_file(double_pages_file: str, exclusions_file: str) -> Dict:
 
     exclude = read_exclusions_from_file(exclusions_file)
@@ -161,8 +168,10 @@ def main():
 
     double_pages = read_double_pages_from_file(DOUBLE_PAGES_FILE, EXCLUSIONS_FILE)
 
-    # FIXME: FIX indata - input folder containing courier issues in xml-format
     extract_articles(XML_INPUT_FOLDER, article_index, double_pages)
+
+    # extract_articles(XML_INPUT_FOLDER, article_index, double_pages, template_name="article.txt.jinja", output_folder="../data/courier/articles/txt")
+
     # find_article_titles("./data/courier/xml", article_index)
 
 
