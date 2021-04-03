@@ -12,13 +12,20 @@ clean:
 	@find . -type d -name '.mypy_cache' -exec rm -rf {} +
 	@rm -rf tests/output
 
-test:
+test: clean
 	@mkdir -p ./tests/output
 	@poetry run pytest $(PYTEST_ARGS) tests
 	@rm -rf ./tests/output/*
 
+lint: pylint flake8
+
 pylint:
+	@poetry run pylint --version
 	@time poetry run pylint $(SOURCE_FOLDERS)
+
+flake8:
+	@poetry run flake8 --version
+	@poetry run flake8 $(SOURCE_FOLDERS)
 
 tidy: isort black
 
@@ -43,7 +50,7 @@ update:
 .PHONY: help
 .PHONY: clean
 .PHONY: test
-.PHONY: pylint
+.PHONY: pylint flake8 lint
 .PHONY: black isort tidy
 .PHONY: outated update
 
