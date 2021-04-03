@@ -17,6 +17,9 @@ test:
 	@poetry run pytest $(PYTEST_ARGS) tests
 	@rm -rf ./tests/output/*
 
+pylint:
+	@time poetry run pylint $(SOURCE_FOLDERS)
+
 tidy: isort black
 
 black: clean
@@ -40,6 +43,7 @@ update:
 .PHONY: help
 .PHONY: clean
 .PHONY: test
+.PHONY: pylint
 .PHONY: black isort tidy
 .PHONY: outated update
 
