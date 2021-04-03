@@ -10,37 +10,30 @@ def expand_article_pages(page_ref: str) -> List[int]:
     'p. D-D, D ', 'page D', 'p., D-D', 'p. D-D, D-D ']"""
 
     page_ref = re.sub(r"^(p\.\,?|pages?)", "", page_ref).replace(" ", "").split(",")
-
     ix = itertools.chain(
         *(
             [list(range(int(x), int(y) + 1)) for x, y in [w.split('-') for w in page_ref if '-' in w]]
             + [[int(x)] for x in page_ref if '-' not in x]
         )
     )
-
     return list(ix)
 
 
 def extract_courier_id(eng_host_item: str) -> str:
-
     m = re.match(r".*\s(\d+)(\seng$)", eng_host_item)
     if not m:
         print(eng_host_item)
         return None
-
     courier_id = m.group(1)  # .replace(' ', '')
     if len(courier_id) < 6:
         courier_id = "0" + courier_id
-
     return courier_id
 
 
 def extract_english_host_item(host_item: str) -> str:
-
     items = [x for x in host_item.split("|") if x.endswith("eng")]
     if len(items) == 0:
         return None
-
     return items[0]
 
 
