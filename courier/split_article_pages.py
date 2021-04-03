@@ -1,20 +1,22 @@
-#%%
-# import pandas as pd
+# %%
 import glob
 import os
 import re
+
 import pandas as pd
 
+from courier.config import CourierConfig
 from courier.courier_metadata import create_article_index
 from courier.overlap_check import get_overlapping_pages
-from courier.config import CourierConfig
 
 CONFIG = CourierConfig()
+
 
 def create_regexp(title_string: str) -> str:
     tokens = re.findall("[a-zåäö]+", title_string.lower())
     expression = "[^a-zåäö]+".join(tokens)
     return expression[1:]
+
 
 article_index = create_article_index(CONFIG.courier_metadata)
 double_pages = CONFIG.double_pages
@@ -25,7 +27,9 @@ found_stats = []
 
 for row in df_overlap.to_dict(orient="records"):
 
-    articles_on_page = article_index[(article_index.courier_id == row["courier_id"]) & article_index.pages.apply(lambda x, r=row: r["page"] in x)]
+    articles_on_page = article_index[
+        (article_index.courier_id == row["courier_id"]) & article_index.pages.apply(lambda x, r=row: r["page"] in x)
+    ]
 
     if row["count"] != len(articles_on_page):
         print(f'Page count mismatch: {row["courier_id"]}')
@@ -60,14 +64,14 @@ for row in df_overlap.to_dict(orient="records"):
         # TODO: More fuzzy, or keyword in context
         m = re.search(expr, page_text, re.IGNORECASE)
         if m:
-            #print(f"Found     {title}")
+            # print(f"Found     {title}")
             page_stat["found"] += 1
         else:
-            #print(f"Not Found {title}")
+            # print(f"Not Found {title}")
             page_stat["not_found"] += 1
 
     found_stats.append(page_stat)
 
 pd.DataFrame(found_stats).to_csv("../data/courier/overlap_match_stats.csv", sep="\t")
 
-#%%
+# %%
