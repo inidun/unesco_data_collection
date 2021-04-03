@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -23,22 +22,15 @@ def test_pdfbox_xml_dir_contains_all_files():
     assert len(list(Path(CONFIG.pdfbox_xml_dir).glob('*.xml'))) == 664
 
 
-# FIXME: Use tempdir
-def test_convert(article_index):
-
-    Path(CONFIG.test_output_dir).mkdir(exist_ok=True)
+def test_extract_article_as_xml(article_index):
 
     issue_index = article_index.loc[article_index["courier_id"] == "061468"]
-
     issue = untangle.parse(str(Path(CONFIG.pdfbox_xml_dir / "061468engo.xml")))
     courier_issue = CourierIssue(issue_index, issue, CONFIG.double_pages.get("061468", []))
 
-    extract_articles_from_issue(courier_issue, "article.txt.jinja", CONFIG.test_output_dir)
-    extract_articles_from_issue(courier_issue, "article.xml.jinja", CONFIG.test_output_dir)
-
-    # TODO: Actual tests
-    assert os.path.isfile(os.path.join(CONFIG.test_output_dir, "061468_01_61469.xml"))
-    assert True
+    with TemporaryDirectory() as output_dir:
+        extract_articles_from_issue(courier_issue, "article.xml.jinja", output_dir)
+        assert (Path(output_dir) / "061468_01_61469.xml").exists()
 
 
 def test_extract_article_as_txt(article_index):
@@ -50,8 +42,6 @@ def test_extract_article_as_txt(article_index):
     with TemporaryDirectory() as output_dir:
         extract_articles_from_issue(courier_issue, "article.txt.jinja", output_dir)
         assert (Path(output_dir) / "061468_01_61469.txt").exists()
-
-    assert (Path(output_dir) / "061468_01_61469.txt").exists() is False
 
 
 def test_find_title(article_index):
@@ -78,7 +68,6 @@ def test_read_xml_removes_control_chars():
     assert element.content.cdata == expected
 
 
-# FIXME: read double_pages from config, test that it is ok
 def test_read_double_data_returns_expected_data():
 
     pages = CONFIG.double_pages
