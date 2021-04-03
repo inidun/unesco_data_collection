@@ -25,7 +25,7 @@ def test_pdfbox_xml_dir_contains_all_files():
 def test_extract_article_as_xml(article_index):
 
     issue_index = article_index.loc[article_index["courier_id"] == "061468"]
-    issue = untangle.parse(str(Path(CONFIG.pdfbox_xml_dir / "061468engo.xml")))
+    issue = read_xml(Path(CONFIG.pdfbox_xml_dir / "061468engo.xml"))
     courier_issue = CourierIssue(issue_index, issue, CONFIG.double_pages.get("061468", []))
 
     with TemporaryDirectory() as output_dir:
@@ -36,7 +36,7 @@ def test_extract_article_as_xml(article_index):
 def test_extract_article_as_txt(article_index):
 
     issue_index = article_index.loc[article_index["courier_id"] == "061468"]
-    issue = untangle.parse(str(Path(CONFIG.pdfbox_xml_dir / "061468engo.xml")))
+    issue = read_xml(Path(CONFIG.pdfbox_xml_dir / "061468engo.xml"))
     courier_issue = CourierIssue(issue_index, issue, CONFIG.double_pages.get("061468", []))
 
     with TemporaryDirectory() as output_dir:
@@ -47,7 +47,7 @@ def test_extract_article_as_txt(article_index):
 def test_find_title(article_index):
 
     issue_index = article_index.loc[article_index["courier_id"] == "074891"]
-    issue = untangle.parse(str(Path(CONFIG.pdfbox_xml_dir / "074891engo.xml")))
+    issue = read_xml(Path(CONFIG.pdfbox_xml_dir / "074891engo.xml"))
     courier_issue = CourierIssue(issue_index, issue, [])
 
     title = "drought over africa"
