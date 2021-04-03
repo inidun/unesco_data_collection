@@ -49,6 +49,7 @@ class CourierIssue:
     def __init__(self, issue_index: pd.DataFrame, issue: untangle.Element, double_pages: List[int]):
         self.issue_index = issue_index
         self.issue = issue
+        # FIXME: get double_pages from config
         self.double_pages = double_pages
 
     @property

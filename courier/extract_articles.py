@@ -2,26 +2,17 @@ import glob
 import io
 import os
 import re
-import csv
-
-from typing import Dict, List
+from typing import List, Union
 
 import pandas as pd
 import untangle
 from jinja2 import Environment, PackageLoader, select_autoescape
 
+from courier.config import CourierConfig
 from courier.courier_metadata import create_article_index
 from courier.elements import CourierIssue
 
-# TODO: Move to config file
-# EXCLUDED_DOUBLE_PAGES = ["033144", "110425", "074589"]
-DEFAULT_OUTPUT_FOLDER = "../data/courier/articles"
-DEFAULT_TEMPLATE_NAME = "article.xml.jinja"
-DOUBLE_PAGES_FILE = "../data/courier/double_pages/double_pages.txt"
-EXCLUSIONS_FILE = "../data/courier/double_pages/exclude.txt"
-METADATA_FILE = "../data/courier/UNESCO_Courier_metadata.csv"
-REMOVE_RE = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
-XML_INPUT_FOLDER = "../data/courier/input/xml"
+CONFIG = CourierConfig()
 
 
 jinja_env = Environment(
@@ -32,10 +23,10 @@ jinja_env = Environment(
 )
 
 
-def read_xml(filename: str) -> untangle.Element:
+def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
     with open(filename, "r") as fp:
         content = fp.read()
-        content = REMOVE_RE.sub("", content)
+        content = CONFIG.invalid_chars.sub("", content)
         xml = io.StringIO(content)
         element = untangle.parse(xml)
         return element
@@ -45,11 +36,11 @@ def extract_articles_from_issue(
     courier_issue: CourierIssue, template_name: str = None, output_folder: str = None
 ) -> None:
 
-    template_name = template_name or DEFAULT_TEMPLATE_NAME
+    template_name = template_name or CONFIG.default_template
     template = jinja_env.get_template(template_name)
     ext = template_name.split(".")[-2]
 
-    output_folder = output_folder or DEFAULT_OUTPUT_FOLDER
+    output_folder = output_folder or CONFIG.default_output_dir
     os.makedirs(output_folder, exist_ok=True)
 
     for i, article in enumerate(courier_issue.articles, 1):
@@ -98,11 +89,13 @@ def extract_articles(
 
     print("Missing courier_ids: ", *missing)
 
+
 # FIXME Move maybe
 def create_regexp(title: str) -> str:
     tokens = re.findall("[a-zåäö]+", title.lower())
     expr = "[^a-zåäö]+".join(tokens)
     return expr[1:]
+
 
 # FIXME Move
 def find_article_titles(folder: str, index: pd.DataFrame, double_pages: dict) -> List:
@@ -143,35 +136,14 @@ def find_article_titles(folder: str, index: pd.DataFrame, double_pages: dict) ->
     return items
 
 
-def read_exclusions_from_file(filename: str) -> list:
-    with open(filename, newline='') as f:
-        reader = csv.reader(f, delimiter=';')
-        exclusions = [x[0] for x in reader]
-    return exclusions
-
-
-def read_double_pages_from_file(double_pages_file: str, exclusions_file: str) -> Dict:
-
-    exclude = read_exclusions_from_file(exclusions_file)
-    with open(double_pages_file, "r") as fp:
-        data = fp.readlines()
-        filtered_data = [line for line in data if all(e not in line for e in exclude)]
-        pages = {os.path.basename(line)[:6]: list(map(int, line.split(" ")[1:])) for line in filtered_data}
-    return pages
-
-
 def main():
-    article_index = create_article_index(METADATA_FILE)
+    article_index = create_article_index(CONFIG.courier_metadata)
 
-    os.makedirs(DEFAULT_OUTPUT_FOLDER, exist_ok=True)
-    article_index.to_csv(os.path.join(DEFAULT_OUTPUT_FOLDER, "article_index.csv"), sep="\t", index=False)
+    os.makedirs(CONFIG.default_output_dir, exist_ok=True)
+    article_index.to_csv(os.path.join(CONFIG.default_output_dir, "article_index.csv"), sep="\t", index=False)
+    extract_articles(CONFIG.pdfbox_xml_dir, article_index, CONFIG.double_pages)
 
-    double_pages = read_double_pages_from_file(DOUBLE_PAGES_FILE, EXCLUSIONS_FILE)
-
-    extract_articles(XML_INPUT_FOLDER, article_index, double_pages)
-
-    # extract_articles(XML_INPUT_FOLDER, article_index, double_pages, template_name="article.txt.jinja", output_folder="../data/courier/articles/txt")
-
+    # extract_articles(CONFIG.pdfbox_xml_dir, article_index, CONFIG.double_pages, template_name="article.txt.jinja", output_folder="../data/courier/articles/txt")
     # find_article_titles("./data/courier/xml", article_index)
 
 

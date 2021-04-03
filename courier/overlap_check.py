@@ -1,13 +1,11 @@
 import pandas as pd
 
-# import ast
+from courier.config import CourierConfig
 
-# from courier.courier_metadata import create_article_index
-# df = create_article_index("../data/courier/UNESCO_Courier_metadata.csv")
-# df["pages"] = df["pages"].apply(lambda x: ast.literal_eval(str(x)))
+CONFIG = CourierConfig()
 
 
-def get_overlapping_pages(article_index: pd.DataFrame):
+def get_overlapping_pages(article_index: pd.DataFrame) -> pd.DataFrame:
     df_pages = article_index[["courier_id", "record_number", "pages"]].explode("pages")
     page_count = df_pages.groupby(["courier_id", "pages"]).size()
     page_count = page_count.reset_index()
@@ -18,7 +16,7 @@ def get_overlapping_pages(article_index: pd.DataFrame):
 
 
 def save_overlapping_pages(overlap_df: pd.DataFrame) -> None:
-    overlap_df.to_csv("../data/courier/overlapping_pages.csv", sep="\t", index=False)
+    overlap_df.to_csv(CONFIG.overlapping_pages, sep="\t", index=False)
 
 
 def create_copy_script(overlap_df: pd.DataFrame) -> None:
@@ -28,10 +26,6 @@ def create_copy_script(overlap_df: pd.DataFrame) -> None:
     d = overlap_df["copy"]
     d.to_csv("copy.sh", index=False)
 
-
-# get_overlapping_pages(df)
-# save_overlapping_pages(overlapping_pages)
-# create_copy_script(overlapping_pages)
 
 # MISSING - Becasuse pdf-sources are missing
 # 372603eng*_0012.txt'
