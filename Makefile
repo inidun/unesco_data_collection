@@ -5,6 +5,10 @@ PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=
 BLACK_ARGS=--line-length 120 --target-version py38 --skip-string-normalization
 ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 38
 
+lint: tidy pylint flake8
+
+tidy: isort black
+
 clean:
 	@rm -rf .coverage coverage.xml htmlcov
 	@find . -type d -name '__pycache__' -exec rm -rf {} +
@@ -17,8 +21,6 @@ test: clean
 	@poetry run pytest $(PYTEST_ARGS) tests
 	@rm -rf ./tests/output/*
 
-lint: pylint flake8
-
 pylint:
 	@poetry run pylint --version
 	@time poetry run pylint $(SOURCE_FOLDERS)
@@ -26,8 +28,6 @@ pylint:
 flake8:
 	@poetry run flake8 --version
 	@poetry run flake8 $(SOURCE_FOLDERS)
-
-tidy: isort black
 
 black: clean
 	@poetry run black --version
