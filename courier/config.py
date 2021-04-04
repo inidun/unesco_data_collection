@@ -1,7 +1,7 @@
 import csv
 import os
 import re
-from dataclasses import InitVar, dataclass
+from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
@@ -20,7 +20,7 @@ def get_project_root() -> Path:
 class CourierConfig:
 
     # Data paths
-    base_data_dir: InitVar[Path] = (Path.home() / "data/courier").resolve()
+    base_data_dir: Path = (Path.home() / "data/courier").resolve()
     pdf_dir: Path = base_data_dir / "pdf"
     pdfbox_txt_dir: Path = base_data_dir / "pdfbox/txt"
     pdfbox_xml_dir: Path = base_data_dir / "pdfbox/xml"
@@ -29,8 +29,8 @@ class CourierConfig:
     test_output_dir: Path = project_root / "tests/output"
 
     # Metadata
-    double_pages_file: InitVar[Path] = project_root / "data/courier/double_pages/double_pages.txt"
-    exclusions_file: InitVar[Path] = project_root / "data/courier/double_pages/exclude.txt"
+    double_pages_file: Path = project_root / "data/courier/double_pages/double_pages.txt"
+    exclusions_file: Path = project_root / "data/courier/double_pages/exclude.txt"
     overlapping_pages: Path = project_root / "data/courier/overlapping_pages.csv"
     courier_metadata: Path = project_root / "data/courier/UNESCO_Courier_metadata.csv"
 

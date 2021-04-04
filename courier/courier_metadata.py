@@ -1,6 +1,7 @@
 import itertools
+import os
 import re
-from typing import List
+from typing import List, Optional, Union
 
 import pandas as pd
 
@@ -19,7 +20,7 @@ def expand_article_pages(page_ref: str) -> List[int]:
     return list(ix)
 
 
-def extract_courier_id(eng_host_item: str) -> str:
+def extract_courier_id(eng_host_item: str) -> Optional[str]:
     m = re.match(r".*\s(\d+)(\seng$)", eng_host_item)
     if not m:
         print(eng_host_item)
@@ -30,14 +31,14 @@ def extract_courier_id(eng_host_item: str) -> str:
     return courier_id
 
 
-def extract_english_host_item(host_item: str) -> str:
+def extract_english_host_item(host_item: str) -> Optional[str]:
     items = [x for x in host_item.split("|") if x.endswith("eng")]
     if len(items) == 0:
         return None
     return items[0]
 
 
-def create_article_index(filename: str) -> pd.DataFrame:
+def create_article_index(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
 
     df = pd.read_csv(filename, sep=";")  # 8313
 

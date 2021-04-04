@@ -1,7 +1,7 @@
 import glob
 import os
 import re
-from typing import List
+from typing import List, Union
 
 import pandas as pd
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -21,7 +21,7 @@ jinja_env = Environment(
 
 
 def extract_articles_from_issue(
-    courier_issue: CourierIssue, template_name: str = None, output_folder: str = None
+    courier_issue: CourierIssue, template_name: str = None, output_folder: Union[str, os.PathLike] = None
 ) -> None:
 
     template_name = template_name or CONFIG.default_template
@@ -39,7 +39,9 @@ def extract_articles_from_issue(
             fp.write(article_text)
 
 
-def extract_articles(input_folder: str, *, template_name: str = None, output_folder: str = None) -> None:
+def extract_articles(
+    input_folder: Union[str, os.PathLike], *, template_name: str = None, output_folder: Union[str, os.PathLike] = None
+) -> None:
 
     missing = set()
 
@@ -113,7 +115,7 @@ def find_article_titles(folder: str) -> List:
     return items
 
 
-def main():
+def main() -> None:
 
     os.makedirs(CONFIG.default_output_dir, exist_ok=True)
     CONFIG.article_index.to_csv(os.path.join(CONFIG.default_output_dir, "article_index.csv"), sep="\t", index=False)

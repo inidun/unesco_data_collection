@@ -81,7 +81,7 @@ pd.DataFrame(found_stats).to_csv(
 # %%
 
 
-def main():
+def main() -> None:
     pass
 
 

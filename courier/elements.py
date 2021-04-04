@@ -25,7 +25,7 @@ class Page:
         self.page_number = page_number
         self.text = text
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return repr(self.text)
 
 
@@ -86,7 +86,7 @@ class CourierIssue:
         pages = [p for p in self.issue.document.page if p["number"] == str(page_number - page_delta)]
         return Page(page_number, pages[0].cdata if len(pages) > 0 else "")
 
-    def find_pattern(self, pattern: str) -> List[Tuple]:
+    def find_pattern(self, pattern: str) -> List[Tuple[int, int]]:
         page_numbers = []
         for i, page in enumerate(self.issue.document.page, 1):
             m = re.search(pattern, page.cdata, re.IGNORECASE)
