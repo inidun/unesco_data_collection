@@ -17,7 +17,7 @@ def get_project_root() -> Path:
 
 
 @dataclass
-class CourierConfig:
+class CourierConfig:  # pylint: disable=too-many-instance-attributes
 
     # Data paths
     base_data_dir: Path = (Path.home() / "data/courier").resolve()
@@ -25,6 +25,8 @@ class CourierConfig:
     pdfbox_txt_dir: Path = base_data_dir / "pdfbox/txt"
     pdfbox_xml_dir: Path = base_data_dir / "pdfbox/xml"
     default_output_dir: Path = base_data_dir / "articles"
+    test_files_dir: Path = base_data_dir / "test_files"
+
     project_root: Path = get_project_root()
     test_output_dir: Path = project_root / "tests/output"
 
