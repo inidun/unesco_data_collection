@@ -21,13 +21,14 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
 
     # Data paths
     base_data_dir: Path = (Path.home() / "data/courier").resolve()
+    project_root: Path = get_project_root()
+
     pdf_dir: Path = base_data_dir / "pdf"
     pdfbox_txt_dir: Path = base_data_dir / "pdfbox/txt"
     pdfbox_xml_dir: Path = base_data_dir / "pdfbox/xml"
+    tessseract_output_dir: Path = base_data_dir / "tesseract/txt"
     default_output_dir: Path = base_data_dir / "articles"
     test_files_dir: Path = base_data_dir / "test_files"
-
-    project_root: Path = get_project_root()
     test_output_dir: Path = project_root / "tests/output"
 
     # Metadata
@@ -35,11 +36,10 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     exclusions_file: Path = project_root / "data/courier/double_pages/exclude.txt"
     overlapping_pages: Path = project_root / "data/courier/overlapping_pages.csv"
     courier_metadata: Path = project_root / "data/courier/UNESCO_Courier_metadata.csv"
+    article_index: pd.DataFrame = create_article_index(courier_metadata)
 
     default_template: str = "article.xml.jinja"
     invalid_chars: re.Pattern = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
-
-    article_index: pd.DataFrame = create_article_index(courier_metadata)
 
     # TODO: Move to courier metadata (Make metadate class)
     # FIXME: Don't use property
