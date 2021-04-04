@@ -1,15 +1,12 @@
 import glob
-import io
 import os
 import re
-from typing import List, Union
+from typing import List
 
 import pandas as pd
-import untangle
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from courier.config import CourierConfig
-from courier.courier_metadata import create_article_index
 from courier.elements import CourierIssue
 
 CONFIG = CourierConfig()
@@ -23,15 +20,6 @@ jinja_env = Environment(
 )
 
 
-def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
-    with open(filename, "r") as fp:
-        content = fp.read()
-        content = CONFIG.invalid_chars.sub("", content)
-        xml = io.StringIO(content)
-        element = untangle.parse(xml)
-        return element
-
-
 def extract_articles_from_issue(
     courier_issue: CourierIssue, template_name: str = None, output_folder: str = None
 ) -> None:
@@ -41,6 +29,7 @@ def extract_articles_from_issue(
     ext = template_name.split(".")[-2]
 
     output_folder = output_folder or CONFIG.default_output_dir
+    output_folder = os.path.join(output_folder, ext)
     os.makedirs(output_folder, exist_ok=True)
 
     for i, article in enumerate(courier_issue.articles, 1):
@@ -50,37 +39,27 @@ def extract_articles_from_issue(
             fp.write(article_text)
 
 
-def extract_articles(
-    input_folder: str,
-    article_index: pd.DataFrame,
-    double_pages: dict,
-    template_name: str = None,
-    output_folder: str = None,
-) -> None:
+def extract_articles(input_folder: str, *, template_name: str = None, output_folder: str = None) -> None:
 
     missing = set()
 
-    for issue in article_index["courier_id"].unique():
+    for courier_id in CONFIG.article_index["courier_id"].unique():
 
-        filename_pattern = os.path.join(input_folder, f"{issue}eng*.xml")
+        filename_pattern = os.path.join(input_folder, f"{courier_id}eng*.xml")
         filename = glob.glob(filename_pattern)
 
         if len(filename) == 0:
-            missing.add(issue)
-            print(f"no match for {issue}")
+            missing.add(courier_id)
+            print(f"no match for {courier_id}")
             continue
 
         if len(filename) > 1:
-            print(f"Duplicate matches for: {issue}")
+            print(f"Duplicate matches for: {courier_id}")
             continue
 
         try:
             extract_articles_from_issue(
-                courier_issue=CourierIssue(
-                    article_index.loc[article_index["courier_id"] == issue],
-                    read_xml(filename[0]),
-                    double_pages.get(issue, []),
-                ),
+                courier_issue=CourierIssue(courier_id),
                 template_name=template_name,
                 output_folder=output_folder,
             )
@@ -98,23 +77,21 @@ def create_regexp(title: str) -> str:
 
 
 # FIXME: Remove or move to `split_article_pages.py`
-def find_article_titles(folder: str, index: pd.DataFrame, double_pages: dict) -> List:
+def find_article_titles(folder: str) -> List:
 
     items = []
-    for issue in index["courier_id"].unique():
-        filename_pattern = os.path.join(folder, f"{issue}eng*.xml")
+    for courier_id in CONFIG.article_index["courier_id"].unique():
+        filename_pattern = os.path.join(folder, f"{courier_id}eng*.xml")
         filename = glob.glob(filename_pattern)
 
         if len(filename) == 0:
-            print(f"no match for {issue}")
+            print(f"no match for {courier_id}")
             continue
         if len(filename) > 1:
-            print(f"Duplicate matches for: {issue}")
+            print(f"Duplicate matches for: {courier_id}")
             continue
 
-        courier_issue = CourierIssue(
-            index.loc[index["courier_id"] == issue], read_xml(filename[0]), double_pages.get(issue, [])
-        )
+        courier_issue = CourierIssue(courier_id)
 
         for article in courier_issue.articles:
             try:
@@ -137,14 +114,14 @@ def find_article_titles(folder: str, index: pd.DataFrame, double_pages: dict) ->
 
 
 def main():
-    article_index = create_article_index(CONFIG.courier_metadata)
 
     os.makedirs(CONFIG.default_output_dir, exist_ok=True)
-    article_index.to_csv(os.path.join(CONFIG.default_output_dir, "article_index.csv"), sep="\t", index=False)
-    extract_articles(CONFIG.pdfbox_xml_dir, article_index, CONFIG.double_pages)
+    CONFIG.article_index.to_csv(os.path.join(CONFIG.default_output_dir, "article_index.csv"), sep="\t", index=False)
 
-    # extract_articles(CONFIG.pdfbox_xml_dir, article_index, CONFIG.double_pages, template_name="article.txt.jinja", output_folder="../data/courier/articles/txt")
-    # find_article_titles("./data/courier/xml", article_index)
+    extract_articles(CONFIG.pdfbox_xml_dir)
+
+    extract_articles(CONFIG.pdfbox_xml_dir, template_name="article.txt.jinja")
+    # find_article_titles("./data/courier/xml")
 
 
 if __name__ == "__main__":
