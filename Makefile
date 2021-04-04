@@ -5,7 +5,7 @@ PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=
 BLACK_ARGS=--line-length 120 --target-version py38 --skip-string-normalization
 ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 38
 
-lint: tidy pylint flake8
+lint: tidy pylint flake8 mypy
 
 tidy: isort black
 
@@ -29,6 +29,10 @@ flake8:
 	@poetry run flake8 --version
 	@poetry run flake8 $(SOURCE_FOLDERS)
 
+mypy:
+	@poetry run mypy --version
+	@poetry run mypy $(SOURCE_FOLDERS)
+
 black: clean
 	@poetry run black --version
 	@poetry run black $(BLACK_ARGS) $(SOURCE_FOLDERS)
@@ -50,7 +54,7 @@ update:
 .PHONY: help
 .PHONY: clean
 .PHONY: test
-.PHONY: pylint flake8 lint
+.PHONY: pylint flake8 mypy lint
 .PHONY: black isort tidy
 .PHONY: outated update
 
