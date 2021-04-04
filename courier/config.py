@@ -4,12 +4,9 @@ import re
 from dataclasses import InitVar, dataclass
 from pathlib import Path
 
-# def get_project_root() -> Path:
-#     ap = str(Path().absolute())
-#     pp = os.environ['PYTHONPATH'].split(':')
-#     matches = [x for x in pp if x in ap]
-#     root = min(matches, key=len)
-#     return Path(root)
+import pandas as pd
+
+from courier.courier_metadata import create_article_index
 
 
 def get_project_root() -> Path:
@@ -40,7 +37,10 @@ class CourierConfig:
     default_template: str = "article.xml.jinja"
     invalid_chars: re.Pattern = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
 
+    article_index: pd.DataFrame = create_article_index(courier_metadata)
+
     # TODO: Move to courier metadata (Make metadate class)
+    # FIXME: Don't use property
     @property
     def double_pages(self) -> dict:
         with open(self.exclusions_file, newline='') as fp:
