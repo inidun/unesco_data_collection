@@ -5,9 +5,16 @@ PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=
 BLACK_ARGS=--line-length 120 --target-version py38 --skip-string-normalization
 ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 38
 
+tidy: isort black
+
 lint: tidy pylint flake8 mypy
 
-tidy: isort black
+qlint:
+	@poetry run black $(BLACK_ARGS) -q $(SOURCE_FOLDERS)
+	@poetry run isort $(ISORT_ARGS) $(SOURCE_FOLDERS)
+	@poetry run pylint $(SOURCE_FOLDERS)
+	@poetry run flake8 --extend-ignore=BLK100,E303 $(SOURCE_FOLDERS)
+	@poetry run mypy $(SOURCE_FOLDERS)
 
 clean:
 	@rm -rf .coverage coverage.xml htmlcov
@@ -54,7 +61,7 @@ update:
 .PHONY: help
 .PHONY: clean
 .PHONY: test
-.PHONY: pylint flake8 mypy lint
+.PHONY: pylint flake8 mypy lint qlint
 .PHONY: black isort tidy
 .PHONY: outated update
 
@@ -75,4 +82,5 @@ help:
 	@echo " make mypy             Runs mypy"
 	@echo " make outated          Show outdated dependencies"
 	@echo " make pylint           Runs pylint"
+	@echo " make qlint            Quiet linting: black, isort, pylint, flake8 and mypy"
 	@echo " make update           Updates dependencies"
