@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Union
 
 import argh
+import pdf2image
 import pdfbox
 
 from courier.config import CourierConfig
@@ -11,20 +12,13 @@ from courier.utils import get_filenames
 CONFIG = CourierConfig()
 
 
-# FIXME: use python modeule instead of OS commands
-def get_number_of_pages(filename: Union[str, os.PathLike]) -> int:
-    cmd = f"pdfinfo {filename} | grep 'Pages' | awk '{{print $2}}'"
-    num_pages = int(os.popen(cmd).read().strip())
-    return num_pages
-
-
 def extract_text(files: Union[str, os.PathLike], output_folder: Union[str, os.PathLike]) -> None:
 
     Path(output_folder).mkdir(exist_ok=True)
     p = pdfbox.PDFBox()
 
     for filename in get_filenames(files):
-        num_pages = get_number_of_pages(filename)
+        num_pages = pdf2image.pdfinfo_from_path(filename)["Pages"]
         for page in range(1, num_pages + 1):
             output_filename = Path(output_folder) / f"{Path(filename).stem}_{page:04}.txt"
             p.extract_text(filename, output_path=output_filename, start_page=page, end_page=page, console=False)
