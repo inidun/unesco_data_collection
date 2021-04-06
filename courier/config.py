@@ -32,6 +32,7 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     test_output_dir: Path = project_root / "tests/output"
 
     # Metadata
+    # FIXME: change to csv
     double_pages_file: Path = project_root / "data/courier/double_pages/double_pages.txt"
     exclusions_file: Path = project_root / "data/courier/double_pages/exclude.txt"
     overlapping_pages: Path = project_root / "data/courier/overlapping_pages.csv"
@@ -41,8 +42,8 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     default_template: str = "article.xml.jinja"
     invalid_chars: re.Pattern = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
 
-    # TODO: Move to courier metadata (Make metadate class)
-    # FIXME: Don't use property
+    # FIXME: Remove. Don't use property
+    # FIXME: Use get_double_pages() from utils
     @property
     def double_pages(self) -> dict:
         with open(self.exclusions_file, newline='') as fp:

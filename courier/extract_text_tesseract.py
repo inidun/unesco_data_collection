@@ -16,6 +16,7 @@ DPI = 300
 FMT = "tiff"
 
 
+# TODO: log, log settings
 def extract_text(
     files: Union[str, os.PathLike],
     output_folder: Union[str, os.PathLike],
@@ -36,6 +37,10 @@ def extract_text(
             with open(text_filename, "w") as fp:
                 fp.write(pytesseract.image_to_string(image, lang="eng"))
 
+
+# TODO: get_page(file: Union[str, os.PathLike], page_number: int) -> str
+
+# TODO: get_pages(file: Union[str, os.PathLike], pages: list) -> str
 
 if __name__ == "__main__":
     argh.dispatch_command(extract_text)

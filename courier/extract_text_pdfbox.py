@@ -12,6 +12,7 @@ from courier.utils import get_filenames
 CONFIG = CourierConfig()
 
 
+# TOOD: log
 def extract_text(files: Union[str, os.PathLike], output_folder: Union[str, os.PathLike]) -> None:
 
     Path(output_folder).mkdir(exist_ok=True)
@@ -24,6 +25,12 @@ def extract_text(files: Union[str, os.PathLike], output_folder: Union[str, os.Pa
             p.extract_text(filename, output_path=output_filename, start_page=page, end_page=page, console=False)
         print(f" {os.path.basename(filename)} {num_pages}")
 
+
+# TODO: get_page(file: Union[str, os.PathLike], page_number: int) -> str
+# Use tempdir/tempfile
+
+# TODO: get_pages(file: Union[str, os.PathLike], pages: list) -> str
+# Use tempdir
 
 if __name__ == "__main__":
     argh.dispatch_command(extract_text)
