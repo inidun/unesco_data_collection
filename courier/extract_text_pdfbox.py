@@ -12,7 +12,7 @@ from courier.utils import get_filenames
 CONFIG = CourierConfig()
 
 
-# TOOD: log
+# TODO: log
 def extract_text(files: Union[str, os.PathLike], output_folder: Union[str, os.PathLike]) -> None:
 
     Path(output_folder).mkdir(exist_ok=True)
