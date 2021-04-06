@@ -1,21 +1,11 @@
-import os
-import tempfile
 from pathlib import Path
 
+import pytest
+
 from courier.config import CourierConfig
+from courier.utils import flatten
 
 config = CourierConfig()
-
-
-def test_tempfile():
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        with open(os.path.join(tmpdirname, "tempfile"), "w") as fp:
-            fp.write("bleh")
-            assert os.path.isfile(os.path.join(tmpdirname, "tempfile"))
-        assert os.path.isdir(tmpdirname)
-        # print(os.listdir(tmpdirname))
-
-    assert not os.path.isdir(tmpdirname)
 
 
 def test_config_paths_exists():
@@ -33,6 +23,15 @@ def test_config_paths_exists():
     assert Path(config.overlapping_pages).exists()
 
 
-def test_config_double_pages_returns_dict():
+def test_utils_flatten_returns_expected_values():
+    assert flatten([[1, 2, 3], (4, 5, 6), [7, 8]]) == [1, 2, 3, 4, 5, 6, 7, 8]
+    assert flatten((('a', 'b'), [1, 2])) == ['a', 'b', 1, 2]
+
+
+@pytest.mark.skip(reason="Deprecated")
+def test_config_double_pages_returns_correct_pages():
     assert isinstance(config.double_pages, dict)
     assert config.double_pages.get("061468", []) == [10, 17]
+    assert config.double_pages.get("069916", []) == [10, 11, 24]
+    assert config.double_pages.get("064331", []) == [18]
+    assert config.double_pages.get("0", []) == []
