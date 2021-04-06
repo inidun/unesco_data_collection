@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pytest
-
 from courier.config import CourierConfig
 from courier.utils import flatten
 
@@ -28,10 +26,10 @@ def test_utils_flatten_returns_expected_values():
     assert flatten((('a', 'b'), [1, 2])) == ['a', 'b', 1, 2]
 
 
-@pytest.mark.skip(reason="Deprecated")
 def test_config_double_pages_returns_correct_pages():
     assert isinstance(config.double_pages, dict)
-    assert config.double_pages.get("061468", []) == [10, 17]
-    assert config.double_pages.get("069916", []) == [10, 11, 24]
-    assert config.double_pages.get("064331", []) == [18]
-    assert config.double_pages.get("0", []) == []
+    assert config.double_pages.get('110425', []) == []  # excluded
+    assert config.double_pages.get('061468', []) == [10, 17]
+    assert config.double_pages.get('069916', []) == [10, 11, 24]
+    assert config.double_pages.get('064331', []) == [18]
+    assert config.double_pages.get('0', []) == []

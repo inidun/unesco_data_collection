@@ -30,6 +30,18 @@ def test_create_courier_issue():
     assert issue.double_pages == [10, 17]
 
 
+def test_courier_issues_has_correct_double_pages():
+    issue_1 = CourierIssue('061468')
+    issue_2 = CourierIssue('069916')
+    issue_3_no_doubles = CourierIssue('125736')
+    issue_4_excluded = CourierIssue('110425')
+
+    assert issue_1.double_pages == [10, 17]
+    assert issue_2.double_pages == [10, 11, 24]
+    assert issue_3_no_doubles.double_pages == []
+    assert issue_4_excluded.double_pages == []
+
+
 def test_extract_article_as_xml():
     courier_issue = CourierIssue("061468")
     with TemporaryDirectory() as output_dir:
@@ -37,7 +49,7 @@ def test_extract_article_as_xml():
         assert (Path(output_dir) / "xml/061468_01_61469.xml").exists()
 
 
-# Mock issue
+# TODO: Mock issue
 def test_extract_article_as_txt():
     courier_issue = CourierIssue("061468")
     with TemporaryDirectory() as output_dir:
@@ -93,20 +105,3 @@ def test_create_regexp():
 @pytest.mark.skip(reason="Not implemented")
 def test_missing_articles_are_from_missing_issues():
     pass
-
-
-# def test_extract():
-
-#     article_index = create_article_index("./data/courier/UNESCO_Courier_metadata.csv")
-#     issue_index = article_index.loc[article_index["courier_id"] == "012656"]
-#     issue = untangle.parse("./data/courier/xml/012656engo.xml")
-#     double_pages = read_double_pages("./data/courier/double_pages/double_pages.txt")
-
-#     courier_issue = CourierIssue(issue_index, issue, double_pages.get("012656", []))
-
-#     for article in courier_issue.articles:
-#         for page in article.pages:
-#             assert page is not None
-
-#     assert courier_issue is not None
-#     assert page is not None

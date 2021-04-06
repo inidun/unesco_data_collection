@@ -47,6 +47,6 @@ def get_double_pages(courier_id: str) -> list:
 
     with open(CourierConfig.project_root / "data/courier/double_pages/double_pages.csv", "r") as fp:
         reader = csv.reader(fp, delimiter=';')
-        pages = [x[1].split() for x in reader if courier_id in x]
+        pages = [list(map(int, line[1].split())) for line in reader if courier_id in line]
 
     return flatten(pages)

@@ -7,6 +7,7 @@ from typing import Iterator, List, Tuple, Union
 import untangle
 
 from courier.config import CourierConfig
+from courier.utils import get_double_pages
 
 CONFIG = CourierConfig()
 
@@ -64,9 +65,7 @@ class CourierIssue:
     def __init__(self, courier_id: str):
         self.issue_index = CONFIG.article_index.loc[CONFIG.article_index["courier_id"] == courier_id]
         self.issue = read_xml(list(CONFIG.pdfbox_xml_dir.glob(f'{courier_id}*.xml'))[0])
-
-        # FIXME: Use get_double_pages() from utils
-        self.double_pages = CONFIG.double_pages.get(courier_id, [])
+        self.double_pages = get_double_pages(courier_id)
 
     @property
     def articles(self) -> Iterator[Article]:
