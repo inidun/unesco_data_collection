@@ -23,7 +23,6 @@ def extract_text(files: Union[str, os.PathLike], output_folder: Union[str, os.Pa
         for page in range(1, num_pages + 1):
             output_filename = Path(output_folder) / f"{Path(filename).stem}_{page:04}.txt"
             p.extract_text(filename, output_path=output_filename, start_page=page, end_page=page, console=False)
-        print(f" {os.path.basename(filename)} {num_pages}")
 
 
 # TODO: get_page(file: Union[str, os.PathLike], page_number: int) -> str
