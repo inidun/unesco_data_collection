@@ -1,3 +1,5 @@
+import csv
+
 import pandas as pd
 
 from courier.config import CourierConfig
@@ -16,15 +18,15 @@ def get_overlapping_pages(article_index: pd.DataFrame) -> pd.DataFrame:
 
 
 def save_overlapping_pages(overlap_df: pd.DataFrame) -> None:
-    overlap_df.to_csv(CONFIG.overlapping_pages, sep="\t", index=False)
+    overlap_df.to_csv(CONFIG.overlapping_pages, sep="\t", index=False, quoting=csv.QUOTE_NONNUMERIC)
 
 
-def create_copy_script(overlap_df: pd.DataFrame) -> None:
-    overlap_df["copy"] = overlap_df.apply(
-        lambda x: f'cp {int(x["courier_id"]):06}eng*_{x["page"]:04}.txt ./tmp', axis=1
+def create_copy_script(overlap_df: pd.DataFrame, output_folder: str = './tmp') -> None:
+    overlap_df["#!/bin/bash"] = overlap_df.apply(
+        lambda x: f'cp {int(x["courier_id"]):06}eng*_{x["page"]:04}.txt {output_folder}', axis=1
     )
-    d = overlap_df["copy"]
-    d.to_csv("copy.sh", index=False)
+    d = overlap_df["#!/bin/bash"]
+    d.to_csv(CONFIG.project_root / 'courier/scripts/copy_overlapping_pages.sh', index=False, header='#!/bin/bash')
 
 
 # MISSING - Becasuse pdf-sources are missing
