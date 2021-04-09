@@ -17,7 +17,7 @@ def expand_article_pages(page_ref: str) -> List[int]:
             + [[int(x)] for x in page_ref if '-' not in x]
         )
     )
-    return list(ix)
+    return sorted(list(ix))
 
 
 def extract_courier_id(eng_host_item: str) -> Optional[str]:
