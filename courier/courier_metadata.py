@@ -6,18 +6,11 @@ from typing import List, Optional, Union
 import pandas as pd
 
 
-def expand_article_pages(page_ref: str) -> List[int]:
-    """['p. D-D', 'p. D', 'p. D, D ', 'p. D, D-D ', 'p.D-D', 'p.D',
-    'p. D-D, D ', 'page D', 'p., D-D', 'p. D-D, D-D ']"""
-
-    page_ref = re.sub(r"^(p\.\,?|pages?)", "", page_ref).replace(" ", "").split(",")
-    ix = itertools.chain(
-        *(
-            [list(range(int(x), int(y) + 1)) for x, y in [w.split('-') for w in page_ref if '-' in w]]
-            + [[int(x)] for x in page_ref if '-' not in x]
-        )
-    )
-    return sorted(list(ix))
+def extract_english_host_item(host_item: str) -> Optional[str]:
+    items = [x for x in host_item.split("|") if x.endswith("eng")]
+    if len(items) == 0:
+        return None
+    return items[0]
 
 
 def extract_courier_id(eng_host_item: str) -> Optional[str]:
@@ -31,11 +24,18 @@ def extract_courier_id(eng_host_item: str) -> Optional[str]:
     return courier_id
 
 
-def extract_english_host_item(host_item: str) -> Optional[str]:
-    items = [x for x in host_item.split("|") if x.endswith("eng")]
-    if len(items) == 0:
-        return None
-    return items[0]
+def expand_article_pages(page_ref: str) -> List[int]:
+    """['p. D-D', 'p. D', 'p. D, D ', 'p. D, D-D ', 'p.D-D', 'p.D',
+    'p. D-D, D ', 'page D', 'p., D-D', 'p. D-D, D-D ']"""
+
+    page_ref = re.sub(r"^(p\.\,?|pages?)", "", page_ref).replace(" ", "").split(",")
+    ix = itertools.chain(
+        *(
+            [list(range(int(x), int(y) + 1)) for x, y in [w.split('-') for w in page_ref if '-' in w]]
+            + [[int(x)] for x in page_ref if '-' not in x]
+        )
+    )
+    return sorted(list(ix))
 
 
 def create_article_index(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
