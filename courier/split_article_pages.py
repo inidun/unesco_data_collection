@@ -5,11 +5,11 @@ import re
 
 import pandas as pd
 
-from courier.config import CourierConfig
+from courier.config import get_config
 from courier.metadata import get_article_index_from_file
 from courier.overlap_check import get_overlapping_pages
 
-CONFIG = CourierConfig()
+CONFIG = get_config()
 
 
 def create_regexp(title_string: str) -> str:

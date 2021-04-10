@@ -1,7 +1,7 @@
-from courier.config import CourierConfig
+from courier.config import get_config
 from courier.utils import flatten
 
-config = CourierConfig()
+CONFIG = get_config()
 
 
 def test_utils_flatten_returns_expected_values():

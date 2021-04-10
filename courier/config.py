@@ -5,8 +5,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
+from loguru import logger
 
 from courier.metadata import get_article_index_from_file
+
+_config = None
 
 
 def get_project_root() -> Path:
@@ -52,3 +55,13 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
             filtered_data = [line for line in reader if all(e not in line for e in exclusions)]
             pages = {line[0]: list(map(int, line[1].split())) for line in filtered_data}
         return pages
+
+
+def get_config() -> CourierConfig:
+    global _config
+    if _config is not None:
+        logger.debug('Config already loaded.')
+    if _config is None:
+        logger.debug('Loading config.')
+        _config = CourierConfig()
+    return _config

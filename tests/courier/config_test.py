@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from courier.config import CourierConfig
+from courier.config import get_config
 
-config = CourierConfig()
+config = get_config()
 
 
 def test_config_paths_exists():

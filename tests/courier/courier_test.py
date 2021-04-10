@@ -4,11 +4,11 @@ from tempfile import TemporaryDirectory
 import pytest
 import untangle
 
-from courier.config import CourierConfig
+from courier.config import get_config
 from courier.elements import CourierIssue, read_xml
 from courier.extract_articles import extract_articles_from_issue
 
-CONFIG = CourierConfig()
+CONFIG = get_config()
 
 
 def test_pdfbox_xml_dir_contains_all_files():

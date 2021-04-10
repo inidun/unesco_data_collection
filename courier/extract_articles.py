@@ -4,10 +4,10 @@ from typing import Union
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 
-from courier.config import CourierConfig
+from courier.config import get_config
 from courier.elements import CourierIssue
 
-CONFIG = CourierConfig()
+CONFIG = get_config()
 
 
 jinja_env = Environment(

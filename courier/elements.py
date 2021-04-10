@@ -6,10 +6,10 @@ from typing import Iterator, List, Tuple, Union
 
 import untangle
 
-from courier.config import CourierConfig
+from courier.config import get_config
 from courier.utils import get_double_pages
 
-CONFIG = CourierConfig()
+CONFIG = get_config()
 
 
 def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:

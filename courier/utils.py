@@ -8,7 +8,9 @@ from typing import Any, Dict, Iterable, List, Union
 
 import pdf2image
 
-from courier.config import CourierConfig
+from courier.config import get_config
+
+CONFIG = get_config()
 
 
 def flatten(list_of_list: Iterable[Iterable[Any]]) -> List[Any]:
@@ -27,7 +29,7 @@ def get_filenames(files: Union[str, os.PathLike]) -> List[Path]:
 
 def get_stats() -> Dict[str, int]:
     tot_pages = []
-    for file in Path(CourierConfig.pdf_dir).glob('*.pdf'):
+    for file in Path(CONFIG.pdf_dir).glob('*.pdf'):
         tot_pages.append(pdf2image.pdfinfo_from_path(file)["Pages"])
     return {
         "files": len(tot_pages),
@@ -39,13 +41,13 @@ def get_stats() -> Dict[str, int]:
 
 def get_double_pages(courier_id: str) -> list:
 
-    with open(CourierConfig.exclusions_file, newline='') as fp:
+    with open(CONFIG.exclusions_file, newline='') as fp:
         reader = csv.reader(fp, delimiter=';')
         exclusions = [line[0] for line in reader]
     if courier_id in exclusions:
         return []
 
-    with open(CourierConfig.project_root / "data/courier/double_pages/double_pages.csv", "r") as fp:
+    with open(CONFIG.double_pages_file, "r") as fp:
         reader = csv.reader(fp, delimiter=';')
         pages = [list(map(int, line[1].split())) for line in reader if courier_id in line]
 

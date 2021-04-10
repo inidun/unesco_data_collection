@@ -2,9 +2,9 @@ import csv
 
 import pandas as pd
 
-from courier.config import CourierConfig
+from courier.config import get_config
 
-CONFIG = CourierConfig()
+CONFIG = get_config()
 
 
 def get_overlapping_pages(article_index: pd.DataFrame) -> pd.DataFrame:

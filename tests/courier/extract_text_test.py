@@ -4,11 +4,11 @@ from tempfile import TemporaryDirectory
 
 import pdfbox
 
-from courier.config import CourierConfig
+from courier.config import get_config
 from courier.extract_text_pdfbox import extract_text as extract_text_pdfbox
 from courier.extract_text_tesseract import extract_text as extract_text_tesseract
 
-CONFIG = CourierConfig()
+CONFIG = get_config()
 
 
 # Test if python-pdfbox works
