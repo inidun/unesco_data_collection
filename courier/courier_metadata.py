@@ -10,18 +10,20 @@ def extract_english_host_item(host_item: str) -> Optional[str]:
     items = [x for x in host_item.split("|") if x.endswith("eng")]
     if len(items) == 0:
         return None
+    if len(items) > 1:
+        raise ValueError(f'Ambiguity: Input has duplicate titles. {items}')
     return items[0]
 
 
 def extract_courier_id(eng_host_item: str) -> Optional[str]:
     m = re.match(r".*\s(\d+)(\seng$)", eng_host_item)
     if not m:
-        print(eng_host_item)
+        print(f'No match found for "{eng_host_item}"')
         return None
-    courier_id = m.group(1)  # .replace(' ', '')
-    if len(courier_id) < 6:
-        courier_id = "0" + courier_id
-    return courier_id
+    courier_id = m.group(1)
+    if len(courier_id) > 6:
+        raise ValueError(f'ID too long: {courier_id}. Must be <= 6')
+    return courier_id.zfill(6)
 
 
 def expand_article_pages(page_ref: str) -> List[int]:
@@ -79,13 +81,6 @@ def create_article_index(filename: Union[str, bytes, os.PathLike]) -> pd.DataFra
         [
             "record_number",
             "catalogue_title",
-            # 'authors',
-            # 'titles_in_other_languages',
-            # 'languages',
-            # 'series',
-            # 'catalogue_subjects',
-            # 'document_type',
-            # 'host_item',
             "eng_host_item",
             "courier_id",
             "year",
