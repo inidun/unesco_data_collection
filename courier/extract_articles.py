@@ -1,9 +1,7 @@
 import glob
 import os
-import re
-from typing import List, Union
+from typing import Union
 
-import pandas as pd
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from courier.config import CourierConfig
@@ -69,50 +67,6 @@ def extract_articles(
             print(filename[0], e)
 
     print("Missing courier_ids: ", *missing)
-
-
-# FIXME: Move to `split_article_pages.py`
-def create_regexp(title: str) -> str:
-    tokens = re.findall("[a-zåäö]+", title.lower())
-    expr = "[^a-zåäö]+".join(tokens)
-    return expr[1:]
-
-
-# FIXME: Remove or move to `split_article_pages.py`
-def find_article_titles(folder: str) -> List:
-
-    items = []
-    for courier_id in CONFIG.article_index["courier_id"].unique():
-        filename_pattern = os.path.join(folder, f"{courier_id}eng*.xml")
-        filename = glob.glob(filename_pattern)
-
-        if len(filename) == 0:
-            print(f"no match for {courier_id}")
-            continue
-        if len(filename) > 1:
-            print(f"Duplicate matches for: {courier_id}")
-            continue
-
-        courier_issue = CourierIssue(courier_id)
-
-        for article in courier_issue.articles:
-            try:
-                expr = create_regexp(article.title)
-                page_numbers = courier_issue.find_pattern(expr)
-                items.append(
-                    {
-                        "title": article.title,
-                        "courier_id": article.courier_id,
-                        "record_number": article.record_number,
-                        "page_numbers": page_numbers,
-                    }
-                )
-            except Exception as e:
-                print(filename[0], e)
-
-    df = pd.DataFrame(items)
-    df.to_csv("../courier/data/article_titles.csv", sep="\t")
-    return items
 
 
 def main() -> None:
