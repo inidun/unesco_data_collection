@@ -1,7 +1,6 @@
 import pytest
 
-# from courier.courier_metadata import create_article_index, extract_courier_id, expand_article_pages, create_article_index
-import courier.courier_metadata as metadata
+import courier.metadata as metadata
 
 
 @pytest.mark.parametrize(

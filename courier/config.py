@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from courier.courier_metadata import get_article_index_from_file
+from courier.metadata import get_article_index_from_file
 
 
 def get_project_root() -> Path:
