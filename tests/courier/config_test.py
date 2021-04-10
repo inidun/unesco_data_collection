@@ -24,14 +24,14 @@ def test_config_paths_exists():
 
 
 def test_double_pages_returns_correct_for_issues_with_double_pages():
+    assert isinstance(config.double_pages, dict)
     assert config.double_pages.get('061468', []) == [10, 17]
     assert config.double_pages.get('069916', []) == [10, 11, 24]
     assert config.double_pages.get('064331', []) == [18]
 
 
 def test_double_pages_returns_empty_list_for_excluded_issue():
-    assert isinstance(config.double_pages, dict)
-    assert config.double_pages.get('110425', []) == []  # in excluded files
+    assert config.double_pages.get('110425', []) == []
 
 
 def test_double_pages_returns_empty_list_for_non_existing_issue():
