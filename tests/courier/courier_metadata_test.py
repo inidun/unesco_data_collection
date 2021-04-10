@@ -13,13 +13,13 @@ import courier.courier_metadata as metadata
     ],
 )
 def test_extract_english_host_item_returns_expected_values(test_input_host_item, expected):
-    result = metadata.extract_english_host_item(test_input_host_item)
+    result = metadata.get_english_host_item(test_input_host_item)
     assert result == expected
 
 
 def test_extract_english_host_with_multiple_valid_host_items_raises_value_error():
     with pytest.raises(ValueError, match="duplicate.*'First eng', 'Second eng'"):
-        metadata.extract_english_host_item("First eng|Second eng")
+        metadata.get_english_host_item("First eng|Second eng")
 
 
 @pytest.mark.parametrize(
@@ -31,14 +31,14 @@ def test_extract_english_host_with_multiple_valid_host_items_raises_value_error(
     ],
 )
 def test_extract_courier_id(test_input_eng_host_item, expected):
-    result = metadata.extract_courier_id(test_input_eng_host_item)
+    result = metadata.get_courier_id(test_input_eng_host_item)
     assert result == expected
     assert len(result) == 6
 
 
 def test_extract_courier_id_with_invalid_input_raises_value_error():
     with pytest.raises(ValueError):  # , match="must be <= 6"):
-        metadata.extract_courier_id('Title 1234567 eng')
+        metadata.get_courier_id('Title 1234567 eng')
 
 
 @pytest.mark.parametrize(
@@ -57,7 +57,7 @@ def test_extract_courier_id_with_invalid_input_raises_value_error():
     ],
 )
 def test_expand_article_pages(test_input_page_refs, expected):
-    result = metadata.expand_article_pages(test_input_page_refs)
+    result = metadata.get_expanded_article_pages(test_input_page_refs)
     assert result == expected
 
 

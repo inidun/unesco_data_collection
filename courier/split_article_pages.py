@@ -6,7 +6,7 @@ import re
 import pandas as pd
 
 from courier.config import CourierConfig
-from courier.courier_metadata import create_article_index
+from courier.courier_metadata import get_article_index_from_file
 from courier.overlap_check import get_overlapping_pages
 
 CONFIG = CourierConfig()
@@ -20,7 +20,7 @@ def create_regexp(title_string: str) -> str:
 
 # FIXME: Encapsulate in function, otherwise import and testing is slow
 # FIXME: Get article index from config!!
-article_index = create_article_index(CONFIG.courier_metadata)
+article_index = get_article_index_from_file(CONFIG.courier_metadata)
 double_pages = CONFIG.double_pages
 
 df_overlap = get_overlapping_pages(article_index)

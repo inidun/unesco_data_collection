@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from courier.courier_metadata import create_article_index
+from courier.courier_metadata import get_article_index_from_file
 
 
 def get_project_root() -> Path:
@@ -37,7 +37,7 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     exclusions_file: Path = project_root / "data/courier/double_pages/exclude_double_pages.csv"
     overlapping_pages: Path = project_root / "data/courier/overlapping_pages.csv"
     courier_metadata: Path = project_root / "data/courier/UNESCO_Courier_metadata.csv"
-    article_index: pd.DataFrame = create_article_index(courier_metadata)
+    article_index: pd.DataFrame = get_article_index_from_file(courier_metadata)
 
     default_template: str = "article.xml.jinja"
     invalid_chars: re.Pattern = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")

@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 import pandas as pd
 
 
-def extract_english_host_item(host_item: str) -> Optional[str]:
+def get_english_host_item(host_item: str) -> Optional[str]:
     items = [x for x in host_item.split("|") if x.endswith("eng")]
     if len(items) == 0:
         return None
@@ -15,7 +15,7 @@ def extract_english_host_item(host_item: str) -> Optional[str]:
     return items[0]
 
 
-def extract_courier_id(eng_host_item: str) -> Optional[str]:
+def get_courier_id(eng_host_item: str) -> Optional[str]:
     m = re.match(r".*\s(\d+)(\seng$)", eng_host_item)
     if not m:
         print(f'No match found for "{eng_host_item}"')
@@ -26,7 +26,7 @@ def extract_courier_id(eng_host_item: str) -> Optional[str]:
     return courier_id.zfill(6)
 
 
-def expand_article_pages(page_ref: str) -> List[int]:
+def get_expanded_article_pages(page_ref: str) -> List[int]:
     """['p. D-D', 'p. D', 'p. D, D ', 'p. D, D-D ', 'p.D-D', 'p.D',
     'p. D-D, D ', 'page D', 'p., D-D', 'p. D-D, D-D ']"""
 
@@ -40,7 +40,7 @@ def expand_article_pages(page_ref: str) -> List[int]:
     return sorted(list(ix))
 
 
-def create_article_index(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
+def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
 
     df = pd.read_csv(filename, sep=";")  # 8313
 
@@ -61,7 +61,7 @@ def create_article_index(filename: Union[str, bytes, os.PathLike]) -> pd.DataFra
     df = df[df["document_type"] == "article"]  # 7639
     df = df[df.languages.str.contains("eng")]  # 7612
 
-    df["eng_host_item"] = df["host_item"].apply(extract_english_host_item)
+    df["eng_host_item"] = df["host_item"].apply(get_english_host_item)
     df = df.copy()
 
     df["page_ref"] = df["eng_host_item"].str.extract(
@@ -71,8 +71,8 @@ def create_article_index(filename: Union[str, bytes, os.PathLike]) -> pd.DataFra
     df.loc[df.record_number == 187812, "page_ref"] = "p. 18-31"
     df.loc[df.record_number == 64927, "page_ref"] = "p. 28-29"
 
-    df["courier_id"] = df.eng_host_item.apply(extract_courier_id)
-    df["pages"] = df.page_ref.apply(expand_article_pages)
+    df["courier_id"] = df.eng_host_item.apply(get_courier_id)
+    df["pages"] = df.page_ref.apply(get_expanded_article_pages)
     df["year"] = df.publication_date.apply(lambda x: int(x[:4]))
 
     df["notes"] = df.notes.fillna("").str.replace("\n", " ")
