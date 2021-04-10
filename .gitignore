@@ -141,9 +141,6 @@ notes/
 *.out
 tests/output/*
 
-data/legal_instrument_corpus.txt/
-src/courier_ocr/data/
 
-data/courier/xml/012656engo_dummy.xml
 data/courier/pdfbox_output
 data/courier/articles
