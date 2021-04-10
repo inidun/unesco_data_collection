@@ -1,20 +1,15 @@
 SHELL := /bin/bash
 SOURCE_FOLDERS=courier tests tmp
 PACKAGE_FOLDER=courier
-PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html tests
-BLACK_ARGS=--line-length 120 --target-version py38 --skip-string-normalization
+BLACK_ARGS=--line-length 120 --target-version py38 --skip-string-normalization -q
+FLAKE8_ARGS=--extend-ignore=BLK100,E303
+MYPY_ARGS=--show-column-numbers --no-error-summary
 ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 38
+PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html tests
 
 tidy: isort black
 
 lint: tidy pylint flake8 mypy
-
-qlint:
-	@poetry run black $(BLACK_ARGS) -q $(SOURCE_FOLDERS)
-	@poetry run isort $(ISORT_ARGS) $(SOURCE_FOLDERS)
-	@poetry run pylint $(SOURCE_FOLDERS)
-	@poetry run flake8 --extend-ignore=BLK100,E303 $(SOURCE_FOLDERS)
-	@poetry run mypy $(SOURCE_FOLDERS)
 
 clean:
 	@rm -rf .coverage coverage.xml htmlcov
@@ -29,22 +24,23 @@ test: clean
 	@rm -rf ./tests/output/*
 
 pylint:
-	@poetry run pylint --version
-	@time poetry run pylint $(SOURCE_FOLDERS)
+	@poetry run pylint --version | grep pylint
+	@poetry run pylint $(SOURCE_FOLDERS)
 
 flake8:
-	@poetry run flake8 --version
+	@poetry run flake8 $(FLAKE8_ARGS) --version
 	@poetry run flake8 $(SOURCE_FOLDERS)
 
 mypy:
 	@poetry run mypy --version
-	@poetry run mypy $(SOURCE_FOLDERS)
+	@poetry run mypy $(MYPY_ARGS) $(SOURCE_FOLDERS)
 
 black: clean
 	@poetry run black --version
 	@poetry run black $(BLACK_ARGS) $(SOURCE_FOLDERS)
 
 isort:
+	@echo isort `poetry run isort --vn`
 	@poetry run isort $(ISORT_ARGS) $(SOURCE_FOLDERS)
 
 tools:
@@ -52,21 +48,15 @@ tools:
 	@pip install poetry --upgrade -q
 	@poetry run pip install --upgrade pip -q
 
-outated:
-	@poetry show -o
-
-update:
-	@poetry update
+# NOTE: tools should not be run while in poetry shell
+# .PHONY: tools
 
 .PHONY: help
 .PHONY: clean
 .PHONY: test
-.PHONY: pylint flake8 mypy lint qlint
-.PHONY: black isort tidy
-.PHONY: outated update
+.PHONY: lint pylint flake8 mypy
+.PHONY: tidy black isort
 
-# NOTE: tools should not be run while in poetry shell
-# .PHONY: tools
 
 help:
 	@echo "Higher level recepies: "
@@ -80,7 +70,4 @@ help:
 	@echo " make flake8           Runs flake8"
 	@echo " make isort            Runs isort"
 	@echo " make mypy             Runs mypy"
-	@echo " make outated          Show outdated dependencies"
 	@echo " make pylint           Runs pylint"
-	@echo " make qlint            Quiet linting: black, isort, pylint, flake8 and mypy"
-	@echo " make update           Updates dependencies"
