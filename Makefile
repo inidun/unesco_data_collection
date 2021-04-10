@@ -5,7 +5,8 @@ BLACK_ARGS=--line-length 120 --target-version py38 --skip-string-normalization -
 FLAKE8_ARGS=--extend-ignore=BLK100,E303
 MYPY_ARGS=--show-column-numbers --no-error-summary
 ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 38
-PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html tests
+#PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html tests
+PYTEST_ARGS=--cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html tests
 
 tidy: isort black
 
