@@ -4,6 +4,7 @@ import re
 from typing import List, Optional, Union
 
 import pandas as pd
+from loguru import logger
 
 
 def get_english_host_item(host_item: str) -> Optional[str]:
@@ -18,7 +19,7 @@ def get_english_host_item(host_item: str) -> Optional[str]:
 def get_courier_id(eng_host_item: str) -> Optional[str]:
     m = re.match(r".*\s(\d+)(\seng$)", eng_host_item)
     if not m:
-        print(f'No match found for "{eng_host_item}"')
+        logger.debug(f'No match found for "{eng_host_item}"')
         return None
     courier_id = m.group(1)
     if len(courier_id) > 6:
