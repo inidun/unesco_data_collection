@@ -38,6 +38,10 @@ def test_get_courier_id_with_missing_id_returns_none():
     assert metadata.get_courier_id('No matching ID eng') is None
 
 
+def test_get_courier_id_with_no_title_returns_none():
+    assert metadata.get_courier_id('123456 eng') is None
+
+
 def test_get_courier_id_with_invalid_id_raises_value_error():
     with pytest.raises(ValueError):  # , match="must be <= 6"):
         metadata.get_courier_id('Title 1234567 eng')
