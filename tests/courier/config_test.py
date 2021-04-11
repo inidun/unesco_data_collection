@@ -1,42 +1,66 @@
+import csv
 from pathlib import Path
+
+import pytest
 
 from courier.config import get_config
 
-config = get_config()
+CONFIG = get_config()
 
 
 def test_config_paths_exists():
-    assert Path(config.base_data_dir).exists()
-    assert Path(config.pdf_dir).exists()
-    assert Path(config.pdfbox_txt_dir).exists()
-    assert Path(config.pdfbox_xml_dir).exists()
-    assert Path(config.tessseract_output_dir).exists()
-    assert Path(config.default_output_dir).exists()
-    assert Path(config.test_files_dir).exists()
+    for attr in dir(CONFIG):
+        if isinstance(path := getattr(CONFIG, attr), Path):
+            assert path.exists()
 
-    assert Path(config.project_root).exists()
-    assert Path(config.test_output_dir).exists()
 
-    assert Path(config.double_pages_file).exists()
-    assert Path(config.overlapping_pages).exists()
-    assert Path(config.exclusions_file).exists()
-    assert Path(config.courier_metadata).exists()
+def test_pdfbox_xml_dir_contains_all_files():
+    assert len(list(CONFIG.pdfbox_xml_dir.glob('*.xml'))) == 664
 
 
 def test_double_pages_returns_correct_for_issues_with_double_pages():
-    assert isinstance(config.double_pages, dict)
-    assert config.double_pages.get('061468', []) == [10, 17]
-    assert config.double_pages.get('069916', []) == [10, 11, 24]
-    assert config.double_pages.get('064331', []) == [18]
+    assert isinstance(CONFIG.double_pages, dict)
+    assert CONFIG.double_pages.get('061468', []) == [10, 17]
+    assert CONFIG.double_pages.get('069916', []) == [10, 11, 24]
+    assert CONFIG.double_pages.get('064331', []) == [18]
 
 
 def test_double_pages_returns_empty_list_for_excluded_issue():
-    assert config.double_pages.get('110425', []) == []
+
+    with open(CONFIG.exclusions_file, newline='') as fp:
+        reader = csv.reader(fp, delimiter=';')
+        exclusions = [line[0] for line in reader]
+
+    assert '110425' in exclusions
+    assert CONFIG.double_pages.get('110425', []) == []
 
 
 def test_double_pages_returns_empty_list_for_non_existing_issue():
-    assert config.double_pages.get('0', []) == []
+    assert CONFIG.double_pages.get('0', []) == []
 
 
 def test_double_pages_returns_default_value_if_set():
-    assert config.double_pages.get('0', [2, 23]) == [2, 23]
+    assert CONFIG.double_pages.get('0', [2, 23]) == [2, 23]
+
+
+def test_double_pages_with_no_default_value_set_returns_expected():
+    assert CONFIG.double_pages.get('061468') == [10, 17]
+    assert CONFIG.double_pages.get("033144") is None
+
+
+double_pages_testdata = [
+    ('064331', [], [18]),
+    ('069916', [], [10, 11, 24]),
+    ('069916', [12], [10, 11, 24]),
+    ('069916', None, [10, 11, 24]),
+    ('110425', [], []),  # issues in exclusions
+    ('000000', [], []),
+    ('000000', [12], [12]),
+    ('000000', None, None),
+]
+
+
+@pytest.mark.parametrize("courier_id,default_value,expected", double_pages_testdata)
+def test_double_pages_returns_expected_values(courier_id, default_value, expected):
+    result = CONFIG.double_pages.get(courier_id, default_value)
+    assert result == expected
