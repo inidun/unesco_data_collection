@@ -2,8 +2,10 @@ import io
 import os
 import re
 import warnings
+from dataclasses import dataclass
 from typing import Iterator, List, Tuple, Union
 
+import pandas as pd
 import untangle
 
 from courier.config import get_config
@@ -21,13 +23,17 @@ def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
         return element
 
 
-class Page:
-    def __init__(self, page_number: int, text: str):
-        self.page_number = page_number
-        self.text = text
+def get_issue_index(courier_id: str) -> pd.DataFrame:
+    return CONFIG.article_index.loc[CONFIG.article_index["courier_id"] == courier_id]
 
-    def __repr__(self) -> str:
-        return repr(self.text)
+
+@dataclass(order=True, frozen=True)
+class Page:
+    page_number: int
+    text: str
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, 'text', str(self.text))
 
 
 class Article:
@@ -61,9 +67,11 @@ class Article:
         return self.article_metadata["publication_date"]
 
 
+# TODO: extract methods
 class CourierIssue:
     def __init__(self, courier_id: str):
-        self.issue_index = CONFIG.article_index.loc[CONFIG.article_index["courier_id"] == courier_id]
+        # self.issue_index = CONFIG.article_index.loc[CONFIG.article_index["courier_id"] == courier_id]
+        self.issue_index = get_issue_index(courier_id)
         self.issue = read_xml(list(CONFIG.pdfbox_xml_dir.glob(f'{courier_id}*.xml'))[0])
         self.double_pages = get_double_pages(courier_id)
 
