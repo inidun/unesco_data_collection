@@ -7,10 +7,7 @@ import pytesseract
 from pdf2image import convert_from_path
 from tqdm import tqdm
 
-from courier.config import get_config
 from courier.utils import get_filenames
-
-CONFIG = get_config()
 
 DPI = 300
 FMT = 'tiff'

@@ -6,10 +6,7 @@ import argh
 import pdf2image
 import pdfbox
 
-from courier.config import get_config
 from courier.utils import get_filenames
-
-CONFIG = get_config()
 
 
 # TODO: log
