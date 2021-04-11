@@ -45,7 +45,7 @@ def test_double_pages_returns_default_value_if_set():
 
 def test_double_pages_with_no_default_value_set_returns_expected():
     assert CONFIG.double_pages.get('061468') == [10, 17]
-    assert CONFIG.double_pages.get("033144") is None
+    assert CONFIG.double_pages.get('033144') is None
 
 
 double_pages_testdata = [
@@ -60,7 +60,7 @@ double_pages_testdata = [
 ]
 
 
-@pytest.mark.parametrize("courier_id,default_value,expected", double_pages_testdata)
+@pytest.mark.parametrize('courier_id,default_value,expected', double_pages_testdata)
 def test_double_pages_returns_expected_values(courier_id, default_value, expected):
     result = CONFIG.double_pages.get(courier_id, default_value)
     assert result == expected

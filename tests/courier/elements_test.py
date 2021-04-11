@@ -43,7 +43,7 @@ def test_create_page(input_pn, input_text, expected_pn, expected_text):
 
 
 def test_create_courier_issue():
-    issue = elements.CourierIssue("061468")
+    issue = elements.CourierIssue('061468')
     assert issue.num_articles == 3
     assert issue.num_pages == 34
     assert issue.double_pages == [10, 17]

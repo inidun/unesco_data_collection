@@ -11,8 +11,8 @@ CONFIG = get_config()
 
 
 jinja_env = Environment(
-    loader=PackageLoader("courier", "templates"),
-    autoescape=select_autoescape(["html", "xml"]),
+    loader=PackageLoader('courier', 'templates'),
+    autoescape=select_autoescape(['html', 'xml']),
     trim_blocks=True,
     lstrip_blocks=True,
 )
@@ -24,16 +24,16 @@ def extract_articles_from_issue(
 
     template_name = template_name or CONFIG.default_template
     template = jinja_env.get_template(template_name)
-    ext = template_name.split(".")[-2]
+    ext = template_name.split('.')[-2]
 
     output_folder = output_folder or CONFIG.default_output_dir
     output_folder = os.path.join(output_folder, ext)
     os.makedirs(output_folder, exist_ok=True)
 
     for i, article in enumerate(courier_issue.articles, 1):
-        # print(f"Processing {article.record_number}")
+        # print(f'Processing {article.record_number}')
         article_text = template.render(article=article)
-        with open(os.path.join(output_folder, f"{article.courier_id}_{i:02}_{article.record_number}.{ext}"), "w") as fp:
+        with open(os.path.join(output_folder, f'{article.courier_id}_{i:02}_{article.record_number}.{ext}'), 'w') as fp:
             fp.write(article_text)
 
 
@@ -43,18 +43,18 @@ def extract_articles(
 
     missing = set()
 
-    for courier_id in CONFIG.article_index["courier_id"].unique():
+    for courier_id in CONFIG.article_index['courier_id'].unique():
 
-        filename_pattern = os.path.join(input_folder, f"{courier_id}eng*.xml")
+        filename_pattern = os.path.join(input_folder, f'{courier_id}eng*.xml')
         filename = glob.glob(filename_pattern)
 
         if len(filename) == 0:
             missing.add(courier_id)
-            print(f"no match for {courier_id}")
+            print(f'no match for {courier_id}')
             continue
 
         if len(filename) > 1:
-            print(f"Duplicate matches for: {courier_id}")
+            print(f'Duplicate matches for: {courier_id}')
             continue
 
         try:
@@ -66,19 +66,19 @@ def extract_articles(
         except Exception as e:
             print(filename[0], e)
 
-    print("Missing courier_ids: ", *missing)
+    print('Missing courier_ids: ', *missing)
 
 
 def main() -> None:
 
     os.makedirs(CONFIG.default_output_dir, exist_ok=True)
-    CONFIG.article_index.to_csv(os.path.join(CONFIG.default_output_dir, "article_index.csv"), sep="\t", index=False)
+    CONFIG.article_index.to_csv(os.path.join(CONFIG.default_output_dir, 'article_index.csv'), sep='\t', index=False)
 
     extract_articles(CONFIG.pdfbox_xml_dir)
 
-    extract_articles(CONFIG.pdfbox_xml_dir, template_name="article.txt.jinja")
-    # find_article_titles("./data/courier/xml")
+    extract_articles(CONFIG.pdfbox_xml_dir, template_name='article.txt.jinja')
+    # find_article_titles('./data/courier/xml')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

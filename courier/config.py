@@ -23,34 +23,34 @@ def get_project_root() -> Path:
 class CourierConfig:  # pylint: disable=too-many-instance-attributes
 
     # Base paths
-    base_data_dir: Path = (Path.home() / "data/courier").resolve()
+    base_data_dir: Path = (Path.home() / 'data/courier').resolve()
     project_root: Path = get_project_root()
 
     # Folders
-    pdf_dir: Path = base_data_dir / "pdf"
-    pdfbox_txt_dir: Path = base_data_dir / "pdfbox/txt"
-    pdfbox_xml_dir: Path = base_data_dir / "pdfbox/xml"
-    tessseract_output_dir: Path = base_data_dir / "tesseract/txt"
-    default_output_dir: Path = base_data_dir / "articles"
-    test_files_dir: Path = base_data_dir / "test_files"
-    test_output_dir: Path = project_root / "tests/output"
+    pdf_dir: Path = base_data_dir / 'pdf'
+    pdfbox_txt_dir: Path = base_data_dir / 'pdfbox/txt'
+    pdfbox_xml_dir: Path = base_data_dir / 'pdfbox/xml'
+    tessseract_output_dir: Path = base_data_dir / 'tesseract/txt'
+    default_output_dir: Path = base_data_dir / 'articles'
+    test_files_dir: Path = base_data_dir / 'test_files'
+    test_output_dir: Path = project_root / 'tests/output'
 
     # Metadata
-    double_pages_file: Path = project_root / "data/courier/double_pages/double_pages.csv"
-    exclusions_file: Path = project_root / "data/courier/double_pages/exclude_double_pages.csv"
-    overlapping_pages: Path = project_root / "data/courier/overlapping_pages.csv"
-    courier_metadata: Path = project_root / "data/courier/UNESCO_Courier_metadata.csv"
+    double_pages_file: Path = project_root / 'data/courier/double_pages/double_pages.csv'
+    exclusions_file: Path = project_root / 'data/courier/double_pages/exclude_double_pages.csv'
+    overlapping_pages: Path = project_root / 'data/courier/overlapping_pages.csv'
+    courier_metadata: Path = project_root / 'data/courier/UNESCO_Courier_metadata.csv'
     article_index: pd.DataFrame = get_article_index_from_file(courier_metadata)
 
-    default_template: str = "article.xml.jinja"
-    invalid_chars: re.Pattern = re.compile("[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]")
+    default_template: str = 'article.xml.jinja'
+    invalid_chars: re.Pattern = re.compile('[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]')
 
     @property
     def double_pages(self) -> dict:
         with open(self.exclusions_file, newline='') as fp:
             reader = csv.reader(fp, delimiter=';')
             exclusions = [line[0] for line in reader]
-        with open(self.double_pages_file, "r") as fp:
+        with open(self.double_pages_file, 'r') as fp:
             reader = csv.reader(fp, delimiter=';')
             filtered_data = [line for line in reader if all(e not in line for e in exclusions)]
             pages = {line[0]: list(map(int, line[1].split())) for line in filtered_data}

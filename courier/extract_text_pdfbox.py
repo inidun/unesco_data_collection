@@ -19,9 +19,9 @@ def extract_text(files: Union[str, os.PathLike], output_folder: Union[str, os.Pa
     p = pdfbox.PDFBox()
 
     for filename in get_filenames(files):
-        num_pages = pdf2image.pdfinfo_from_path(filename)["Pages"]
+        num_pages = pdf2image.pdfinfo_from_path(filename)['Pages']
         for page in range(1, num_pages + 1):
-            output_filename = Path(output_folder) / f"{Path(filename).stem}_{page:04}.txt"
+            output_filename = Path(output_folder) / f'{Path(filename).stem}_{page:04}.txt'
             p.extract_text(filename, output_path=output_filename, start_page=page, end_page=page, console=False)
 
 
@@ -31,5 +31,5 @@ def extract_text(files: Union[str, os.PathLike], output_folder: Union[str, os.Pa
 # TODO: get_pages(file: Union[str, os.PathLike], pages: list) -> str
 # Use tempdir
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     argh.dispatch_command(extract_text)

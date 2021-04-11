@@ -13,7 +13,7 @@ from courier.utils import get_filenames
 CONFIG = get_config()
 
 DPI = 300
-FMT = "tiff"
+FMT = 'tiff'
 
 
 # TODO: log, log settings
@@ -28,19 +28,19 @@ def extract_text(
 
     Path(output_folder).mkdir(exist_ok=True)
 
-    for filename in tqdm(get_filenames(files), desc="Extracting"):
+    for filename in tqdm(get_filenames(files), desc='Extracting'):
         basename = Path(filename).stem
         images = convert_from_path(filename, dpi=dpi, first_page=first_page, last_page=last_page, fmt=fmt)
 
         for i, image in enumerate(images):
-            text_filename = Path(output_folder) / f"{basename}_{i+first_page:04}.txt"
-            with open(text_filename, "w") as fp:
-                fp.write(pytesseract.image_to_string(image, lang="eng"))
+            text_filename = Path(output_folder) / f'{basename}_{i+first_page:04}.txt'
+            with open(text_filename, 'w') as fp:
+                fp.write(pytesseract.image_to_string(image, lang='eng'))
 
 
 # TODO: get_page(file: Union[str, os.PathLike], page_number: int) -> str
 
 # TODO: get_pages(file: Union[str, os.PathLike], pages: list) -> str
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     argh.dispatch_command(extract_text)
