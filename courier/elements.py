@@ -67,10 +67,8 @@ class Article:
         return self.article_metadata["publication_date"]
 
 
-# TODO: extract methods
 class CourierIssue:
     def __init__(self, courier_id: str):
-        # self.issue_index = CONFIG.article_index.loc[CONFIG.article_index["courier_id"] == courier_id]
         self.issue_index = get_issue_index(courier_id)
         self.issue = read_xml(list(CONFIG.pdfbox_xml_dir.glob(f'{courier_id}*.xml'))[0])
         self.double_pages = get_double_pages(courier_id)
