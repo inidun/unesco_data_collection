@@ -24,14 +24,18 @@ def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
 
 
 def get_issue_index(courier_id: str) -> pd.DataFrame:
+    if len(courier_id) != 6:
+        raise ValueError(f'Not a valid courier id "{courier_id}')
+    if courier_id not in CONFIG.article_index.courier_id.values:
+        raise ValueError(f'{courier_id} not in article index')
     return CONFIG.article_index.loc[CONFIG.article_index['courier_id'] == courier_id]
 
 
 def get_issue_content(courier_id: str) -> untangle.Element:
-    # if len(courier_id) != 6:
-    #     raise ValueError(f'Not a valid courier id "{courier_id}')
-    # if courier_id not in CONFIG.article_index.courier_id:
-    #     raise ValueError(f'{courier_id} not in article index')
+    if len(courier_id) != 6:
+        raise ValueError(f'Not a valid courier id "{courier_id}')
+    if courier_id not in CONFIG.article_index.courier_id.values:
+        raise ValueError(f'{courier_id} not in article index')
     return read_xml(list(CONFIG.pdfbox_xml_dir.glob(f'{courier_id}*.xml'))[0])
 
 
@@ -81,11 +85,10 @@ class CourierIssue:
         self.content = get_issue_content(courier_id)
         self.double_pages = get_double_pages(courier_id)
 
-        # FIXME: Add error checking, but tests must be updated
-        # if len(courier_id) != 6:
-        #     raise ValueError(f'Not a valid courier id "{courier_id}')
-        # if courier_id not in CONFIG.article_index.courier_id:
-        #     raise ValueError(f'{courier_id} not in article index')
+        if len(courier_id) != 6:
+            raise ValueError(f'Not a valid courier id "{courier_id}')
+        if courier_id not in CONFIG.article_index.courier_id.values:
+            raise ValueError(f'{courier_id} not in article index')
 
     @property
     def articles(self) -> Iterator[Article]:
