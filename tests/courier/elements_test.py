@@ -1,9 +1,9 @@
+import warnings
 from pathlib import Path
 
 import pytest
 import untangle
 
-# import courier.elements as elements
 from courier.elements import Article, CourierIssue, Page, get_issue_content, get_issue_index, read_xml
 
 # TODO: Mock
@@ -67,7 +67,9 @@ def test_create_page(input_pn, input_text, expected_pn, expected_text):
 
 def test_create_article():
     courier_issue = CourierIssue('061468')
-    index = courier_issue.index.to_dict('record')[0]
+    with warnings.catch_warnings():
+        warnings.simplefilter(action='ignore', category=FutureWarning)
+        index = courier_issue.index.to_dict('record')[0]
     article = Article(index, courier_issue)
     assert article.courier_id == '061468'
     assert article.record_number == '61469'
