@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import pandas as pd
 import pytest
 import untangle
 
@@ -18,15 +17,27 @@ def test_read_xml_removes_control_chars():
 
 
 def test_get_courier_issue_index_return_expected_values():
-    assert isinstance(elements.get_issue_index(''), pd.DataFrame)
     assert len(elements.get_issue_index('061468')) == 3
 
 
-@pytest.mark.skip(reason='Must fix other tests')
+def test_get_courier_issue_index_with_invalid_id_raises_value_error():
+    with pytest.raises(ValueError, match='Not a valid courier id'):
+        elements.get_issue_index('')
+    with pytest.raises(ValueError, match='Not a valid courier id'):
+        elements.get_issue_index('0')
+    with pytest.raises(ValueError, match='not in article index'):
+        elements.get_issue_index('000000')
+
+
+def test_get_issue_content_return_expected_values():
+    courier_issue = elements.CourierIssue('061468')
+    assert isinstance(courier_issue.content, untangle.Element)
+    assert 'MARCH 1964' in courier_issue.content.document.page[2].cdata
+
+
 def test_get_issue_content_with_invalid_id_raises_value_error():
     with pytest.raises(ValueError, match='Not a valid courier id'):
         elements.get_issue_content('0')
-
     with pytest.raises(ValueError, match='not in article index'):
         elements.get_issue_content('000000')
 
@@ -59,21 +70,12 @@ def test_create_courier_issue():
     assert courier_issue.num_pages == 34
     assert courier_issue.double_pages == [10, 17]
 
-    assert 'MARCH 1964' in courier_issue.content.document.page[2].cdata
 
-
-@pytest.mark.skip(reason='Must fix other tests')
-def test_create_non_existing_issue():
-    courier_issue = elements.CourierIssue('100000')
-
-    assert courier_issue.index.empty
-    assert courier_issue.content is None
-
-    # with pytest.raises(ValueError):  # , match='must be <= 6'):
-    #     metadata.get_courier_id('Title 1234567 eng')
-
-    assert courier_issue.double_pages == []
-    assert courier_issue.num_pages == 0  # nope get_issue_content reads someting because of glob...
+def test_create_non_existing_issue_raises_value_error():
+    with pytest.raises(ValueError, match='Not a valid courier id'):
+        elements.get_issue_content('0')
+    with pytest.raises(ValueError, match='not in article index'):
+        elements.CourierIssue('000000')
 
 
 def test_courier_issues_has_correct_double_pages():
@@ -92,7 +94,3 @@ def test_courier_issue_has_correct_index():
     issue_1 = elements.CourierIssue('061468')
     assert not issue_1.index.empty
     assert issue_1.index.size == 24
-
-    issue_2 = elements.CourierIssue('0')
-    assert issue_2.index.empty
-    assert issue_2.index.size == 0
