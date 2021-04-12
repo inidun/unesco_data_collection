@@ -51,34 +51,34 @@ class Page:
 
 
 class Article:
-    def __init__(self, record: dict, courier_issue: 'CourierIssue'):
-        self.article_metadata = record
+    def __init__(self, index: dict, courier_issue: 'CourierIssue'):
+        self.index = index
         self.courier_issue = courier_issue
 
     @property
     def pages(self) -> Iterator[Page]:
-        for page_number in self.article_metadata['pages']:
+        for page_number in self.index['pages']:
             yield self.courier_issue.get_page(page_number)
 
     @property
     def courier_id(self) -> str:
-        return self.article_metadata['courier_id']
+        return self.index['courier_id']
 
     @property
     def record_number(self) -> str:
-        return self.article_metadata['record_number']
+        return str(self.index['record_number'])
 
     @property
     def title(self) -> str:
-        return self.article_metadata['catalogue_title']
+        return self.index['catalogue_title']
 
     @property
     def year(self) -> str:
-        return self.article_metadata['year']
+        return str(self.index['year'])
 
     @property
     def publication_date(self) -> str:
-        return self.article_metadata['publication_date']
+        return self.index['publication_date']
 
 
 class CourierIssue:
