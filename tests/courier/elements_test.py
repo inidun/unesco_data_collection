@@ -73,7 +73,7 @@ def test_create_courier_issue():
 
 def test_create_non_existing_issue_raises_value_error():
     with pytest.raises(ValueError, match='Not a valid courier id'):
-        elements.get_issue_content('0')
+        elements.CourierIssue('0')
     with pytest.raises(ValueError, match='not in article index'):
         elements.CourierIssue('000000')
 
@@ -83,13 +83,14 @@ def test_create_non_existing_issue_raises_value_error():
     [
         ('061468', [10, 17]),
         ('069916', [10, 11, 24]),
-        ('125736', []), # no double pages
-        ('110425', []), # excluded
+        ('125736', []),  # no double pages
+        ('110425', []),  # excluded
     ],
 )
 def test_courier_issues_has_correct_double_pages(courier_id, expected):
     result = elements.CourierIssue(courier_id).double_pages
     assert result == expected
+
 
 def test_courier_issue_has_correct_index():
     issue_1 = elements.CourierIssue('061468')
