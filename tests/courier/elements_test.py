@@ -78,17 +78,18 @@ def test_create_non_existing_issue_raises_value_error():
         elements.CourierIssue('000000')
 
 
-def test_courier_issues_has_correct_double_pages():
-    issue_1 = elements.CourierIssue('061468')
-    issue_2 = elements.CourierIssue('069916')
-    issue_3_no_doubles = elements.CourierIssue('125736')
-    issue_4_excluded = elements.CourierIssue('110425')
-
-    assert issue_1.double_pages == [10, 17]
-    assert issue_2.double_pages == [10, 11, 24]
-    assert issue_3_no_doubles.double_pages == []
-    assert issue_4_excluded.double_pages == []
-
+@pytest.mark.parametrize(
+    'courier_id, expected',
+    [
+        ('061468', [10, 17]),
+        ('069916', [10, 11, 24]),
+        ('125736', []), # no double pages
+        ('110425', []), # excluded
+    ],
+)
+def test_courier_issues_has_correct_double_pages(courier_id, expected):
+    result = elements.CourierIssue(courier_id).double_pages
+    assert result == expected
 
 def test_courier_issue_has_correct_index():
     issue_1 = elements.CourierIssue('061468')
