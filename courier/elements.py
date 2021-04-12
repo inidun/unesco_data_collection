@@ -23,6 +23,7 @@ def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
         return element
 
 
+# FIXME: Unnecessary checks
 def get_issue_index(courier_id: str) -> pd.DataFrame:
     if len(courier_id) != 6:
         raise ValueError(f'Not a valid courier id "{courier_id}')
@@ -31,6 +32,7 @@ def get_issue_index(courier_id: str) -> pd.DataFrame:
     return CONFIG.article_index.loc[CONFIG.article_index['courier_id'] == courier_id]
 
 
+# FIXME: Unnecessary checks
 def get_issue_content(courier_id: str) -> untangle.Element:
     if len(courier_id) != 6:
         raise ValueError(f'Not a valid courier id "{courier_id}')
@@ -81,14 +83,15 @@ class Article:
 
 class CourierIssue:
     def __init__(self, courier_id: str):
-        self.index = get_issue_index(courier_id)
-        self.content = get_issue_content(courier_id)
-        self.double_pages = get_double_pages(courier_id)
 
         if len(courier_id) != 6:
             raise ValueError(f'Not a valid courier id "{courier_id}')
         if courier_id not in CONFIG.article_index.courier_id.values:
             raise ValueError(f'{courier_id} not in article index')
+
+        self.index = get_issue_index(courier_id)
+        self.content = get_issue_content(courier_id)
+        self.double_pages = get_double_pages(courier_id)
 
     @property
     def articles(self) -> Iterator[Article]:
