@@ -21,7 +21,7 @@ def create_regexp(title_string: str) -> str:
 # FIXME: Encapsulate in function, otherwise import and testing is slow
 # FIXME: Get article index from config!!
 article_index = get_article_index_from_file(CONFIG.courier_metadata)
-double_pages = CONFIG.double_pages
+double_pages = CONFIG.double_pages  # get from metadata, remove from config
 
 df_overlap = get_overlapping_pages(article_index)
 
