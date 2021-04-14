@@ -3,14 +3,14 @@ import glob
 import os
 import re
 
-import pandas as pd
-
 from courier.config import get_config
-from courier.metadata import get_article_index_from_file
 from courier.overlap_check import get_overlapping_pages
 
-CONFIG = get_config()
 
+CONFIG = get_config()
+article_index = CONFIG.article_index
+double_pages = CONFIG.double_pages
+df_overlap = get_overlapping_pages(article_index)
 
 def create_regexp(title_string: str) -> str:
     tokens = re.findall('[a-zåäö]+', title_string.lower())
@@ -18,14 +18,8 @@ def create_regexp(title_string: str) -> str:
     return expression[1:]
 
 
-# FIXME: Encapsulate in function, otherwise import and testing is slow
-# FIXME: Get article index from config!!
-article_index = get_article_index_from_file(CONFIG.courier_metadata)
-double_pages = CONFIG.double_pages  # get from metadata, remove from config
-
-df_overlap = get_overlapping_pages(article_index)
-
 found_stats = []
+
 
 for row in df_overlap.to_dict('records'):
 
@@ -74,9 +68,8 @@ for row in df_overlap.to_dict('records'):
 
     found_stats.append(page_stat)
 
-pd.DataFrame(found_stats).to_csv(
-    os.path.join(CONFIG.project_root, 'data/courier/overlap_match_stats.csv'), index=False, sep='\t'
-)
+
+# pd.DataFrame(found_stats).to_csv(os.path.join(CONFIG.base_data_dir, 'overlap_match_stats.csv'), index=False, sep='\t')
 
 # %%
 
