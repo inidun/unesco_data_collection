@@ -20,12 +20,12 @@ Further investigation needed.
 
 **Corpus stats**
 
-    Documents:              671
+    Documents:			671
     Artcles:
-	    in metadata index   8313
-    	 - of type article  7639
-    	 - in english       7612
-    Pages:                  27336
+	in metadata index		8313
+    	 - of type article	7639
+    	 - in english		7612
+    Pages:				27336
 
 **TODO**
 
