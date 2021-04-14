@@ -31,7 +31,7 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     pdfbox_txt_dir: Path = base_data_dir / 'pdfbox/txt'
     pdfbox_xml_dir: Path = base_data_dir / 'pdfbox/xml'
     tessseract_output_dir: Path = base_data_dir / 'tesseract/txt'
-    default_output_dir: Path = base_data_dir / 'articles'
+    article_output_dir: Path = base_data_dir / 'articles'
     test_files_dir: Path = base_data_dir / 'test_files'
     test_output_dir: Path = project_root / 'tests/output'
 
