@@ -43,6 +43,7 @@ def get_expanded_article_pages(page_ref: str) -> List[int]:
 
 def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
 
+    # FIXME: Use usecols
     df = pd.read_csv(filename, sep=';')  # 8313
 
     df.columns = [
