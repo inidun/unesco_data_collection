@@ -2,17 +2,18 @@
 ## Notes
 **PDFBox unable to extract text from:**
 
-    132107engb
+- 132107engb
+- 059709eng (new)
 
-**In index but files missing:**
+**Fix missing files:**
 
-    059709eng no match
-    124785eng no match
-    367693eng no match
-    370032eng no match
-    370977eng no match
-    372603eng no match
-    373788eng no match
+- [x] 059709eng no match (no pdfbox)
+- [x] 124785eng no match
+- [x] 367693eng no match
+- [x] 370032eng no match
+- [x] 370977eng no match
+- [x] 372603eng no match
+- [x] 373788eng no match
 
 **Not double page**
 
