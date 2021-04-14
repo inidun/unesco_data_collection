@@ -44,34 +44,24 @@ __Usage:__
 
 Mismatch in index: Some PDF-files have double pages. This leads to article overlap.
 
-__PDFBox unable to extract text from:__
+__Not correctly OCR:d:__
 
     132107engb
-
-__In index but files missing:__
-
     059709eng
-    124785eng
-    367693eng
-    370032eng
-    370977eng
-    372603eng
-    373788eng
 
 __Current corpus stats:__
 
-	in metadata index   8313
-	 - of type article  7639
-	 - in english       7612
-    Output              7505
-    Missing             107
+    Documents:			671
+    Artcles:
+	in metadata index		8313
+    	 - of type article	7639
+    	 - in english		7612
+    Pages:				27336
 
 __TODO:__
 
-- [ ] Missing pages
 - [ ] Double page exclusions
 - [ ] Article overlap
-- [ ] ...
 
 ## Legal instruments
 
