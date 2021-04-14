@@ -20,7 +20,7 @@ def test_config_paths_exists():
 
 
 def test_pdfbox_xml_dir_contains_all_files():
-    assert len(list(CONFIG.pdfbox_xml_dir.glob('*.xml'))) == 664
+    assert len(list(CONFIG.pdfbox_xml_dir.glob('*.xml'))) == 671
 
 
 double_pages_testdata = [
