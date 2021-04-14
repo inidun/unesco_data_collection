@@ -2,8 +2,8 @@
 ## Notes
 **PDFBox unable to extract text from:**
 
-- 132107engb
-- 059709eng (new)
+    132107engb
+    059709eng
 
 Files are not correctly OCR:d.
 
@@ -11,22 +11,23 @@ Files are not correctly OCR:d.
 
 Following courier issues does not have double pages:
 
-    033144engo.pdf
-    110425engo.pdf (page cropped)
-    074589engo.pdf
+    033144engo
+    110425engo
+    074589engo
+    ...
 
 Further investigation needed.
 
-**Documents**
+**Corpus stats**
 
-	in metadata index   8313
-	 - of type article  7639
-	 - in english       7612
-    Output              7612
-    Missing             0
+    Documents:              671
+    Artcles:
+	    in metadata index   8313
+    	 - of type article  7639
+    	 - in english       7612
+    Pages:                  27336
 
 **TODO**
 
-- [x] Check missing pages
 - [ ] Complete double pages exclusions
 - [ ] Investgate overlapping articles
