@@ -6,11 +6,11 @@ import re
 from courier.config import get_config
 from courier.overlap_check import get_overlapping_pages
 
-
 CONFIG = get_config()
 article_index = CONFIG.article_index
 double_pages = CONFIG.double_pages
 df_overlap = get_overlapping_pages(article_index)
+
 
 def create_regexp(title_string: str) -> str:
     tokens = re.findall('[a-zåäö]+', title_string.lower())
