@@ -13,7 +13,8 @@ jobs=0
 
 [MESSAGES CONTROL]
 
-disable=invalid-name,
+disable=duplicate-code,  # FIXME: temporary
+        invalid-name,
         missing-module-docstring,
         missing-class-docstring,
         missing-function-docstring,
