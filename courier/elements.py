@@ -49,6 +49,9 @@ class Page:
     def __post_init__(self) -> None:
         object.__setattr__(self, 'text', str(self.text))
 
+    def __str__(self) -> str:
+        return self.text
+
 
 class Article:
     def __init__(self, index: dict, courier_issue: 'CourierIssue'):
@@ -107,6 +110,11 @@ class CourierIssue:
     @property
     def num_pages(self) -> int:
         return len(self.content.document.page)
+
+    @property
+    def pages(self) -> Iterator[Page]:
+        for page in range(1, self.num_pages + 1):
+            yield self.get_page(page)
 
     def get_page(self, page_number: int) -> Page:
         page_delta = len([x for x in self.double_pages if x < page_number])

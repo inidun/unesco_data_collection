@@ -65,6 +65,11 @@ def test_create_page(input_pn, input_text, expected_pn, expected_text):
     assert result.text == expected_text
 
 
+def test_page_str_returns_expected():
+    page = Page(page_number=1, text='test string')
+    assert str(page) == 'test string'
+
+
 def test_create_article():
     courier_issue = CourierIssue('061468')
     with warnings.catch_warnings():
@@ -125,3 +130,17 @@ def test_courier_issue_has_correct_index():
 def test_courier_issue_find_pattern_returns_expected_values(courier_id, pattern, expected):
     result = CourierIssue(courier_id).find_pattern(pattern)
     assert result == expected
+
+
+def test_courier_issue_get_page_when_issue_has_double_pages_returns_expected():
+    courier_issue = CourierIssue('069916')
+    assert courier_issue.double_pages == [10, 11, 24]
+    assert courier_issue.get_page(10).text == courier_issue.get_page(11).text == courier_issue.get_page(12).text
+    assert courier_issue.get_page(24).text == courier_issue.get_page(25).text
+
+
+def test_courier_issue_pages_when_issue_has_double_pages_returns_expected():
+    courier_issue = CourierIssue('069916')
+    pages = [p for p in courier_issue.pages]
+    assert len(pages) == courier_issue.num_pages
+    assert pages[8].text != pages[9].text == pages[10].text == pages[11].text != pages[12].text
