@@ -125,6 +125,7 @@ def test_courier_issue_has_correct_index():
         ('061468', 'MARCH 1964', [(1, '1'), (3, '3')]),
         ('061468', r'a.*open.*world', [(1, '1')]),
         ('061468', 'nonmatchingpattern', []),
+        ('074891', 'drought over africa', [(3, '3'), (45, '45'), (67, '67')]),
     ],
 )
 def test_courier_issue_find_pattern_returns_expected_values(courier_id, pattern, expected):
