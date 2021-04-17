@@ -13,18 +13,16 @@ def test_get_stats(monkeypatch):
     assert stats['pages'] == 8
 
 
-def test_get_filenames_only_returns_pdf_files(tmp_path):
-    tempdir = tmp_path / 'files'
-    tempdir.mkdir()
-    pdf_file = tempdir / 'test.pdf'
-    txt_file = tempdir / 'test.txt'
+def test_get_filenames_returns_only_files_with_expected_extension(tmp_path):
+
+    pdf_file = tmp_path / 'test.pdf'
     pdf_file.touch()
+    txt_file = tmp_path / 'test.txt'
     txt_file.touch()
-    assert len(list(tempdir.iterdir())) == 2
-    assert pdf_file in list(tempdir.iterdir())
-    assert txt_file in list(tempdir.iterdir())
-    assert len(get_filenames(tempdir)) == 1
-    assert pdf_file in get_filenames(tempdir)
-    assert txt_file not in get_filenames(tempdir)
+
+    assert pdf_file in get_filenames(tmp_path)
+    assert txt_file not in get_filenames(tmp_path)
+    assert txt_file in get_filenames(tmp_path, 'txt')
+
     assert get_filenames(txt_file) == []
-    assert get_filenames(pdf_file) == [pdf_file]
+    assert get_filenames(pdf_file) == get_filenames(tmp_path) == [pdf_file]
