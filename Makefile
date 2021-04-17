@@ -6,7 +6,7 @@ FLAKE8_ARGS=--extend-ignore=BLK100,E302,E303
 MYPY_ARGS=--show-column-numbers --no-error-summary
 ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 38
 #PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html tests
-PYTEST_ARGS=--cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html tests
+PYTEST_ARGS=--cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html
 
 tidy: isort black
 
@@ -44,7 +44,7 @@ mypy:
 	@poetry run mypy --version
 	@poetry run mypy $(MYPY_ARGS) $(SOURCE_FOLDERS)
 
-black: clean
+black:
 	@poetry run black --version
 	@poetry run black $(BLACK_ARGS) $(SOURCE_FOLDERS)
 
