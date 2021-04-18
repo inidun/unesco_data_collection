@@ -50,30 +50,27 @@ def extract_articles(
 
         if len(filename) == 0:
             missing.add(courier_id)
-            logger.warning(f'no match for {courier_id}')
+            logger.warning(f'No match found for {courier_id}')
             continue
 
         if len(filename) > 1:
-            logger.warning(f'Duplicate matches for: {courier_id}')
+            logger.warning(f'Duplicate matches for: {courier_id}: {", ".join([f.split("/")[-1] for f in filename])}')
             continue
 
-        try:
-            extract_articles_from_issue(
-                courier_issue=CourierIssue(courier_id),
-                template_name=template_name,
-                output_folder=output_folder,
-            )
-        except Exception as e:
-            print(filename[0], e)
+        extract_articles_from_issue(
+            courier_issue=CourierIssue(courier_id), template_name=template_name, output_folder=output_folder
+        )
 
-    if len(missing) != 0:
+    if len(missing) != 0:  # pragma: no cover
         logger.warning('Missing courier_ids: ', *missing)
 
 
 def main() -> None:
 
+    # FIXME: argh
     os.makedirs(CONFIG.article_output_dir, exist_ok=True)
     CONFIG.article_index.to_csv(os.path.join(CONFIG.article_output_dir, 'article_index.csv'), sep='\t', index=False)
+
     extract_articles(CONFIG.pdfbox_xml_dir)
     extract_articles(CONFIG.pdfbox_xml_dir, template_name='article.txt.jinja')
 
