@@ -36,6 +36,10 @@ pylint_diff:
 		poetry run pylint $$delta_files
 	fi
 
+notes:
+	@poetry run pylint --version | grep pylint
+	@poetry run pylint --notes=FIXME,XXX,TODO --disable=all --enable=W0511 -f colorized $(SOURCE_FOLDERS)
+
 flake8:
 	@poetry run flake8 --version
 	@poetry run flake8 $(FLAKE8_ARGS) $(SOURCE_FOLDERS)
@@ -63,7 +67,7 @@ isort:
 .PHONY: help
 .PHONY: clean
 .PHONY: test
-.PHONY: lint pylint flake8 mypy pylint_diff
+.PHONY: lint pylint flake8 mypy pylint_diff notes
 .PHONY: tidy black isort
 
 help:
@@ -78,5 +82,6 @@ help:
 	@echo " make flake8           Runs flake8"
 	@echo " make isort            Runs isort"
 	@echo " make mypy             Runs mypy"
+	@echo " make notes            Runs pylint with notes"
 	@echo " make pylint           Runs pylint"
 	@echo " make pylint_diff      Runs pylint on changed files only"
