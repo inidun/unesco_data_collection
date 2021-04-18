@@ -14,3 +14,4 @@ exclude =
     build
     dist
     .ipynb_checkpoints
+    conftest.py
