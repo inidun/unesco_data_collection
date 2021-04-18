@@ -1,7 +1,12 @@
 from courier.config import get_config
-from courier.utils import get_filenames, get_stats
+from courier.utils import flatten, get_filenames, get_stats
 
 CONFIG = get_config()
+
+
+def test_flatten_returns_expected_values():
+    assert flatten([[1, 2, 3], (4, 5, 6), [7, 8]]) == [1, 2, 3, 4, 5, 6, 7, 8]
+    assert flatten((('a', 'b'), [1, 2])) == ['a', 'b', 1, 2]
 
 
 def test_get_stats(monkeypatch):
