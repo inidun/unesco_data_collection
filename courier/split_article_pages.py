@@ -1,10 +1,14 @@
+import os
 import re
+from pathlib import Path
+from typing import Union
 
 import pandas as pd
 from loguru import logger
 
 from courier.config import get_config
 from courier.elements import CourierIssue
+from courier.overlap_check import get_overlapping_pages
 from courier.utils import corrected_page_number
 
 CONFIG = get_config()
@@ -57,5 +61,21 @@ def get_stats(article_index: pd.DataFrame, overlap: pd.DataFrame) -> pd.DataFram
     return stats
 
 
+def save_stats(
+    output_file: Union[str, os.PathLike] = CONFIG.metadata_dir / 'overlap_stats.csv',
+    sep: str = '\t',
+    save_index: bool = False,
+) -> None:
+
+    output_folder = Path(output_file).parent
+    Path(output_folder).mkdir(exist_ok=True, parents=True)
+
+    stats = get_stats(
+        article_index=CONFIG.article_index,
+        overlap=get_overlapping_pages(CONFIG.article_index),
+    )
+    stats.to_csv(Path(output_file), sep=sep, index=save_index)
+
+
 if __name__ == '__main__':
-    pass
+    save_stats()
