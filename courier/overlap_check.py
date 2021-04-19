@@ -33,3 +33,7 @@ def create_copy_script(overlap_df: pd.DataFrame, copy_folder: str = './tmp') -> 
     )
     d = overlap_df['#!/bin/bash']
     d.to_csv(CONFIG.project_root / 'courier/scripts/copy_overlapping_pages.sh', index=False, header='#!/bin/bash')
+
+
+if __name__ == '__main__':
+    pass

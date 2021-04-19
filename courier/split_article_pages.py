@@ -57,9 +57,5 @@ def get_stats(article_index: pd.DataFrame, overlap: pd.DataFrame) -> pd.DataFram
     return stats
 
 
-def main() -> None:
-    pass
-
-
 if __name__ == '__main__':
-    main()
+    pass

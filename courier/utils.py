@@ -56,3 +56,7 @@ def get_double_pages(courier_id: str) -> list:
 
 def corrected_page_number(courier_id: str, page_number: int) -> int:
     return page_number - len([dpn for dpn in get_double_pages(courier_id) if dpn < page_number])
+
+
+if __name__ == '__main__':
+    pass
