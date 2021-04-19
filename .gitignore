@@ -142,5 +142,4 @@ notes/
 tests/output/*
 
 
-data/courier/pdfbox_output
-data/courier/articles
+data/courier/tmp
