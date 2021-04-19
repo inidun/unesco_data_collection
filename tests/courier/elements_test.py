@@ -80,7 +80,6 @@ def test_create_article():
     assert article.record_number == '61469'
     assert 'Eleven centuries' in article.title
     assert article.year == '1964'
-    assert article.publication_date == '1964'
 
 
 def test_create_courier_issue():
@@ -116,7 +115,7 @@ def test_courier_issues_has_correct_double_pages(courier_id, expected):
 def test_courier_issue_has_correct_index():
     courier_issue = CourierIssue('061468')
     assert not courier_issue.index.empty
-    assert courier_issue.index.size == 24
+    assert courier_issue.index.shape == (3, 5)
 
 
 @pytest.mark.parametrize(

@@ -9,11 +9,12 @@ from courier.overlap_check import get_overlapping_pages, save_overlapping_pages
 CONFIG = get_config()
 
 
-# FIXME: do proper testing
 def test_get_overlapping_pages():
     overlapping_pages = get_overlapping_pages(CONFIG.article_index)
     op2 = pd.read_csv(CONFIG.overlapping_pages, sep='\t')
     assert overlapping_pages.equals(op2)
+    assert overlapping_pages.shape == (1111, 3)
+    assert set(overlapping_pages.columns) == set(['courier_id', 'page', 'count'])
 
 
 def test_save_overlapping_pages():
