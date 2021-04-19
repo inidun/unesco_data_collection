@@ -5,9 +5,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
-from loguru import logger
 
 from courier.metadata import get_article_index_from_file
+
+# from loguru import logger
+
 
 _config = None
 
@@ -63,6 +65,6 @@ def get_config() -> CourierConfig:
     if _config is not None:
         pass  # logger.debug('Config already loaded.')
     if _config is None:
-        logger.debug('Loading config.')
+        # logger.debug('Loading config.')
         _config = CourierConfig()
     return _config
