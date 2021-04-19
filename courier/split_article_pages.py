@@ -1,15 +1,13 @@
-# %%
-import glob
-import os
 import re
 
+import pandas as pd
+from loguru import logger
+
 from courier.config import get_config
-from courier.overlap_check import get_overlapping_pages
+from courier.elements import CourierIssue
+from courier.utils import corrected_page_number
 
 CONFIG = get_config()
-article_index = CONFIG.article_index
-double_pages = CONFIG.double_pages
-df_overlap = get_overlapping_pages(article_index)
 
 
 def create_regexp(title_string: str) -> str:
@@ -18,60 +16,45 @@ def create_regexp(title_string: str) -> str:
     return expression[1:]
 
 
-found_stats = []
+def get_stats(article_index: pd.DataFrame, overlap: pd.DataFrame) -> pd.DataFrame:
 
+    index = article_index[['courier_id', 'catalogue_title', 'pages']]
+    overlap['courier_id'] = overlap.courier_id.apply(lambda x: str(x).zfill(6))
+    found = []
 
-for row in df_overlap.to_dict('records'):
+    for row in overlap.to_dict('records'):
 
-    articles_on_page = article_index[
-        (article_index.courier_id == row['courier_id']) & article_index.pages.apply(lambda x, r=row: r['page'] in x)
-    ]
+        articles_on_page = index[
+            (index.courier_id == row['courier_id']) & index.pages.apply(lambda x, r=row: r['page'] in x)
+        ]
+        articles_on_page = articles_on_page.to_dict('records')
 
-    if row['count'] != len(articles_on_page):
-        print(f'Page count mismatch: {row["courier_id"]}')
+        if row['count'] != len(articles_on_page):
+            logger.warning(f'Page count mismatch: {row["courier_id"]}')
 
-    articles_on_page = articles_on_page.to_dict('records')
+        row_page = corrected_page_number(row['courier_id'], row['page'])
+        text = CourierIssue(row['courier_id']).get_page(row_page).text
 
-    page_delta = len([x for x in double_pages.get(row['courier_id'], []) if x < row['page']])
-    row_page = row['page'] - page_delta
+        page_stat = dict(row)
+        page_stat['page_corr'] = row_page
+        page_stat['found'] = 0
+        page_stat['not_found'] = 0
 
-    page_filename_pattern = f'{int(row["courier_id"]):06}eng*_{row_page:04}.txt'
-    page_filenames = glob.glob(os.path.join(CONFIG.pdfbox_txt_dir, page_filename_pattern))
+        for article_info in articles_on_page:
+            title = article_info['catalogue_title']
+            expr = create_regexp(title)
+            m = re.search(expr, text, re.IGNORECASE)
+            if m:
+                page_stat['found'] += 1
+            else:
+                page_stat['not_found'] += 1
 
-    if len(page_filenames) == 0:
-        print(f'no match for {row["courier_id"]}')
-        continue
-    if len(page_filenames) > 1:
-        print(f'Duplicate matches for: {row["courier_id"]}')
-        continue
+        found.append(page_stat)
 
-    with open(page_filenames[0], 'r') as fp:
-        page_text = fp.read()
+    stats = pd.DataFrame(found)
+    stats = stats[['courier_id', 'page', 'page_corr', 'count', 'found', 'not_found']]
 
-    page_stat = dict(row)
-    page_stat['page_corr'] = row_page
-    page_stat['found'] = 0
-    page_stat['not_found'] = 0
-
-    for article_info in articles_on_page:
-        title = article_info['catalogue_title']
-        expr = create_regexp(title)
-
-        # TODO: More fuzzy, or keyword in context
-        m = re.search(expr, page_text, re.IGNORECASE)
-        if m:
-            # print(f'Found     {title}')
-            page_stat['found'] += 1
-        else:
-            # print(f'Not Found {title}')
-            page_stat['not_found'] += 1
-
-    found_stats.append(page_stat)
-
-
-# pd.DataFrame(found_stats).to_csv(os.path.join(CONFIG.base_data_dir, 'overlap_match_stats.csv'), index=False, sep='\t')
-
-# %%
+    return stats
 
 
 def main() -> None:
@@ -80,5 +63,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-
-# %%
