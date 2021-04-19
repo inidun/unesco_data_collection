@@ -22,7 +22,7 @@ def get_overlapping_pages(article_index: pd.DataFrame) -> pd.DataFrame:
 
 
 def save_overlapping_pages(
-    overlap_df: pd.DataFrame, output_filename: Union[str, bytes, os.PathLike] = CONFIG.overlapping_pages
+    overlap_df: pd.DataFrame, output_filename: Union[str, bytes, os.PathLike] = CONFIG.overlap_file
 ) -> None:
     overlap_df.to_csv(output_filename, sep='\t', index=False, quoting=csv.QUOTE_NONNUMERIC)
 

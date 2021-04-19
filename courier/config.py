@@ -29,8 +29,9 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     project_root: Path = get_project_root()
 
     # Folders
-    metadata_dir: Path = base_data_dir / 'metadata'
     pdf_dir: Path = base_data_dir / 'pdf'
+
+    # FIXME: Change
     pdfbox_txt_dir: Path = base_data_dir / 'pdfbox/txt'
     pdfbox_xml_dir: Path = base_data_dir / 'pdfbox/xml'
     tessseract_output_dir: Path = base_data_dir / 'tesseract/txt'
@@ -39,11 +40,14 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     test_output_dir: Path = project_root / 'tests/output'
 
     # Metadata
-    double_pages_file: Path = project_root / 'data/courier/double_pages/double_pages.csv'
-    exclusions_file: Path = project_root / 'data/courier/double_pages/exclude_double_pages.csv'
-    overlapping_pages: Path = project_root / 'data/courier/overlapping_pages.csv'
-    courier_metadata: Path = project_root / 'data/courier/UNESCO_Courier_metadata.csv'
-    article_index: pd.DataFrame = get_article_index_from_file(courier_metadata)
+    metadata_dir: Path = project_root / 'data/courier/metadata'
+    metadata_file: Path = metadata_dir / 'UNESCO_Courier_metadata.csv'
+    double_pages_file: Path = metadata_dir / 'double_pages/double_pages.csv'
+    exclusions_file: Path = metadata_dir / 'double_pages/double_pages_exclusions.csv'
+    overlap_file: Path = metadata_dir / 'overlap.csv'
+
+
+    article_index: pd.DataFrame = get_article_index_from_file(metadata_file)
 
     default_template: str = 'article.xml.jinja'
     invalid_chars: re.Pattern = re.compile('[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]')

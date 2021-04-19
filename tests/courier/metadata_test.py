@@ -77,7 +77,7 @@ def test_get_expanded_article_pages_returns_exptected_values(test_input_page_ref
 
 
 def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_content():
-    article_index = get_article_index_from_file(CONFIG.courier_metadata)
+    article_index = get_article_index_from_file(CONFIG.metadata_file)
     assert len(article_index) == 7612
     assert article_index.shape == (7612, 5)
 
@@ -93,5 +93,5 @@ def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_c
 
 
 def test_article_index_to_csv(tmp_path):
-    article_index_to_csv(get_article_index_from_file(CONFIG.courier_metadata), tmp_path)
+    article_index_to_csv(get_article_index_from_file(CONFIG.metadata_file), tmp_path)
     assert (tmp_path / 'article_index.csv').exists()
