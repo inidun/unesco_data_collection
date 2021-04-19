@@ -79,10 +79,6 @@ class Article:
     def year(self) -> str:
         return str(self.index['year'])
 
-    @property
-    def publication_date(self) -> str:
-        return self.index['publication_date']
-
 
 class CourierIssue:
     def __init__(self, courier_id: str):
@@ -128,3 +124,7 @@ class CourierIssue:
             if m:
                 page_numbers.append((i, page['number']))
         return page_numbers
+
+
+if __name__ == '__main__':
+    pass
