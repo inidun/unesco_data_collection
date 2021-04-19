@@ -1,7 +1,10 @@
 import glob
 import os
+from pathlib import Path
 from typing import Union
 
+import argh
+import pandas as pd
 from jinja2 import Environment, PackageLoader, select_autoescape
 from loguru import logger
 
@@ -22,34 +25,32 @@ jinja_env = Environment(
 
 def extract_articles_from_issue(
     courier_issue: CourierIssue,
-    template_name: str = None,
-    output_folder: Union[str, os.PathLike] = None,
+    template_name: str = CONFIG.default_template,
+    extract_folder: Union[str, os.PathLike] = CONFIG.article_output_dir,
 ) -> None:
 
-    template_name = template_name or CONFIG.default_template
     template = jinja_env.get_template(template_name)
     ext = template_name.split('.')[-2]
 
-    output_folder = output_folder or CONFIG.article_output_dir
-    output_folder = os.path.join(output_folder, ext)
-    os.makedirs(output_folder, exist_ok=True)
+    extract_folder = Path(extract_folder) / ext
+    Path(extract_folder).mkdir(parents=True, exist_ok=True)
 
     for i, article in enumerate(courier_issue.articles, 1):
         article_text = template.render(article=article)
-        with open(os.path.join(output_folder, f'{article.courier_id}_{i:02}_{article.record_number}.{ext}'), 'w') as fp:
+        with open(Path(extract_folder / f'{article.courier_id}_{i:02}_{article.record_number}.{ext}'), 'w') as fp:
             fp.write(article_text)
 
 
 def extract_articles(
-    input_folder: Union[str, os.PathLike],
-    *,
-    template_name: str = None,
-    output_folder: Union[str, os.PathLike] = None,
+    input_folder: Union[str, os.PathLike] = CONFIG.pdfbox_xml_dir,
+    article_index: pd.DataFrame = CONFIG.article_index,
+    template_name: str = CONFIG.default_template,
+    output_folder: Union[str, os.PathLike] = CONFIG.article_output_dir,
 ) -> None:
 
     missing = set()
 
-    for courier_id in CONFIG.article_index['courier_id'].unique():
+    for courier_id in article_index['courier_id'].unique():
 
         filename_pattern = os.path.join(input_folder, f'{courier_id}eng*.xml')
         filename = glob.glob(filename_pattern)
@@ -64,19 +65,16 @@ def extract_articles(
             continue
 
         extract_articles_from_issue(
-            courier_issue=CourierIssue(courier_id), template_name=template_name, output_folder=output_folder
+            courier_issue=CourierIssue(courier_id),
+            template_name=template_name,
+            extract_folder=output_folder,
         )
 
     if len(missing) != 0:  # pragma: no cover
         logger.warning('Missing courier_ids: ', *missing)
 
-
-def main() -> None:
-
-    article_index_to_csv(CONFIG.article_index, CONFIG.article_output_dir)
-    extract_articles(CONFIG.pdfbox_xml_dir)
-    extract_articles(CONFIG.pdfbox_xml_dir, template_name='article.txt.jinja')
+    article_index_to_csv(article_index, output_folder)
 
 
 if __name__ == '__main__':
-    main()
+    argh.dispatch_command(extract_articles)
