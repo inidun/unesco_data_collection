@@ -65,6 +65,11 @@ pages_pbfbox:
 	@echo Extracting pages
 	@poetry run python courier/pdfbox_extract.py ~/data/courier/pdf/ ~/data/courier/pages/pdfbox 2>/dev/null
 
+pages_tesseract:
+	@echo Extracting pages
+	@poetry run python courier/tesseract_extract.py ~/data/courier/pdf/132107engb.pdf ~/data/courier/pages/tesseract
+
+
 # tools:
 # 	@pip install --upgrade pip -q
 # 	@pip install poetry --upgrade -q
@@ -78,7 +83,7 @@ pages_pbfbox:
 .PHONY: test
 .PHONY: lint pylint flake8 mypy pylint_diff notes
 .PHONY: tidy black isort
-.PHONY: articles pages_pbfbox
+.PHONY: articles pages_pbfbox pages_tesseract
 
 help:
 	@echo "Higher level recepies: "
@@ -99,3 +104,4 @@ help:
 	@echo "Extracting: "
 	@echo " make articles         Extract artcles"
 	@echo " make pages_pbfbox     Extract pages from PDF:s using PDFBox"
+	@echo " make pages_tesseract  Extract pages from PDF:s using Tesseract"
