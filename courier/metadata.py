@@ -44,61 +44,59 @@ def get_expanded_article_pages(page_ref: str) -> List[int]:
 
 def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
 
-    # FIXME: Use usecols
-    df = pd.read_csv(filename, sep=';')  # 8313
+    columns = [
+        'Record number',
+        'Catalogue - Title',
+        'Languages',
+        'Document type',
+        'Host item',
+        'Catalogue - Publication date',
+    ]
+    dtypes = {'Record number': 'uint32', 'Document type': 'category'}
 
-    df.columns = [
+    # Create article index
+    article_index = pd.read_csv(filename, usecols=columns, sep=';', dtype=dtypes, memory_map=True)
+    article_index.columns = [
         'record_number',
         'catalogue_title',
-        'authors',
-        'titles_in_other_languages',
         'languages',
-        'series',
-        'catalogue_subjects',
         'document_type',
         'host_item',
         'publication_date',
-        'notes',
     ]
 
-    df = df[df['document_type'] == 'article']  # 7639
-    df = df[df.languages.str.contains('eng')]  # 7612
+    # Keep only articles in english
+    article_index = article_index[article_index['document_type'] == 'article']
+    article_index = article_index[article_index.languages.str.contains('eng')]
+    article_index.reset_index()
 
-    df['eng_host_item'] = df['host_item'].apply(get_english_host_item)
-    df = df.copy()
+    # From host_item
+    article_index['eng_host_item'] = article_index['host_item'].apply(get_english_host_item)
+    article_index.drop(columns=['document_type', 'languages', 'host_item'], axis=1, inplace=True)
 
-    df['page_ref'] = df['eng_host_item'].str.extract(
-        r'((?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*)(?:\,\s*\d{1,3}(?:-\d{1,3})*\s)*)'
-    )[0]
+    # - get article pages
+    pattern = r'((?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*)(?:\,\s*\d{1,3}(?:-\d{1,3})*\s)*)'
+    article_index['page_ref'] = article_index['eng_host_item'].str.extract(pattern).values
+    article_index.loc[article_index.record_number == 187812, 'page_ref'] = 'p. 18-31'  # Manual fix
+    article_index.loc[article_index.record_number == 64927, 'page_ref'] = 'p. 28-29'  # Manual fix
+    article_index['pages'] = article_index.page_ref.apply(get_expanded_article_pages)
+    article_index.drop(columns=['page_ref'], axis=1, inplace=True)
 
-    df.loc[df.record_number == 187812, 'page_ref'] = 'p. 18-31'
-    df.loc[df.record_number == 64927, 'page_ref'] = 'p. 28-29'
+    # - get courier_id
+    article_index['courier_id'] = article_index.eng_host_item.apply(get_courier_id)
 
-    df['courier_id'] = df.eng_host_item.apply(get_courier_id)
-    df['pages'] = df.page_ref.apply(get_expanded_article_pages)
-    df['year'] = df.publication_date.apply(lambda x: int(x[:4]))
+    # Get year
+    article_index['year'] = article_index.publication_date.apply(lambda x: int(x[:4])).astype('uint16')
 
-    df['notes'] = df.notes.fillna('').str.replace('\n', ' ')
+    # Set index
+    article_index = article_index.set_index(article_index['courier_id'].astype('uint32'))
+    article_index.index.rename('id', inplace=True)
 
-    return df[
-        [
-            'record_number',
-            'catalogue_title',
-            'eng_host_item',
-            'courier_id',
-            'year',
-            'publication_date',
-            'pages',
-            'notes',
-        ]
-    ]
+    return article_index[['courier_id', 'year', 'record_number', 'pages', 'catalogue_title']]
 
 
 def article_index_to_csv(
-    article_index: pd.DataFrame,
-    output_folder: Union[str, os.PathLike],
-    sep: str = '\t',
-    save_index: bool = False,
+    article_index: pd.DataFrame, output_folder: Union[str, os.PathLike], sep: str = '\t', save_index: bool = False
 ) -> None:
     Path(output_folder).mkdir(exist_ok=True)
     article_index.to_csv(Path(output_folder) / 'article_index.csv', sep=sep, index=save_index)

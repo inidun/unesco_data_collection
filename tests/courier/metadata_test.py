@@ -79,17 +79,14 @@ def test_get_expanded_article_pages_returns_exptected_values(test_input_page_ref
 def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_content():
     article_index = get_article_index_from_file(CONFIG.courier_metadata)
     assert len(article_index) == 7612
-    assert article_index.shape == (7612, 8)
+    assert article_index.shape == (7612, 5)
 
     expected_columns = [
         'record_number',
         'catalogue_title',
-        'eng_host_item',
         'courier_id',
         'year',
-        'publication_date',
         'pages',
-        'notes',
     ]
 
     assert set(article_index.columns) == set(expected_columns)
