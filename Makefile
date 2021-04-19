@@ -13,7 +13,7 @@ tidy: isort black
 lint: tidy pylint flake8 mypy
 
 clean:
-	@rm -rf .coverage coverage.xml htmlcov
+	@rm -rf .coverage coverage.xml htmlcov .nox
 	@find . -type d -name '__pycache__' -exec rm -rf {} +
 	@find . -type d -name '*pytest_cache*' -exec rm -rf {} +
 	@find . -type d -name '.mypy_cache' -exec rm -rf {} +
