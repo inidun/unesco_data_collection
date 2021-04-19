@@ -1,6 +1,15 @@
 import pytest
 
-import courier.metadata as metadata
+from courier.config import get_config
+from courier.metadata import (
+    article_index_to_csv,
+    get_article_index_from_file,
+    get_courier_id,
+    get_english_host_item,
+    get_expanded_article_pages,
+)
+
+CONFIG = get_config()
 
 
 @pytest.mark.parametrize(
@@ -12,13 +21,13 @@ import courier.metadata as metadata
     ],
 )
 def test_get_english_host_item_returns_expected_values(test_input_host_item, expected):
-    result = metadata.get_english_host_item(test_input_host_item)
+    result = get_english_host_item(test_input_host_item)
     assert result == expected
 
 
 def test_get_english_host_with_multiple_valid_host_items_raises_value_error():
     with pytest.raises(ValueError, match="duplicate.*'First eng', 'Second eng'"):
-        metadata.get_english_host_item('First eng|Second eng')
+        get_english_host_item('First eng|Second eng')
 
 
 @pytest.mark.parametrize(
@@ -29,22 +38,22 @@ def test_get_english_host_with_multiple_valid_host_items_raises_value_error():
     ],
 )
 def test_get_courier_id_returns_expected_values(test_input_eng_host_item, expected):
-    result = metadata.get_courier_id(test_input_eng_host_item)
+    result = get_courier_id(test_input_eng_host_item)
     assert result == expected
     assert len(result) == 6
 
 
 def test_get_courier_id_with_missing_id_returns_none():
-    assert metadata.get_courier_id('No matching ID eng') is None
+    assert get_courier_id('No matching ID eng') is None
 
 
 def test_get_courier_id_with_no_title_returns_none():
-    assert metadata.get_courier_id('123456 eng') is None
+    assert get_courier_id('123456 eng') is None
 
 
 def test_get_courier_id_with_invalid_id_raises_value_error():
     with pytest.raises(ValueError):  # , match='must be <= 6'):
-        metadata.get_courier_id('Title 1234567 eng')
+        get_courier_id('Title 1234567 eng')
 
 
 @pytest.mark.parametrize(
@@ -63,10 +72,29 @@ def test_get_courier_id_with_invalid_id_raises_value_error():
     ],
 )
 def test_get_expanded_article_pages_returns_exptected_values(test_input_page_refs, expected):
-    result = metadata.get_expanded_article_pages(test_input_page_refs)
+    result = get_expanded_article_pages(test_input_page_refs)
     assert result == expected
 
 
-@pytest.mark.skip(reason='TODO')
-def test_get_article_index():
-    pass
+def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_content():
+    article_index = get_article_index_from_file(CONFIG.courier_metadata)
+    assert len(article_index) == 7612
+    assert article_index.shape == (7612, 8)
+
+    expected_columns = [
+        'record_number',
+        'catalogue_title',
+        'eng_host_item',
+        'courier_id',
+        'year',
+        'publication_date',
+        'pages',
+        'notes',
+    ]
+
+    assert set(article_index.columns) == set(expected_columns)
+
+
+def test_article_index_to_csv(tmp_path):
+    article_index_to_csv(get_article_index_from_file(CONFIG.courier_metadata), tmp_path)
+    assert (tmp_path / 'article_index.csv').exists()

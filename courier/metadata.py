@@ -1,6 +1,7 @@
 import itertools
 import os
 import re
+from pathlib import Path
 from typing import List, Optional, Union
 
 import pandas as pd
@@ -91,3 +92,13 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
             'notes',
         ]
     ]
+
+
+def article_index_to_csv(
+    article_index: pd.DataFrame,
+    output_folder: Union[str, os.PathLike],
+    sep: str = '\t',
+    save_index: bool = False,
+) -> None:
+    Path(output_folder).mkdir(exist_ok=True)
+    article_index.to_csv(Path(output_folder) / 'article_index.csv', sep=sep, index=save_index)
