@@ -15,7 +15,7 @@ def test_all_files_extracted():
     assert len(list(CONFIG.pdf_dir.iterdir())) == stats['files'] == 671
     assert len(list(CONFIG.xml_dir.iterdir())) == stats['files'] == 671
     assert len(list(Path(CONFIG.pages_dir / 'pdfbox').iterdir())) == stats['pages'] == 27336
-    #assert len(list(Path(CONFIG.pages_dir / 'tesseract').iterdir())) == stats['pages'] == 27336
+    # TODO: assert len(list(Path(CONFIG.pages_dir / 'tesseract').iterdir())) == stats['pages'] == 27336
 
 
 def test_all_articles_extracted():
