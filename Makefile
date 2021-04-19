@@ -67,7 +67,7 @@ pages_pbfbox:
 
 pages_tesseract:
 	@echo Extracting pages
-	@poetry run python courier/tesseract_extract.py ~/data/courier/pdf/132107engb.pdf ~/data/courier/pages/tesseract
+	@poetry run python courier/tesseract_extract.py ~/data/courier/pdf/ ~/data/courier/pages/tesseract
 
 
 # tools:
