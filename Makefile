@@ -61,7 +61,9 @@ articles:
 	@poetry run python courier/extract_articles.py
 	@poetry run python courier/extract_articles.py -t 'article.txt.jinja'
 
-.PHONY: articles
+pages_pbfbox:
+	@echo Extracting pages
+	@poetry run python courier/pdfbox_extract.py ~/data/courier/pdf/ ~/data/courier/pages/pdfbox 2>/dev/null
 
 # tools:
 # 	@pip install --upgrade pip -q
@@ -76,6 +78,7 @@ articles:
 .PHONY: test
 .PHONY: lint pylint flake8 mypy pylint_diff notes
 .PHONY: tidy black isort
+.PHONY: articles pages_pbfbox
 
 help:
 	@echo "Higher level recepies: "
@@ -92,3 +95,7 @@ help:
 	@echo " make notes            Runs pylint with notes"
 	@echo " make pylint           Runs pylint"
 	@echo " make pylint_diff      Runs pylint on changed files only"
+	@echo "  "
+	@echo "Extracting: "
+	@echo " make articles         Extract artcles"
+	@echo " make pages_pbfbox     Extract pages from PDF:s using PDFBox"
