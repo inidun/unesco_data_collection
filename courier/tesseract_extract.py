@@ -13,7 +13,13 @@ DPI = 300
 FMT = 'tiff'
 
 
-# TODO: log, log settings
+# TODO: Add logger
+# TODO: Expose `pdf2image.convert_from_path`-arguments
+# TODO: Log `pdf2image.convert_from_path`-arguments
+# TODO: Expose `pytesseract.image_to_string`-arguments
+# TODO: Log `pytesseract.image_to_string`-arguments
+
+
 def extract_text(
     files: Union[str, os.PathLike],
     output_folder: Union[str, os.PathLike],

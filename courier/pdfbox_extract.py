@@ -8,8 +8,11 @@ import pdfbox
 
 from courier.utils import get_filenames
 
+# TODO: Add logger
+# TODO: Expose `pdfbox.extract_text`-arguments
+# TODO: Log `pdfbox.extract_text`-arguments
 
-# TODO: log
+
 def extract_text(files: Union[str, os.PathLike], output_folder: Union[str, os.PathLike]) -> None:
 
     Path(output_folder).mkdir(exist_ok=True)
