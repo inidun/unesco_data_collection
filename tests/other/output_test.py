@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 
 from courier.config import get_config
 from courier.utils import get_stats
@@ -6,6 +7,7 @@ from courier.utils import get_stats
 CONFIG = get_config()
 
 
+@pytest.mark.skip(reason='Slow')
 def test_all_files_extracted():
     stats = get_stats()
     assert len(list(CONFIG.pdf_dir.iterdir())) == stats['files'] == 671
