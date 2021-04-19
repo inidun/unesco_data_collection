@@ -27,6 +27,7 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     project_root: Path = get_project_root()
 
     # Folders
+    metadata_dir: Path = base_data_dir / 'metadata'
     pdf_dir: Path = base_data_dir / 'pdf'
     pdfbox_txt_dir: Path = base_data_dir / 'pdfbox/txt'
     pdfbox_xml_dir: Path = base_data_dir / 'pdfbox/xml'
@@ -60,7 +61,7 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
 def get_config() -> CourierConfig:
     global _config
     if _config is not None:
-        logger.debug('Config already loaded.')
+        pass  # logger.debug('Config already loaded.')
     if _config is None:
         logger.debug('Loading config.')
         _config = CourierConfig()
