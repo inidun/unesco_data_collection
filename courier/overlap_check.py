@@ -11,7 +11,7 @@ CONFIG = get_config()
 
 def get_overlapping_pages(article_index: pd.DataFrame) -> pd.DataFrame:
     df_pages = article_index[['courier_id', 'record_number', 'pages']].explode('pages')
-    df_pages['courier_id'] = article_index.courier_id.astype('int')
+    df_pages['courier_id'] = df_pages.courier_id.astype('int')
     page_count = df_pages.groupby(['courier_id', 'pages']).size()
     page_count = page_count.reset_index()
     page_count.columns = ['courier_id', 'pages', 'count']
