@@ -30,14 +30,10 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
 
     # Folders
     pdf_dir: Path = base_data_dir / 'pdf'
-
-    # FIXME: Change
-    pdfbox_txt_dir: Path = base_data_dir / 'pdfbox/txt'
-    pdfbox_xml_dir: Path = base_data_dir / 'pdfbox/xml'
-    tessseract_output_dir: Path = base_data_dir / 'tesseract/txt'
-    article_output_dir: Path = base_data_dir / 'articles'
+    pages_dir: Path = base_data_dir / 'pages'
+    xml_dir: Path = base_data_dir / 'xml'
+    articles_dir: Path = base_data_dir / 'articles'
     test_files_dir: Path = base_data_dir / 'test_files'
-    test_output_dir: Path = project_root / 'tests/output'
 
     # Metadata
     metadata_dir: Path = project_root / 'data/courier/metadata'
@@ -45,8 +41,6 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     double_pages_file: Path = metadata_dir / 'double_pages/double_pages.csv'
     exclusions_file: Path = metadata_dir / 'double_pages/double_pages_exclusions.csv'
     overlap_file: Path = metadata_dir / 'overlap.csv'
-
-
     article_index: pd.DataFrame = get_article_index_from_file(metadata_file)
 
     default_template: str = 'article.xml.jinja'

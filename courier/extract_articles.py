@@ -27,7 +27,7 @@ jinja_env = Environment(
 def extract_articles_from_issue(
     courier_issue: CourierIssue,
     template_name: str = CONFIG.default_template,
-    extract_folder: Union[str, os.PathLike] = CONFIG.article_output_dir,
+    extract_folder: Union[str, os.PathLike] = CONFIG.articles_dir,
 ) -> None:
 
     template = jinja_env.get_template(template_name)
@@ -43,10 +43,10 @@ def extract_articles_from_issue(
 
 
 def extract_articles(
-    input_folder: Union[str, os.PathLike] = CONFIG.pdfbox_xml_dir,
+    input_folder: Union[str, os.PathLike] = CONFIG.xml_dir,
     article_index: pd.DataFrame = CONFIG.article_index,
     template_name: str = CONFIG.default_template,
-    output_folder: Union[str, os.PathLike] = CONFIG.article_output_dir,
+    output_folder: Union[str, os.PathLike] = CONFIG.articles_dir,
 ) -> None:
 
     missing = set()

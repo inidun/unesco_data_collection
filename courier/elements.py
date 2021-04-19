@@ -38,7 +38,7 @@ def get_issue_content(courier_id: str) -> untangle.Element:
         raise ValueError(f'Not a valid courier id "{courier_id}')
     if courier_id not in CONFIG.article_index.courier_id.values:
         raise ValueError(f'{courier_id} not in article index')
-    return read_xml(list(CONFIG.pdfbox_xml_dir.glob(f'{courier_id}*.xml'))[0])
+    return read_xml(list(CONFIG.xml_dir.glob(f'{courier_id}*.xml'))[0])
 
 
 @dataclass(order=True, frozen=True)
