@@ -1,5 +1,7 @@
+import pytest
+
 from courier.config import get_config
-from courier.utils import flatten, get_filenames, get_stats
+from courier.utils import corrected_page_number, flatten, get_filenames, get_stats
 
 CONFIG = get_config()
 
@@ -31,3 +33,17 @@ def test_get_filenames_returns_only_files_with_expected_extension(tmp_path):
 
     assert get_filenames(txt_file) == []
     assert get_filenames(pdf_file) == get_filenames(tmp_path) == [pdf_file]
+
+
+@pytest.mark.parametrize(
+    'courier_id, page_number, expected',
+    [
+        ('012656', 10, 10),
+        ('012656', 20, 19),
+        ('069916', 25, 22),
+        ('033144', 65, 65),
+    ],
+)
+def test_corrected_page_number_returns_expected(courier_id, page_number, expected):
+    result = corrected_page_number(courier_id, page_number)
+    assert result == expected
