@@ -56,6 +56,13 @@ isort:
 	@echo isort `poetry run isort --vn`
 	@poetry run isort $(ISORT_ARGS) $(SOURCE_FOLDERS)
 
+articles:
+	@echo Etracting articles
+	@poetry run python courier/extract_articles.py
+	@poetry run python courier/extract_articles.py -t 'article.txt.jinja'
+
+.PHONY: articles
+
 # tools:
 # 	@pip install --upgrade pip -q
 # 	@pip install poetry --upgrade -q
