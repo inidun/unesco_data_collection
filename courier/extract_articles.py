@@ -7,6 +7,7 @@ from loguru import logger
 
 from courier.config import get_config
 from courier.elements import CourierIssue
+from courier.metadata import article_index_to_csv
 
 CONFIG = get_config()
 
@@ -20,7 +21,9 @@ jinja_env = Environment(
 
 
 def extract_articles_from_issue(
-    courier_issue: CourierIssue, template_name: str = None, output_folder: Union[str, os.PathLike] = None
+    courier_issue: CourierIssue,
+    template_name: str = None,
+    output_folder: Union[str, os.PathLike] = None,
 ) -> None:
 
     template_name = template_name or CONFIG.default_template
@@ -38,7 +41,10 @@ def extract_articles_from_issue(
 
 
 def extract_articles(
-    input_folder: Union[str, os.PathLike], *, template_name: str = None, output_folder: Union[str, os.PathLike] = None
+    input_folder: Union[str, os.PathLike],
+    *,
+    template_name: str = None,
+    output_folder: Union[str, os.PathLike] = None,
 ) -> None:
 
     missing = set()
@@ -67,10 +73,7 @@ def extract_articles(
 
 def main() -> None:
 
-    # FIXME: argh
-    os.makedirs(CONFIG.article_output_dir, exist_ok=True)
-    CONFIG.article_index.to_csv(os.path.join(CONFIG.article_output_dir, 'article_index.csv'), sep='\t', index=False)
-
+    article_index_to_csv(CONFIG.article_index, CONFIG.article_output_dir)
     extract_articles(CONFIG.pdfbox_xml_dir)
     extract_articles(CONFIG.pdfbox_xml_dir, template_name='article.txt.jinja')
 
