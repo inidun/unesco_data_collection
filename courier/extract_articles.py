@@ -7,6 +7,7 @@ import argh
 import pandas as pd
 from jinja2 import Environment, PackageLoader, select_autoescape
 from loguru import logger
+from tqdm import tqdm
 
 from courier.config import get_config
 from courier.elements import CourierIssue
@@ -50,7 +51,7 @@ def extract_articles(
 
     missing = set()
 
-    for courier_id in article_index['courier_id'].unique():
+    for courier_id in tqdm(article_index['courier_id'].unique(), desc=f'Extracting {template_name.split(".")[-2]}'):
 
         filename_pattern = os.path.join(input_folder, f'{courier_id}eng*.xml')
         filename = glob.glob(filename_pattern)
