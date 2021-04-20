@@ -38,8 +38,8 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     # Metadata
     metadata_dir: Path = project_root / 'data/courier/metadata'
     metadata_file: Path = metadata_dir / 'UNESCO_Courier_metadata.csv'
-    double_pages_file: Path = metadata_dir / 'double_pages/double_pages.csv'
-    exclusions_file: Path = metadata_dir / 'double_pages/double_pages_exclusions.csv'
+    double_pages_file: Path = metadata_dir / 'double_pages.csv'
+    exclusions_file: Path = metadata_dir / 'double_pages_exclusions.csv'
     overlap_file: Path = metadata_dir / 'overlap.csv'
     article_index: pd.DataFrame = get_article_index_from_file(metadata_file)
 
