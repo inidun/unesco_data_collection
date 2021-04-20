@@ -140,6 +140,4 @@ tmp/
 notes/
 *.out
 tests/output/*
-
-
 data/courier/tmp
