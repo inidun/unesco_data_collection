@@ -14,7 +14,7 @@ class ITextExtractor(abc.ABC):
         first_page: int = 1,
         last_page: Optional[int] = None,
     ) -> None:
-        ...  # pragma: no cover
+        """ Extract PDF pages in files to txt """
 
     @abc.abstractmethod
     def file_to_txt(
@@ -24,7 +24,7 @@ class ITextExtractor(abc.ABC):
         first_page: int = 1,
         last_page: int = None,
     ) -> None:
-        ...  # pragma: no cover
+        """ Extract PDF pages in file to txt """
 
 
 if __name__ == '__main__':
