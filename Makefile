@@ -69,6 +69,24 @@ pages_tesseract:
 	@echo Extracting pages
 	@poetry run python courier/tesseract_extract.py ~/data/courier/pdf/ ~/data/courier/pages/tesseract
 
+PDFS = ~/data/courier/pdf
+PAGES = ~/data/courier/pages
+
+extract_pages: extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber
+
+extract_pages_pdfbox:
+	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfbox --method PDFBox 2>/dev/null
+
+extract_pages_pdfminer:
+	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfminer --method PDFMiner
+
+extract_pages_pdfplumber:
+	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfplumber --method PDFPlumber
+
+# extract_pages_tesseract:
+# 	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/tesseract --method Tesseract
+
+.PHONY: extract_pages extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber
 
 # tools:
 # 	@pip install --upgrade pip -q
