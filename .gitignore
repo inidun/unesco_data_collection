@@ -138,6 +138,7 @@ dmypy.json
 archive/
 tmp/
 notes/
+deprecated/
 *.out
 tests/output/*
 data/courier/tmp
