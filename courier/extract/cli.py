@@ -34,7 +34,7 @@ def extract_text(
     method: str = 'PDFBox',
 ) -> None:
 
-    Path(output_folder).mkdir(exist_ok=True)
+    Path(output_folder).mkdir(exist_ok=True, parents=True)
     files: List[Path] = get_filenames(input_path)
 
     if last_page is not None:
