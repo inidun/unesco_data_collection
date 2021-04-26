@@ -1,10 +1,9 @@
 import csv
 import functools
 import operator
-import os
 from pathlib import Path
 from statistics import median
-from typing import Any, Dict, Iterable, List, Union
+from typing import Any, Dict, Iterable, List
 
 import pdf2image
 
@@ -15,16 +14,6 @@ CONFIG = get_config()
 
 def flatten(list_of_list: Iterable[Iterable[Any]]) -> List[Any]:
     return functools.reduce(operator.iconcat, list_of_list, [])
-
-
-def get_filenames(files: Union[str, os.PathLike], extension: str = 'pdf') -> List[Path]:
-    items = []
-    path = Path(files)
-    if path.is_dir():
-        items = list(path.glob(f'*.{extension}'))
-    elif path.is_file() and path.suffix == f'.{extension}':
-        items.append(path)
-    return items
 
 
 def get_stats() -> Dict[str, int]:
