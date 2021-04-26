@@ -1,5 +1,8 @@
 
+# Courier
+
 ## Notes
+
 **PDFBox unable to extract text from:**
 
 Files are not correctly OCR:d.
@@ -8,22 +11,26 @@ Files are not correctly OCR:d.
     059709eng
 
 
-**Not double page**
+## Corpus statistics
 
-Following courier issues does not have double pages.
-Further investigation needed.
+__Source__
 
-    033144engo
-    110425engo
-    074589engo
-    ...
+| Files | Pages | mean | median |
+| ----: | ----: | ---: | -----: |
+|   671 | 27336 |   41 |     36 |
+
+__Index__
+
+| Total | Articles | Articles (English) |
+| ----: | -------: | -----------------: |
+|  8313 |     7639 |               7612 |
 
 
-**Corpus stats**
+__Extracted__
 
-    Documents:			671
-    Artcles:
-	in metadata index		8313
-    	 - of type article	7639
-    	 - in english		7612
-    Pages:				27336
+|              |            Total | Word count |
+| ------------ | ---------------: | ---------: |
+| __Pages__    |            27336 | 16 097 533 |
+| __Articles__ | 7612<sup>*</sup> | 14 553 289 |
+
+<sup>*</sup> No text for `132107engb`, `059709eng` using PDFBox.
