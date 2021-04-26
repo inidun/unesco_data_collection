@@ -22,8 +22,9 @@ class PDFBoxExtractor(ITextExtractor):
         first_page: int = 1,
         last_page: Optional[int] = None,
     ) -> None:
-        for filename in files:
-            print(f'Processing {filename.stem}', end='\r')
+        total_files = len(files)
+        for i, filename in enumerate(files, start=1):
+            print(f'Processing {filename.stem}\t{i:03}/{total_files}', end='\r')
             self.file_to_txt(filename, output_folder, first_page, last_page)
 
     def file_to_txt(
