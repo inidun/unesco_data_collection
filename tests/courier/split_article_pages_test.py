@@ -13,6 +13,10 @@ from courier.split_article_pages import (
 
 CONFIG = get_config()
 
+# TODO: test countinue_count
+# TODO: test find_title_by_fuzzymatch
+# TODO: test find_title_by_regex
+
 
 def test_create_regexp():
     title = 'A nice and happy! title.? 77Maybe#'

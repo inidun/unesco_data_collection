@@ -83,6 +83,7 @@ def get_stats(
     return stats
 
 
+# FIXME: add match_function argument
 def save_stats(
     output_file: Union[str, os.PathLike] = CONFIG.metadata_dir / 'overlap_stats.csv',
     sep: str = '\t',
