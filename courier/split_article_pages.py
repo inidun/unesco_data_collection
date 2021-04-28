@@ -1,9 +1,11 @@
 import os
 import re
 from pathlib import Path
-from typing import Union
+from typing import Callable, Union
 
+import argh
 import pandas as pd
+from fuzzywuzzy import process
 from loguru import logger
 
 from courier.config import get_config
@@ -20,7 +22,27 @@ def create_regexp(title_string: str) -> str:
     return expression[1:]
 
 
-def get_stats(article_index: pd.DataFrame, overlap: pd.DataFrame) -> pd.DataFrame:
+def countinue_count(text: str) -> int:
+    expr = r"\(continued|\(cont'd"
+    m = re.findall(expr, text.lower(), re.IGNORECASE)
+    return len(m)
+
+
+def find_title_by_regex(text: str, title: str) -> bool:
+    expr = create_regexp(title)
+    m = re.search(expr, text, re.IGNORECASE)
+    return bool(m)
+
+
+def find_title_by_fuzzymatch(text: str, title: str) -> bool:
+    lines = text.splitlines()
+    _, value = process.extractOne(title, lines)
+    return bool(value > 90)
+
+
+def get_stats(
+    article_index: pd.DataFrame, overlap: pd.DataFrame, match_function: Callable[[str, str], bool] = find_title_by_regex
+) -> pd.DataFrame:
 
     index = article_index[['courier_id', 'catalogue_title', 'pages']]
     overlap['courier_id'] = overlap.courier_id.apply(lambda x: str(x).zfill(6))
@@ -43,11 +65,11 @@ def get_stats(article_index: pd.DataFrame, overlap: pd.DataFrame) -> pd.DataFram
         page_stat['page_corr'] = row_page
         page_stat['found'] = 0
         page_stat['not_found'] = 0
+        page_stat['continued_count'] = countinue_count(text)
 
         for article_info in articles_on_page:
             title = article_info['catalogue_title']
-            expr = create_regexp(title)
-            m = re.search(expr, text, re.IGNORECASE)
+            m = match_function(text, title)
             if m:
                 page_stat['found'] += 1
             else:
@@ -56,7 +78,7 @@ def get_stats(article_index: pd.DataFrame, overlap: pd.DataFrame) -> pd.DataFram
         found.append(page_stat)
 
     stats = pd.DataFrame(found)
-    stats = stats[['courier_id', 'page', 'page_corr', 'count', 'found', 'not_found']]
+    stats = stats[['courier_id', 'page', 'page_corr', 'count', 'found', 'not_found', 'continued_count']]
 
     return stats
 
@@ -73,9 +95,10 @@ def save_stats(
     stats = get_stats(
         article_index=CONFIG.article_index,
         overlap=get_overlapping_pages(CONFIG.article_index),
+        match_function=find_title_by_fuzzymatch,
     )
     stats.to_csv(Path(output_file), sep=sep, index=save_index)
 
 
 if __name__ == '__main__':
-    save_stats()
+    argh.dispatch_command(save_stats)
