@@ -1,7 +1,7 @@
 import pytest
 
 from courier.config import get_config
-from courier.utils import corrected_page_number, flatten, get_stats
+from courier.utils import corrected_page_number, flatten, pdf_stats
 
 CONFIG = get_config()
 
@@ -11,9 +11,9 @@ def test_flatten_returns_expected_values():
     assert flatten((('a', 'b'), [1, 2])) == ['a', 'b', 1, 2]
 
 
-def test_get_stats(monkeypatch):
+def test_pdf_stats(monkeypatch):
     monkeypatch.setattr(CONFIG, 'pdf_dir', CONFIG.test_files_dir)
-    stats = get_stats()
+    stats = pdf_stats()
     assert stats['files'] == 1
     assert stats['mean'] == 8
     assert stats['median'] == 8

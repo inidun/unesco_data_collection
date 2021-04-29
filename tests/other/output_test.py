@@ -4,14 +4,14 @@ import pandas as pd
 import pytest
 
 from courier.config import get_config
-from courier.utils import get_stats
+from courier.utils import pdf_stats
 
 CONFIG = get_config()
 
 
 @pytest.mark.skip(reason='Slow')
 def test_all_files_extracted():
-    stats = get_stats()
+    stats = pdf_stats()
     assert len(list(CONFIG.pdf_dir.iterdir())) == stats['files'] == 671
     assert len(list(CONFIG.xml_dir.iterdir())) == stats['files'] == 671
     assert len(list(Path(CONFIG.pages_dir / 'pdfbox').iterdir())) == stats['pages'] == 27336

@@ -16,7 +16,7 @@ def flatten(list_of_list: Iterable[Iterable[Any]]) -> List[Any]:
     return functools.reduce(operator.iconcat, list_of_list, [])
 
 
-def get_stats() -> Dict[str, int]:
+def pdf_stats() -> Dict[str, int]:
     tot_pages = []
     for file in Path(CONFIG.pdf_dir).glob('*.pdf'):
         tot_pages.append(pdf2image.pdfinfo_from_path(file)['Pages'])
