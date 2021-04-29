@@ -9,7 +9,7 @@ import pandas as pd
 import untangle
 
 from courier.config import get_config
-from courier.utils import get_double_pages
+from courier.utils import get_double_pages, remove_illegal_chars
 
 CONFIG = get_config()
 
@@ -17,7 +17,7 @@ CONFIG = get_config()
 def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
     with open(filename, 'r') as fp:
         content = fp.read()
-        content = CONFIG.invalid_chars.sub('', content)
+        content = remove_illegal_chars(content)
         xml = io.StringIO(content)
         element = untangle.parse(xml)
         return element

@@ -1,6 +1,5 @@
 import csv
 import os
-import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -44,7 +43,6 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     article_index: pd.DataFrame = get_article_index_from_file(metadata_file)
 
     default_template: str = 'article.xml.jinja'
-    invalid_chars: re.Pattern = re.compile('[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]')
 
     @property
     def double_pages(self) -> dict:
