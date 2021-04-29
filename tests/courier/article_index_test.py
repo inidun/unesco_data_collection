@@ -1,13 +1,13 @@
 import pytest
 
-from courier.config import get_config
-from courier.metadata import (
+from courier.article_index import (
     article_index_to_csv,
     get_article_index_from_file,
     get_courier_id,
     get_english_host_item,
     get_expanded_article_pages,
 )
+from courier.config import get_config
 
 CONFIG = get_config()
 

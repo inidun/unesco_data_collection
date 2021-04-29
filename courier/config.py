@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from courier.metadata import get_article_index_from_file
+from courier.article_index import get_article_index_from_file
 
 # from loguru import logger
 

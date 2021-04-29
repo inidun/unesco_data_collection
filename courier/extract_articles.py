@@ -9,9 +9,9 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from loguru import logger
 from tqdm import tqdm
 
+from courier.article_index import article_index_to_csv
 from courier.config import get_config
 from courier.elements import CourierIssue
-from courier.metadata import article_index_to_csv
 
 CONFIG = get_config()
 
