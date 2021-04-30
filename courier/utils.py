@@ -91,8 +91,18 @@ def get_illegal_chars() -> re.Pattern:
 ILLEGAL_CHARS = get_illegal_chars()
 
 
-def remove_illegal_chars(value: str) -> str:
+def valid_xml(value: str) -> str:
     return ILLEGAL_CHARS.sub('', value)
+
+
+def cdata(value: str) -> str:
+    value = value.replace(']]>', ']]]]><![CDATA[>')
+    return f'<![CDATA[\n{value}\n]]>'
+
+
+def get_courier_ids() -> List[str]:
+    issues = sorted(list(Path(CONFIG.pdf_dir).glob('*.pdf')))
+    return [x.stem for x in issues]
 
 
 if __name__ == '__main__':
