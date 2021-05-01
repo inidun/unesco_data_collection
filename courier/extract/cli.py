@@ -13,25 +13,25 @@ from courier.extract.tesseract_extractor import TesseractExtractor
 from courier.extract.utils import get_filenames
 
 
-def get_extractor(method: str) -> ITextExtractor:
-    if method == 'PDFBox':
+def get_extractor(extractor: str) -> ITextExtractor:
+    if extractor == 'PDFBox':
         return PDFBoxExtractor()
-    if method == 'PDFMiner':
+    if extractor == 'PDFMiner':
         return PDFMinerExtractor()
-    if method == 'PDFPlumber':
+    if extractor == 'PDFPlumber':
         return PDFPlumberExtractor()
-    if method == 'Tesseract':
+    if extractor == 'Tesseract':
         return TesseractExtractor()
-    raise ValueError(method)
+    raise ValueError(extractor)
 
 
-@arg('--method', choices=['PDFBox', 'PDFMiner', 'PDFPlumber', 'Tesseract'])  # type: ignore
+@arg('--extractor', choices=['PDFBox', 'PDFMiner', 'PDFPlumber', 'Tesseract'])  # type: ignore
 def extract_text(
     input_path: Union[str, os.PathLike],
     output_folder: Union[str, os.PathLike],
     first_page: int = 1,
     last_page: Optional[int] = None,
-    method: str = 'PDFBox',
+    extractor: str = 'PDFBox',
 ) -> None:
 
     Path(output_folder).mkdir(exist_ok=True, parents=True)
@@ -40,7 +40,7 @@ def extract_text(
     if last_page is not None:
         last_page = int(last_page)
 
-    extractor: ITextExtractor = get_extractor(method)
+    extractor: ITextExtractor = get_extractor(extractor)
     extractor.extract(files, output_folder, first_page=first_page, last_page=last_page)
 
 

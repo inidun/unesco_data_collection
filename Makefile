@@ -75,16 +75,16 @@ PAGES = ~/data/courier/pages
 extract_pages: extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber
 
 extract_pages_pdfbox:
-	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfbox --method PDFBox 2>/dev/null
+	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfbox --extractor PDFBox 2>/dev/null
 
 extract_pages_pdfminer:
-	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfminer --method PDFMiner
+	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfminer --extractor PDFMiner
 
 extract_pages_pdfplumber:
-	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfplumber --method PDFPlumber
+	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfplumber --extractor PDFPlumber
 
 # extract_pages_tesseract:
-# 	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/tesseract --method Tesseract
+# 	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/tesseract --extractor Tesseract
 
 .PHONY: extract_pages extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber
 

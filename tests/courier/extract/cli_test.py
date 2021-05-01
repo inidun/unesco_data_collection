@@ -33,7 +33,7 @@ def test_get_extractor_with_unknown_method_raises_value_error():
 
 
 @pytest.mark.parametrize(
-    'method, first_page, last_page, expected',
+    'extractor, first_page, last_page, expected',
     [
         ('PDFBox', 1, None, 5),
         ('PDFBox', 2, 100, 3),
@@ -49,10 +49,10 @@ def test_get_extractor_with_unknown_method_raises_value_error():
         ('Tesseract', 100, None, 0),
     ],
 )
-def test_extract_text(method, first_page, last_page, expected):
+def test_extract_text(extractor, first_page, last_page, expected):
     with TemporaryDirectory() as output_dir:
         extract_text(
-            Path(CONFIG.test_files_dir / 'pdf'), output_dir, first_page=first_page, last_page=last_page, method=method
+            Path(CONFIG.test_files_dir / 'pdf'), output_dir, first_page=first_page, last_page=last_page, extractor=extractor
         )
         result = len(list(Path(output_dir).iterdir()))
         assert result == expected
