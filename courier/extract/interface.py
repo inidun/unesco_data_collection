@@ -16,7 +16,14 @@ class ITextExtractor(abc.ABC):
         first_page: int = 1,
         last_page: Optional[int] = None,
     ) -> None:
-        """ Extract PDF pages in files to txt """
+        """Extracts text from multiple PDF-files and saves result as text files (one file per page).
+
+        Args:
+            files (List[Path]): List of PDF-files to process
+            output_folder (Union[str, os.PathLike]): Output folder
+            first_page (int, optional): First page to extract. Defaults to 1.
+            last_page (Optional[int], optional): Last page to extract. Defaults to None.
+        """
 
     @abc.abstractmethod
     def pdf_to_txt(
