@@ -5,6 +5,8 @@ from typing import List, Optional, Union
 
 
 class ITextExtractor(abc.ABC):
+
+    # TODO: Rename
     @abc.abstractmethod
     def extract(
         self,
@@ -17,14 +19,21 @@ class ITextExtractor(abc.ABC):
         """ Extract PDF pages in files to txt """
 
     @abc.abstractmethod
-    def file_to_txt(
+    def pdf_to_txt(
         self,
         filename: Union[str, os.PathLike],
         output_folder: Union[str, os.PathLike],
         first_page: int = 1,
         last_page: int = None,
     ) -> None:
-        """ Extract PDF pages in file to txt """
+        """Extracts text from PDF-file and saves result as text files (one file per page).
+
+        Args:
+            filename (Union[str, os.PathLike]): Input filename (PDF-file)
+            output_folder (Union[str, os.PathLike]): Output folder
+            first_page (int, optional): First page to extract. Defaults to 1.
+            last_page (int, optional): Last page to extract. Defaults to None.
+        """
 
 
 if __name__ == '__main__':

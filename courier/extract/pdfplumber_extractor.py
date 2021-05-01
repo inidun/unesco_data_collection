@@ -20,9 +20,9 @@ class PDFPlumberExtractor(ITextExtractor):
         pbar = tqdm(files, desc='File')
         for filename in pbar:
             pbar.set_description(f'Processing {filename.stem}')
-            self.file_to_txt(filename, output_folder, first_page, last_page)
+            self.pdf_to_txt(filename, output_folder, first_page, last_page)
 
-    def file_to_txt(
+    def pdf_to_txt(
         self,
         filename: Union[str, os.PathLike],
         output_folder: Union[str, os.PathLike],

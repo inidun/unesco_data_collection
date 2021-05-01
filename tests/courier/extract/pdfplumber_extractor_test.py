@@ -50,10 +50,10 @@ def test_extract_returns_correct_number_of_pages(first_page, last_page, expected
         ('3_pages.pdf', 100, None, 0),
     ],
 )
-def test_file_to_txt_returns_correct_number_of_pages(input_pdf, first_page, last_page, expected):
+def test_pdf_to_txt_returns_correct_number_of_pages(input_pdf, first_page, last_page, expected):
     with TemporaryDirectory() as output_dir:
         file: Path = Path(CONFIG.test_files_dir / 'pdf' / input_pdf)
         extractor: ITextExtractor = PDFPlumberExtractor()
-        extractor.file_to_txt(file, output_dir, first_page=first_page, last_page=last_page)
+        extractor.pdf_to_txt(file, output_dir, first_page=first_page, last_page=last_page)
         result = len(list(Path(output_dir).iterdir()))
         assert result == expected
