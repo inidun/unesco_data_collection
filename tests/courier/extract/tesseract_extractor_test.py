@@ -17,4 +17,5 @@ def test_extract_extracts_right_amount_of_files():
         extractor: ITextExtractor = TesseractExtractor(dpi=1, fmt='png')
         extractor.extract(files, output_dir)
 
-        assert len(list(Path(output_dir).iterdir())) == 8
+        assert len(sorted(Path(output_dir).glob('*.txt'))) == 8
+        assert (Path(output_dir) / 'extract.log').exists()

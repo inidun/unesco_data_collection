@@ -44,7 +44,7 @@ def test_get_extractor_with_unknown_method_raises_value_error():
         ('PDFPlumber', 1, None, 5),
         ('PDFPlumber', 2, 100, 3),
         ('PDFPlumber', 100, None, 0),
-        ('Tesseract', 1, None, 5),
+        ('Tesseract', 1, None, 5),  # FIXME: Patch tesseract settings
         ('Tesseract', 2, 100, 3),
         ('Tesseract', 100, None, 0),
     ],
@@ -52,7 +52,12 @@ def test_get_extractor_with_unknown_method_raises_value_error():
 def test_extract_text(extractor, first_page, last_page, expected):
     with TemporaryDirectory() as output_dir:
         extract_text(
-            Path(CONFIG.test_files_dir / 'pdf'), output_dir, first_page=first_page, last_page=last_page, extractor=extractor
+            Path(CONFIG.test_files_dir / 'pdf'),
+            output_dir,
+            first_page=first_page,
+            last_page=last_page,
+            extractor=extractor,
         )
-        result = len(list(Path(output_dir).iterdir()))
+        result = len(sorted(Path(output_dir).glob('*.txt')))
         assert result == expected
+        assert (Path(output_dir) / 'extract.log').exists()

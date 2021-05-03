@@ -34,6 +34,7 @@ def test_extract_generates_expected_output():
         extractor: ITextExtractor = PDFBoxExtractor()
         extractor.extract(files, output_dir)
 
-        assert len(list(Path(output_dir).iterdir())) == 8
+        assert len(sorted(Path(output_dir).glob('*.txt'))) == 8
+        assert (Path(output_dir) / 'extract.log').exists()
         assert filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'expected/pdfbox').diff_files == []
         assert len(filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'not_expected').diff_files) == 1

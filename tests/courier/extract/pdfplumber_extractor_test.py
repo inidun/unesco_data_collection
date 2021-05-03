@@ -21,8 +21,9 @@ def test_extract_generates_expected_output():
         extractor: ITextExtractor = PDFPlumberExtractor()
         extractor.extract(files, output_dir)
 
-        assert len(list(Path(output_dir).iterdir())) == 5
+        assert len(sorted(Path(output_dir).glob('*.txt'))) == 5
         assert filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'expected/pdfplumber').diff_files == []
+        assert (Path(output_dir) / 'extract.log').exists()
 
 
 @pytest.mark.parametrize(
@@ -38,8 +39,9 @@ def test_extract_returns_correct_number_of_pages(first_page, last_page, expected
         files: List[Path] = get_filenames(CONFIG.test_files_dir / 'pdf')
         extractor: ITextExtractor = PDFPlumberExtractor()
         extractor.extract(files, output_dir, first_page=first_page, last_page=last_page)
-        result = len(list(Path(output_dir).iterdir()))
+        result = len(sorted(Path(output_dir).glob('*.txt')))
         assert result == expected
+        assert (Path(output_dir) / 'extract.log').exists()
 
 
 @pytest.mark.parametrize(
@@ -57,3 +59,4 @@ def test_pdf_to_txt_returns_correct_number_of_pages(input_pdf, first_page, last_
         extractor.pdf_to_txt(file, output_dir, first_page=first_page, last_page=last_page)
         result = len(list(Path(output_dir).iterdir()))
         assert result == expected
+        assert not (Path(output_dir) / 'extract.log').exists()

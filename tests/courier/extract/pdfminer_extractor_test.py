@@ -17,12 +17,12 @@ def test_extract_generates_expected_output():
         extractor: ITextExtractor = PDFMinerExtractor()
         extractor.extract(files, output_dir)
 
-        num_extracted = len(list(Path(output_dir).iterdir()))
+        num_extracted = len(sorted(Path(output_dir).glob('*.txt')))
         assert num_extracted == 8
 
         # FIXME: Improve
         for i in range(0, num_extracted):
-            text1 = open(list(Path(output_dir).iterdir())[i]).read()
-            text2 = open(list(Path(CONFIG.test_files_dir / 'expected/pdfminer').iterdir())[i]).read()
+            text1 = open(sorted(Path(output_dir).glob('*.txt'))[i]).read()
+            text2 = open(sorted(Path(CONFIG.test_files_dir / 'expected/pdfminer').iterdir())[i]).read()
             m = SequenceMatcher(None, text1, text2)
             assert m.quick_ratio() > 0.99
