@@ -9,9 +9,24 @@ from tqdm import tqdm
 
 
 class ITextExtractor(abc.ABC):
+    @abc.abstractmethod
+    def pdf_to_txt(
+        self,
+        filename: Union[str, os.PathLike],
+        output_folder: Union[str, os.PathLike],
+        first_page: int = 1,
+        last_page: int = None,
+    ) -> None:
+        """Extracts text from PDF-file and saves result as text files (one file per page).
 
-    # TODO: Rename (batch_extract)
-    def extract(
+        Args:
+            filename (Union[str, os.PathLike]): Input filename (PDF-file)
+            output_folder (Union[str, os.PathLike]): Output folder
+            first_page (int, optional): First page to extract. Defaults to 1.
+            last_page (int, optional): Last page to extract. Defaults to None.
+        """
+
+    def batch_extract(
         self,
         files: List[Path],
         output_folder: Union[str, os.PathLike],
@@ -41,23 +56,6 @@ class ITextExtractor(abc.ABC):
             self.pdf_to_txt(filename, output_folder, first_page, last_page)
 
         self._remove_logger(file_logger)
-
-    @abc.abstractmethod
-    def pdf_to_txt(
-        self,
-        filename: Union[str, os.PathLike],
-        output_folder: Union[str, os.PathLike],
-        first_page: int = 1,
-        last_page: int = None,
-    ) -> None:
-        """Extracts text from PDF-file and saves result as text files (one file per page).
-
-        Args:
-            filename (Union[str, os.PathLike]): Input filename (PDF-file)
-            output_folder (Union[str, os.PathLike]): Output folder
-            first_page (int, optional): First page to extract. Defaults to 1.
-            last_page (int, optional): Last page to extract. Defaults to None.
-        """
 
     def _add_logger(self, logfile: Union[str, os.PathLike]) -> int:
         logger.configure(handlers=[{'sink': sys.stderr, 'level': 'WARNING'}])

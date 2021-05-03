@@ -15,29 +15,6 @@ class PDFBoxExtractor(ITextExtractor):
 
     p: pdfbox.PDFBox = pdfbox.PDFBox()
 
-    def extract(
-        self,
-        files: List[Path],
-        output_folder: Union[str, os.PathLike],
-        *,
-        first_page: int = 1,
-        last_page: Optional[int] = None,
-    ) -> None:
-
-        logfile = Path(output_folder) / 'extract.log'
-        if logfile.exists():
-            files = self._skip_completed(files, logfile)
-        if len(files) == 0:
-            return
-        file_logger = self._add_logger(logfile)
-
-        total_files = len(files)
-        for i, filename in enumerate(files, start=1):
-            print(f'Processing {filename.stem}\t{i:03}/{total_files}', end='\r')
-            self.pdf_to_txt(filename, output_folder, first_page, last_page)
-
-        self._remove_logger(file_logger)
-
     def pdf_to_txt(
         self,
         filename: Union[str, os.PathLike],
@@ -60,6 +37,29 @@ class PDFBoxExtractor(ITextExtractor):
                 encoding='utf-8',
             )
         logger.success(f'Extracted: {basename}, pages: {num_pages}')
+
+    def batch_extract(
+        self,
+        files: List[Path],
+        output_folder: Union[str, os.PathLike],
+        *,
+        first_page: int = 1,
+        last_page: Optional[int] = None,
+    ) -> None:
+
+        logfile = Path(output_folder) / 'extract.log'
+        if logfile.exists():
+            files = self._skip_completed(files, logfile)
+        if len(files) == 0:
+            return
+        file_logger = self._add_logger(logfile)
+
+        total_files = len(files)
+        for i, filename in enumerate(files, start=1):
+            print(f'Processing {filename.stem}\t{i:03}/{total_files}', end='\r')
+            self.pdf_to_txt(filename, output_folder, first_page, last_page)
+
+        self._remove_logger(file_logger)
 
 
 if __name__ == '__main__':

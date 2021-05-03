@@ -15,7 +15,7 @@ def test_extract_generates_expected_output():
     with TemporaryDirectory() as output_dir:
         files: List[Path] = get_filenames(CONFIG.test_files_dir / 'test.pdf')
         extractor: ITextExtractor = PDFMinerExtractor()
-        extractor.extract(files, output_dir)
+        extractor.batch_extract(files, output_dir)
 
         num_extracted = len(sorted(Path(output_dir).glob('*.txt')))
         assert num_extracted == 8

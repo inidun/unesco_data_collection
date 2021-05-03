@@ -32,7 +32,7 @@ def test_extract_generates_expected_output():
     with TemporaryDirectory() as output_dir:
         files: List[Path] = get_filenames(CONFIG.test_files_dir / 'test.pdf')
         extractor: ITextExtractor = PDFBoxExtractor()
-        extractor.extract(files, output_dir)
+        extractor.batch_extract(files, output_dir)
 
         assert len(sorted(Path(output_dir).glob('*.txt'))) == 8
         assert (Path(output_dir) / 'extract.log').exists()

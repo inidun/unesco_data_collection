@@ -19,7 +19,7 @@ def test_extract_generates_expected_output():
     with TemporaryDirectory() as output_dir:
         files: List[Path] = get_filenames(CONFIG.test_files_dir / 'pdf')
         extractor: ITextExtractor = PDFPlumberExtractor()
-        extractor.extract(files, output_dir)
+        extractor.batch_extract(files, output_dir)
 
         assert len(sorted(Path(output_dir).glob('*.txt'))) == 5
         assert filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'expected/pdfplumber').diff_files == []
@@ -38,7 +38,7 @@ def test_extract_returns_correct_number_of_pages(first_page, last_page, expected
     with TemporaryDirectory() as output_dir:
         files: List[Path] = get_filenames(CONFIG.test_files_dir / 'pdf')
         extractor: ITextExtractor = PDFPlumberExtractor()
-        extractor.extract(files, output_dir, first_page=first_page, last_page=last_page)
+        extractor.batch_extract(files, output_dir, first_page=first_page, last_page=last_page)
         result = len(sorted(Path(output_dir).glob('*.txt')))
         assert result == expected
         assert (Path(output_dir) / 'extract.log').exists()
