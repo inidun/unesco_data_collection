@@ -5,6 +5,7 @@ from typing import List, Optional, Union
 
 import pdf2image
 import pdfbox
+from loguru import logger
 
 from courier.extract.interface import ITextExtractor
 
@@ -22,10 +23,20 @@ class PDFBoxExtractor(ITextExtractor):
         first_page: int = 1,
         last_page: Optional[int] = None,
     ) -> None:
+
+        logfile = Path(output_folder) / 'extract.log'
+        if logfile.exists():
+            files = self._skip_completed(files, logfile)
+        if len(files) == 0:
+            return
+        file_logger = self._add_logger(logfile)
+
         total_files = len(files)
         for i, filename in enumerate(files, start=1):
             print(f'Processing {filename.stem}\t{i:03}/{total_files}', end='\r')
             self.pdf_to_txt(filename, output_folder, first_page, last_page)
+
+        self._remove_logger(file_logger)
 
     def pdf_to_txt(
         self,
@@ -48,6 +59,7 @@ class PDFBoxExtractor(ITextExtractor):
                 console=False,
                 encoding='utf-8',
             )
+        logger.success(f'Extracted: {basename}, pages: {num_pages}')
 
 
 if __name__ == '__main__':
