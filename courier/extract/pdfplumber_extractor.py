@@ -1,27 +1,14 @@
 import os
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import pdfplumber
-from tqdm import tqdm
+from loguru import logger
 
 from courier.extract.interface import ITextExtractor
 
 
 class PDFPlumberExtractor(ITextExtractor):
-    def extract(
-        self,
-        files: List[Path],
-        output_folder: Union[str, os.PathLike],
-        *,
-        first_page: int = 1,
-        last_page: Optional[int] = None,
-    ) -> None:
-        pbar = tqdm(files, desc='File')
-        for filename in pbar:
-            pbar.set_description(f'Processing {filename.stem}')
-            self.pdf_to_txt(filename, output_folder, first_page, last_page)
-
     def pdf_to_txt(
         self,
         filename: Union[str, os.PathLike],
@@ -43,6 +30,7 @@ class PDFPlumberExtractor(ITextExtractor):
                         data = ''
                     with open(Path(output_folder) / f'{basename}_{i+1:04}.txt', 'w') as fp:
                         fp.write(data)
+        logger.success(f'Extracted: {basename}, pages: {num_pages}')
 
 
 if __name__ == '__main__':

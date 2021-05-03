@@ -1,34 +1,21 @@
 import os
 from io import StringIO
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import pdf2image
+from loguru import logger
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
-from tqdm import tqdm
 
 from courier.extract.interface import ITextExtractor
 
 
 class PDFMinerExtractor(ITextExtractor):
-    def extract(
-        self,
-        files: List[Path],
-        output_folder: Union[str, os.PathLike],
-        *,
-        first_page: int = 1,
-        last_page: Optional[int] = None,
-    ) -> None:
-        pbar = tqdm(files, desc='File')
-        for filename in pbar:
-            pbar.set_description(f'Processing {filename.stem}')
-            self.pdf_to_txt(filename, output_folder, first_page, last_page)
-
     def pdf_to_txt(
         self,
         filename: Union[str, os.PathLike],
@@ -55,6 +42,7 @@ class PDFMinerExtractor(ITextExtractor):
                     fp_out.write(pagestr.getvalue())
                 pagestr.truncate(0)
                 pagestr.seek(0)
+        logger.success(f'Extracted: {basename}, pages: {num_pages}')
 
 
 if __name__ == '__main__':
