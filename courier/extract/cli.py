@@ -26,7 +26,7 @@ def get_extractor(extractor: str) -> ITextExtractor:
 
 
 @arg('--extractor', choices=['PDFBox', 'PDFMiner', 'PDFPlumber', 'Tesseract'])  # type: ignore
-def extract_text(
+def extract(
     input_path: Union[str, os.PathLike],
     output_folder: Union[str, os.PathLike],
     first_page: int = 1,
@@ -41,8 +41,8 @@ def extract_text(
         last_page = int(last_page)
 
     extractor: ITextExtractor = get_extractor(extractor)
-    extractor.extract(files, output_folder, first_page=first_page, last_page=last_page)
+    extractor.batch_extract(files, output_folder, first_page=first_page, last_page=last_page)
 
 
 if __name__ == '__main__':
-    argh.dispatch_command(extract_text)
+    argh.dispatch_command(extract)

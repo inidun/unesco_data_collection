@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 import pytest
 
 from courier.config import get_config
-from courier.extract.cli import extract_text, get_extractor
+from courier.extract.cli import extract, get_extractor
 from courier.extract.pdfbox_extractor import PDFBoxExtractor
 from courier.extract.pdfminer_extractor import PDFMinerExtractor
 from courier.extract.pdfplumber_extractor import PDFPlumberExtractor
@@ -51,7 +51,7 @@ def test_get_extractor_with_unknown_method_raises_value_error():
 )
 def test_extract_text(extractor, first_page, last_page, expected):
     with TemporaryDirectory() as output_dir:
-        extract_text(
+        extract(
             Path(CONFIG.test_files_dir / 'pdf'),
             output_dir,
             first_page=first_page,
