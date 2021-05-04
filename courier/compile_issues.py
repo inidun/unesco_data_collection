@@ -9,7 +9,7 @@ from courier.utils import cdata, get_courier_ids, valid_xml
 
 CONFIG = get_config()
 
-
+# TODO: get template
 jinja_env = Environment(
     loader=PackageLoader('courier', 'templates'),
     autoescape=select_autoescape(['html', 'xml']),
@@ -41,6 +41,8 @@ def compile_issues(
     extension: str = 'xml',
     template: Optional[Template] = None,
 ) -> None:
+
+    # TODO: Add tqdm
     Path(output_folder).mkdir(parents=True, exist_ok=True)
     for basename in basenames:
         with open(Path(output_folder) / f'{basename}.{extension}', 'w') as fp:
