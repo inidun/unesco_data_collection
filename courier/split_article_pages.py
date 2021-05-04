@@ -28,20 +28,20 @@ def countinue_count(text: str) -> int:
     return len(m)
 
 
-def find_title_by_regex(text: str, title: str) -> bool:
+def find_title_regex(text: str, title: str) -> bool:
     expr = create_regexp(title)
     m = re.search(expr, text, re.IGNORECASE)
     return bool(m)
 
 
-def find_title_by_fuzzymatch(text: str, title: str) -> bool:
+def find_title_fuzzywuzzy(text: str, title: str) -> bool:
     lines = text.splitlines()
     _, value = process.extractOne(title, lines)
     return bool(value > 90)
 
 
 def get_stats(
-    article_index: pd.DataFrame, overlap: pd.DataFrame, match_function: Callable[[str, str], bool] = find_title_by_regex
+    article_index: pd.DataFrame, overlap: pd.DataFrame, match_function: Callable[[str, str], bool] = find_title_regex
 ) -> pd.DataFrame:
 
     index = article_index[['courier_id', 'catalogue_title', 'pages']]
@@ -93,10 +93,12 @@ def save_stats(
     output_folder = Path(output_file).parent
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
+    # TODO: get_match_function OR more columns in output
+
     stats = get_stats(
         article_index=CONFIG.article_index,
         overlap=get_overlapping_pages(CONFIG.article_index),
-        match_function=find_title_by_fuzzymatch,
+        match_function=find_title_fuzzywuzzy,
     )
     stats.to_csv(Path(output_file), sep=sep, index=save_index)
 
