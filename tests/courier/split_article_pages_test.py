@@ -3,13 +3,7 @@ import pytest
 
 from courier.config import get_config
 from courier.overlap_check import get_overlapping_pages
-from courier.split_article_pages import (
-    create_regexp,
-    find_title_by_fuzzymatch,
-    find_title_by_regex,
-    get_stats,
-    save_stats,
-)
+from courier.split_article_pages import create_regexp, find_title_fuzzywuzzy, find_title_regex, get_stats, save_stats
 
 CONFIG = get_config()
 
@@ -36,10 +30,10 @@ def test_get_stats_returns_dataframe_or_correct_size():
 @pytest.mark.parametrize(
     'courier_id, method, expected',
     [
-        (14255, find_title_by_regex, ['014255', 36, 36, 2, 0, 2, 1]),
-        (14255, find_title_by_fuzzymatch, ['014255', 36, 36, 2, 0, 2, 1]),
-        (59301, find_title_by_regex, ['059301', 30, 30, 2, 1, 1, 1]),
-        (59301, find_title_by_fuzzymatch, ['059301', 30, 30, 2, 0, 2, 1]),
+        (14255, find_title_regex, ['014255', 36, 36, 2, 0, 2, 1]),
+        (14255, find_title_fuzzywuzzy, ['014255', 36, 36, 2, 0, 2, 1]),
+        (59301, find_title_regex, ['059301', 30, 30, 2, 1, 1, 1]),
+        (59301, find_title_fuzzywuzzy, ['059301', 30, 30, 2, 0, 2, 1]),
     ],
 )
 def test_get_stats_returns_expected_values(courier_id, method, expected):
