@@ -61,13 +61,13 @@ articles:
 	@poetry run python courier/extract_articles.py
 	@poetry run python courier/extract_articles.py -t 'article.txt.jinja'
 
-pages_pbfbox:
-	@echo Extracting pages
-	@poetry run python courier/pdfbox_extract.py ~/data/courier/pdf/ ~/data/courier/pages/pdfbox 2>/dev/null
+# pages_pbfbox:
+# 	@echo Extracting pages
+# 	@poetry run python courier/pdfbox_extract.py ~/data/courier/pdf/ ~/data/courier/pages/pdfbox 2>/dev/null
 
-pages_tesseract:
-	@echo Extracting pages
-	@poetry run python courier/tesseract_extract.py ~/data/courier/pdf/ ~/data/courier/pages/tesseract
+# pages_tesseract:
+# 	@echo Extracting pages
+# 	@poetry run python courier/tesseract_extract.py ~/data/courier/pdf/ ~/data/courier/pages/tesseract
 
 PDFS = ~/data/courier/pdf
 PAGES = ~/data/courier/pages
@@ -101,7 +101,7 @@ extract_pages_tesseract:
 .PHONY: test
 .PHONY: lint pylint flake8 mypy pylint_diff notes
 .PHONY: tidy black isort
-.PHONY: articles pages_pbfbox pages_tesseract
+.PHONY: articles
 
 help:
 	@echo "Higher level recepies: "
