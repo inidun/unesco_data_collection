@@ -12,6 +12,7 @@ from tqdm import tqdm
 from courier.article_index import article_index_to_csv
 from courier.config import get_config
 from courier.elements import CourierIssue
+from courier.utils import cdata, valid_xml
 
 CONFIG = get_config()
 
@@ -22,6 +23,8 @@ jinja_env = Environment(
     trim_blocks=True,
     lstrip_blocks=True,
 )
+jinja_env.filters['valid_xml'] = valid_xml
+jinja_env.filters['cdata'] = cdata
 
 
 def extract_articles_from_issue(
