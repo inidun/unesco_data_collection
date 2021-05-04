@@ -49,7 +49,7 @@ def test_get_extractor_with_unknown_method_raises_value_error():
         ('Tesseract', 100, None, 0),
     ],
 )
-def test_extract_text(extractor, first_page, last_page, expected):
+def test_extract(extractor, first_page, last_page, expected):
     with TemporaryDirectory() as output_dir:
         extract(
             Path(CONFIG.test_files_dir / 'pdf'),
@@ -61,3 +61,62 @@ def test_extract_text(extractor, first_page, last_page, expected):
         result = len(sorted(Path(output_dir).glob('*.txt')))
         assert result == expected
         assert (Path(output_dir) / 'extract.log').exists()
+
+
+@pytest.mark.parametrize(
+    'extractor, first_page, last_page, expected',
+    [
+        ('PDFBox', 1, None, 2),
+        ('PDFMiner', 1, None, 2),
+        ('PDFPlumber', 1, None, 2),
+        ('Tesseract', 1, None, 2),  # FIXME: Patch tesseract settings
+    ],
+)
+def test_extract_with_logfile_partially_completed_jobs(extractor, first_page, last_page, expected):
+    with TemporaryDirectory() as output_dir:
+        with open(Path(output_dir) / 'extract.log', 'w') as fp:
+            fp.write('2021-05-03 12:00:00.776 | SUCCESS | Extracted: 3_pages, pages: 3')
+        assert (Path(output_dir) / 'extract.log').exists()
+        extract(
+            Path(CONFIG.test_files_dir / 'pdf'),
+            output_dir,
+            first_page=first_page,
+            last_page=last_page,
+            extractor=extractor,
+        )
+        result = len(sorted(Path(output_dir).glob('*.txt')))
+        assert result == expected
+
+
+@pytest.mark.parametrize(
+    'extractor, first_page, last_page, expected',
+    [
+        ('PDFBox', 1, None, 0),
+        ('PDFMiner', 1, None, 0),
+        ('PDFPlumber', 1, None, 0),
+        ('Tesseract', 1, None, 0),  # FIXME: Patch tesseract settings
+    ],
+)
+def test_extract_with_logfile_fully_completed_jobs(extractor, first_page, last_page, expected):
+    with TemporaryDirectory() as output_dir:
+        with open(Path(output_dir) / 'extract.log', 'w') as fp:
+            fp.writelines(
+                [
+                    '2021-05-03 12:00:00.776 | SUCCESS | Extracted: 3_pages, pages: 3\n',
+                    '2021-05-03 12:00:00.130 | SUCCESS | Extracted: 2_pages_1_empty, pages: 2',
+                ]
+            )
+        assert (Path(output_dir) / 'extract.log').exists()
+        extract(
+            Path(CONFIG.test_files_dir / 'pdf'),
+            output_dir,
+            first_page=first_page,
+            last_page=last_page,
+            extractor=extractor,
+        )
+        result = len(sorted(Path(output_dir).glob('*.txt')))
+        assert result == expected
+
+
+# 2021-05-03 12:00:00.776 | SUCCESS | Extracted: 3_pages, pages: 3
+# 2021-05-03 12:00:00.130 | SUCCESS | Extracted: 2_pages_1_empty, pages: 2
