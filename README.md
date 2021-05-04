@@ -40,15 +40,6 @@ __Usage:__
     extract_text_tesseract.py [-h] [--first-page FIRST_PAGE] [-l LAST_PAGE] [-d DPI] [--fmt FMT] files output-folder
 
 
-### Notes
-
-Mismatch in index: Some PDF-files have double pages. This leads to article overlap.
-
-__Not correctly OCR:d:__
-
-    132107engb
-    059709eng
-
 __Current corpus stats:__
 
     Documents:			671
@@ -58,10 +49,6 @@ __Current corpus stats:__
     	 - in english		7612
     Pages:				27336
 
-__TODO:__
-
-- [ ] Double page exclusions
-- [ ] Article overlap
 
 ## Legal instruments
 
