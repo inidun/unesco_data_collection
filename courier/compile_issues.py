@@ -49,6 +49,8 @@ def compile_issues(
 
 def main() -> None:
 
+    # FIXME: Update main or add cli
+
     template = jinja_env.get_template('courier_issue.xml.jinja')
     courier_ids = get_courier_ids()
 
@@ -63,6 +65,13 @@ def main() -> None:
         courier_ids,
         input_folder=CONFIG.base_data_dir / 'pages/pdfplumber',
         output_folder=CONFIG.xml_dir / 'pdfplumber',
+        template=template,
+    )
+
+    compile_issues(
+        courier_ids,
+        input_folder=CONFIG.base_data_dir / 'pages/pdfminer',
+        output_folder=CONFIG.xml_dir / 'pdfminer',
         template=template,
     )
 
