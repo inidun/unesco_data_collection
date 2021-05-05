@@ -77,6 +77,13 @@ def main() -> None:
         template=template,
     )
 
+    # compile_issues(
+    #     courier_ids,
+    #     input_folder=CONFIG.base_data_dir / 'pages/tesseract',
+    #     output_folder=CONFIG.xml_dir / 'tesseract',
+    #     template=template,
+    # )
+
 
 if __name__ == '__main__':
     main()
