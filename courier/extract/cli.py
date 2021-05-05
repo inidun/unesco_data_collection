@@ -16,6 +16,8 @@ from courier.extract.utils import get_filenames
 def get_extractor(extractor: str) -> ITextExtractor:
     if extractor == 'PDFBox':
         return PDFBoxExtractor()
+    if extractor == 'PDFBoxHTML':
+        return PDFBoxExtractor(html=True)
     if extractor == 'PDFMiner':
         return PDFMinerExtractor()
     if extractor == 'PDFPlumber':
@@ -25,7 +27,7 @@ def get_extractor(extractor: str) -> ITextExtractor:
     raise ValueError(extractor)
 
 
-@arg('--extractor', choices=['PDFBox', 'PDFMiner', 'PDFPlumber', 'Tesseract'])  # type: ignore
+@arg('--extractor', choices=['PDFBox', 'PDFBoxHTML', 'PDFMiner', 'PDFPlumber', 'Tesseract'])  # type: ignore
 def extract(
     input_path: Union[str, os.PathLike],
     output_folder: Union[str, os.PathLike],

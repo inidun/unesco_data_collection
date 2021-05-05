@@ -38,6 +38,9 @@ def test_get_extractor_with_unknown_method_raises_value_error():
         ('PDFBox', 1, None, 5),
         ('PDFBox', 2, 100, 3),
         ('PDFBox', 100, None, 0),
+        ('PDFBoxHTML', 1, None, 5),
+        ('PDFBoxHTML', 2, 100, 3),
+        ('PDFBoxHTML', 100, None, 0),
         ('PDFMiner', 1, None, 5),
         ('PDFMiner', 2, 100, 3),
         ('PDFMiner', 100, None, 0),
@@ -67,6 +70,7 @@ def test_extract(extractor, first_page, last_page, expected):
     'extractor, first_page, last_page, expected',
     [
         ('PDFBox', 1, None, 2),
+        ('PDFBoxHTML', 1, None, 2),
         ('PDFMiner', 1, None, 2),
         ('PDFPlumber', 1, None, 2),
         ('Tesseract', 1, None, 2),  # FIXME: Patch tesseract settings
@@ -92,6 +96,7 @@ def test_extract_with_logfile_partially_completed_jobs(extractor, first_page, la
     'extractor, first_page, last_page, expected',
     [
         ('PDFBox', 1, None, 0),
+        ('PDFBoxHTML', 1, None, 0),
         ('PDFMiner', 1, None, 0),
         ('PDFPlumber', 1, None, 0),
         ('Tesseract', 1, None, 0),  # FIXME: Patch tesseract settings
@@ -116,7 +121,3 @@ def test_extract_with_logfile_fully_completed_jobs(extractor, first_page, last_p
         )
         result = len(sorted(Path(output_dir).glob('*.txt')))
         assert result == expected
-
-
-# 2021-05-03 12:00:00.776 | SUCCESS | Extracted: 3_pages, pages: 3
-# 2021-05-03 12:00:00.130 | SUCCESS | Extracted: 2_pages_1_empty, pages: 2
