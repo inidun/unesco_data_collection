@@ -14,6 +14,11 @@ from courier.extract.interface import ITextExtractor
 class PDFBoxExtractor(ITextExtractor):
 
     p: pdfbox.PDFBox = pdfbox.PDFBox()
+    encoding: str = 'utf-8'
+    html: bool = False
+    sort: bool = False
+    ignore_beads: bool = False
+    console: bool = False
 
     def pdf_to_txt(
         self,
@@ -31,10 +36,13 @@ class PDFBoxExtractor(ITextExtractor):
             self.p.extract_text(
                 filename,
                 output_path=output_filename,
+                encoding=self.encoding,
+                html=self.html,
+                sort=self.sort,
+                ignore_beads=self.ignore_beads,
                 start_page=page,
                 end_page=page,
-                console=False,
-                encoding='utf-8',
+                console=self.console,
             )
         logger.success(f'Extracted: {basename}, pages: {num_pages}')
 
