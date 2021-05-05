@@ -29,7 +29,7 @@ def read(filename: Union[str, bytes, os.PathLike]) -> str:
 def join_pages(basename: str, folder: Union[str, os.PathLike], template: Optional[Template] = None) -> str:
     default_template = '{% for page in pages %}\n--- {{ loop.index }} ---\n{{ page|trim }}{% endfor %}'
     template = template or Template(default_template)
-    page_files = sorted(list(Path(folder).glob(f'{basename}*.txt')))
+    page_files = sorted(Path(folder).glob(f'{basename}*.txt'))
     pages = [read(page) for page in page_files]
     return template.render(basename=basename, pages=pages, template=template)
 
