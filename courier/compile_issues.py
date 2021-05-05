@@ -45,8 +45,9 @@ def compile_issues(
     # TODO: Add tqdm
     Path(output_folder).mkdir(parents=True, exist_ok=True)
     for basename in basenames:
-        with open(Path(output_folder) / f'{basename}.{extension}', 'w') as fp:
-            fp.write(join_pages(basename, input_folder, template))
+        if (len(list(Path(input_folder).glob(f'{basename}*.txt')))) > 0:
+            with open(Path(output_folder) / f'{basename}.{extension}', 'w') as fp:
+                fp.write(join_pages(basename, input_folder, template))
 
 
 def main() -> None:
@@ -77,12 +78,12 @@ def main() -> None:
         template=template,
     )
 
-    # compile_issues(
-    #     courier_ids,
-    #     input_folder=CONFIG.base_data_dir / 'pages/tesseract',
-    #     output_folder=CONFIG.xml_dir / 'tesseract',
-    #     template=template,
-    # )
+    compile_issues(
+        courier_ids,
+        input_folder=CONFIG.base_data_dir / 'pages/tesseract',
+        output_folder=CONFIG.xml_dir / 'tesseract',
+        template=template,
+    )
 
 
 if __name__ == '__main__':
