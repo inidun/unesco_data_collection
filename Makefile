@@ -71,6 +71,7 @@ articles:
 
 PDFS = ~/data/courier/pdf
 PAGES = ~/data/courier/pages
+XML = ~/data/courier/xml
 
 # extract_pages: extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber
 
@@ -87,6 +88,22 @@ extract_pages_tesseract:
 	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/tesseract --extractor Tesseract
 
 .PHONY: extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber extract_pages_tesseract
+
+compile_issues_pdfbox:
+	@poetry run python courier/compile_issues.py $(PAGES)/pdfbox $(XML)/pdfbox
+
+compile_issues_pdfminer:
+	@poetry run python courier/compile_issues.py $(PAGES)/pdfminer $(XML)/pdfminer
+
+compile_issues_pdfplumber:
+	@poetry run python courier/compile_issues.py $(PAGES)/pdfplumber $(XML)/pdfplumber
+
+compile_issues_tesseract:
+	@poetry run python courier/compile_issues.py $(PAGES)/tesseract $(XML)/tesseract
+
+compile_issues: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract
+
+.PHONY: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract compile_issues
 
 # tools:
 # 	@pip install --upgrade pip -q

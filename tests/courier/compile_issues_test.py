@@ -1,4 +1,7 @@
-from courier.compile_issues import compile_issues, jinja_env, join_pages, read
+import pytest
+from jinja2 import Template
+
+from courier.compile_issues import IssueCompiler, jinja_env, join_pages, read
 
 
 def test_read_returns_text(tmp_path):
@@ -8,35 +11,47 @@ def test_read_returns_text(tmp_path):
     assert len(list(tmp_path.iterdir())) == 1
 
 
-# TODO: Parametrize
-def test_join_pages(tmp_path):
+@pytest.mark.parametrize(
+    'basename, template, expected',
+    [
+        ('test', None, '\n--- 1 ---\npage one\n--- 2 ---\npage two'),
+        (
+            'test',
+            jinja_env.get_template('courier_issue.xml.jinja'),
+            '<?xml version="1.0" encoding="UTF-8"?>\n<document id="test">\n<page number="1">\n<![CDATA[\npage one\n]]>\n</page>\n<page number="2">\n<![CDATA[\npage two\n]]>\n</page>\n</document>',
+        ),
+    ],
+)
+def test_join_pages(basename, template, expected, tmp_path):
 
     (tmp_path / 'test1.txt').write_text('page one')
     (tmp_path / 'test2.txt').write_text('page two')
     (tmp_path / 'test3.not_txt').write_text('page three')
     (tmp_path / 'not_basename.txt').write_text('page four')
-    template = jinja_env.get_template('courier_issue.xml.jinja')
-
     assert len(list(tmp_path.iterdir())) == 4
-    assert join_pages('test', tmp_path) == '\n--- 1 ---\npage one\n--- 2 ---\npage two'
-    assert (
-        join_pages('test', tmp_path, template)
-        == '<?xml version="1.0" encoding="UTF-8"?>\n<document id="test">\n<page number="1">\n<![CDATA[\npage one\n]]>\n</page>\n<page number="2">\n<![CDATA[\npage two\n]]>\n</page>\n</document>'
-    )
+
+    result = join_pages(basename, tmp_path, template)
+    assert result == expected
 
 
-# TODO: Parametrize
-def test_compile_issues(tmp_path):
+@pytest.mark.parametrize(
+    'template, expected',
+    [
+        (
+            Template('{% for page in pages %}\n--- {{ loop.index }} ---\n{{ page|trim }}{% endfor %}'),
+            '\n--- 1 ---\npage one\n--- 2 ---\npage two',
+        ),
+        (
+            'courier_issue.xml',
+            '<?xml version="1.0" encoding="UTF-8"?>\n<document id="test">\n<page number="1">\n<![CDATA[\npage one\n]]>\n</page>\n<page number="2">\n<![CDATA[\npage two\n]]>\n</page>\n</document>',
+        ),
+    ],
+)
+def test_compile_issues(template, expected, tmp_path):
 
     (tmp_path / 'test1.txt').write_text('page one')
     (tmp_path / 'test2.txt').write_text('page two')
-    template = jinja_env.get_template('courier_issue.xml.jinja')
 
-    compile_issues(['test'], tmp_path, tmp_path / 'output')
-    assert read(tmp_path / 'output/test.xml') == '\n--- 1 ---\npage one\n--- 2 ---\npage two'
-
-    compile_issues(['test'], tmp_path, tmp_path / 'output', template=template)
-    assert (
-        read(tmp_path / 'output/test.xml')
-        == '<?xml version="1.0" encoding="UTF-8"?>\n<document id="test">\n<page number="1">\n<![CDATA[\npage one\n]]>\n</page>\n<page number="2">\n<![CDATA[\npage two\n]]>\n</page>\n</document>'
-    )
+    IssueCompiler(template).compile_issues(['test'], tmp_path, tmp_path / 'output')
+    result = read(tmp_path / 'output/test.xml')
+    assert result == expected

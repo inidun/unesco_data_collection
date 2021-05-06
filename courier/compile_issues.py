@@ -2,14 +2,12 @@ import os
 from pathlib import Path
 from typing import List, Optional, Union
 
+import argh
 from jinja2 import Environment, PackageLoader, Template, select_autoescape
+from tqdm import tqdm
 
-from courier.config import get_config
 from courier.utils import cdata, get_courier_ids, valid_xml
 
-CONFIG = get_config()
-
-# TODO: get template
 jinja_env = Environment(
     loader=PackageLoader('courier', 'templates'),
     autoescape=select_autoescape(['html', 'xml']),
@@ -34,57 +32,42 @@ def join_pages(basename: str, folder: Union[str, os.PathLike], template: Optiona
     return template.render(basename=basename, pages=pages, template=template)
 
 
-def compile_issues(
-    basenames: List[str],
+class IssueCompiler:
+    def __init__(self, template: Union[str, Template]):
+        global jinja_env
+        if isinstance(template, str):
+            if not template.endswith('.jinja'):
+                template += '.jinja'
+            template = jinja_env.get_template(template)
+        self.template: Template = template
+
+    def compile_issues(
+        self,
+        basenames: List[str],
+        input_folder: Union[str, os.PathLike],
+        output_folder: Union[str, os.PathLike],
+        extension: str = 'xml',
+    ) -> None:
+
+        Path(output_folder).mkdir(parents=True, exist_ok=True)
+
+        pbar = tqdm(basenames, desc='File')
+        for basename in pbar:
+            pbar.set_description(f'Processing {basename}')
+            if (len(list(Path(input_folder).glob(f'{basename}*.txt')))) > 0:
+                with open(Path(output_folder) / f'{basename}.{extension}', 'w') as fp:
+                    fp.write(join_pages(basename, input_folder, self.template))
+
+
+def pages_to_issues(
     input_folder: Union[str, os.PathLike],
     output_folder: Union[str, os.PathLike],
     extension: str = 'xml',
-    template: Optional[Template] = None,
+    template: Union[str, Template] = 'courier_issue.xml',
 ) -> None:
-
-    # TODO: Add tqdm
-    Path(output_folder).mkdir(parents=True, exist_ok=True)
-    for basename in basenames:
-        if (len(list(Path(input_folder).glob(f'{basename}*.txt')))) > 0:
-            with open(Path(output_folder) / f'{basename}.{extension}', 'w') as fp:
-                fp.write(join_pages(basename, input_folder, template))
-
-
-def main() -> None:
-
-    # FIXME: Update main or add cli
-
-    template = jinja_env.get_template('courier_issue.xml.jinja')
-    courier_ids = get_courier_ids()
-
-    compile_issues(
-        courier_ids,
-        input_folder=CONFIG.base_data_dir / 'pages/pdfbox',
-        output_folder=CONFIG.xml_dir / 'pdfbox',
-        template=template,
-    )
-
-    compile_issues(
-        courier_ids,
-        input_folder=CONFIG.base_data_dir / 'pages/pdfplumber',
-        output_folder=CONFIG.xml_dir / 'pdfplumber',
-        template=template,
-    )
-
-    compile_issues(
-        courier_ids,
-        input_folder=CONFIG.base_data_dir / 'pages/pdfminer',
-        output_folder=CONFIG.xml_dir / 'pdfminer',
-        template=template,
-    )
-
-    compile_issues(
-        courier_ids,
-        input_folder=CONFIG.base_data_dir / 'pages/tesseract',
-        output_folder=CONFIG.xml_dir / 'tesseract',
-        template=template,
-    )
+    compiler = IssueCompiler(template)
+    compiler.compile_issues(get_courier_ids(), input_folder, output_folder, extension)
 
 
 if __name__ == '__main__':
-    main()
+    argh.dispatch_command(pages_to_issues)
