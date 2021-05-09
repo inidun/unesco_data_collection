@@ -176,7 +176,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "flake8"
-version = "3.9.1"
+version = "3.9.2"
 description = "the modular source code checker: pep8 pyflakes and co"
 category = "dev"
 optional = false
@@ -615,7 +615,7 @@ docs = ["sphinx", "sphinx-argparse"]
 
 [[package]]
 name = "pdfplumber"
-version = "0.5.27"
+version = "0.5.28"
 description = "Plumb a PDF for detailed information about each char, rectangle, and line."
 category = "main"
 optional = false
@@ -1218,8 +1218,8 @@ decorator = [
     {file = "decorator-5.0.7.tar.gz", hash = "sha256:6f201a6c4dac3d187352661f508b9364ec8091217442c9478f1f83c003a0f060"},
 ]
 flake8 = [
-    {file = "flake8-3.9.1-py2.py3-none-any.whl", hash = "sha256:3b9f848952dddccf635be78098ca75010f073bfe14d2c6bda867154bea728d2a"},
-    {file = "flake8-3.9.1.tar.gz", hash = "sha256:1aa8990be1e689d96c745c5682b687ea49f2e05a443aff1f8251092b0014e378"},
+    {file = "flake8-3.9.2-py2.py3-none-any.whl", hash = "sha256:bf8fd333346d844f616e8d47905ef3a3384edae6b4e9beb0c5101e25e3110907"},
+    {file = "flake8-3.9.2.tar.gz", hash = "sha256:07528381786f2a6237b061f6e96610a4167b226cb926e2aa2b6b1d78057c576b"},
 ]
 flake8-black = [
     {file = "flake8-black-0.2.1.tar.gz", hash = "sha256:f26651bc10db786c03f4093414f7c9ea982ed8a244cec323c984feeffdf4c118"},
@@ -1507,7 +1507,7 @@ pdf2image = [
     {file = "pdfminer.six-20200517.tar.gz", hash = "sha256:429a099d2ca76cedff79652e17cfc37d7751a26d50f30af0fa791a69f68a3ddc"},
 ]
 pdfplumber = [
-    {file = "pdfplumber-0.5.27.tar.gz", hash = "sha256:08542c568c3cdebb8ab042c6ca75349d4a32f2562952ad0e04c144e6497d2074"},
+    {file = "pdfplumber-0.5.28.tar.gz", hash = "sha256:1498e71df07f3d684788b22a6a764526dd73d6b9d7365c1239fef6ea6a1375c6"},
 ]
 pexpect = [
     {file = "pexpect-4.8.0-py2.py3-none-any.whl", hash = "sha256:0b48a55dcb3c05f3329815901ea4fc1537514d6ba867a152b581d69ae3710937"},
