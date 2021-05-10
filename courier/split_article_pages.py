@@ -1,7 +1,7 @@
 import os
 import re
 from pathlib import Path
-from typing import Callable, Union
+from typing import Callable, List, Union
 
 import argh
 import pandas as pd
@@ -32,6 +32,15 @@ def find_title_regex(text: str, title: str) -> bool:
     expr = create_regexp(title)
     m = re.search(expr, text, re.IGNORECASE)
     return bool(m)
+
+
+def find_uppercase_sequences(text: str, min_word_len: int = 1, min_seq_len: int = 1) -> List[str]:
+    expr = rf'\b[A-Z]{{{min_word_len},}}(?:\s+[A-Z]{{{min_word_len},}}){{{min_seq_len - 1},}}\b'
+    return re.findall(expr, text)
+
+
+def uppercase_sequence_count(text: str, min_word_len: int = 1, min_seq_len: int = 1) -> int:
+    return len(find_uppercase_sequences(text, min_word_len, min_seq_len))
 
 
 def find_title_fuzzywuzzy(text: str, title: str) -> bool:
@@ -66,6 +75,7 @@ def get_stats(
         page_stat['found'] = 0
         page_stat['not_found'] = 0
         page_stat['continued_count'] = countinue_count(text)
+        page_stat['uppercase_count'] = uppercase_sequence_count(text, 2, 2)
 
         for article_info in articles_on_page:
             title = article_info['catalogue_title']
@@ -78,7 +88,9 @@ def get_stats(
         found.append(page_stat)
 
     stats = pd.DataFrame(found)
-    stats = stats[['courier_id', 'page', 'page_corr', 'count', 'found', 'not_found', 'continued_count']]
+    stats = stats[
+        ['courier_id', 'page', 'page_corr', 'count', 'found', 'not_found', 'continued_count', 'uppercase_count']
+    ]
 
     return stats
 

@@ -24,16 +24,29 @@ def test_get_stats_returns_dataframe_or_correct_size():
         article_index=CONFIG.article_index,
         overlap=get_overlapping_pages(CONFIG.article_index)[:3],
     )
-    assert stats.shape == (3, 7)
+
+    expected_columns = [
+        'courier_id',
+        'page',
+        'page_corr',
+        'count',
+        'found',
+        'not_found',
+        'continued_count',
+        'uppercase_count',
+    ]
+
+    assert stats.shape == (3, 8)
+    assert set(stats.columns) == set(expected_columns)
 
 
 @pytest.mark.parametrize(
     'courier_id, method, expected',
     [
-        (14255, find_title_regex, ['014255', 36, 36, 2, 0, 2, 1]),
-        (14255, find_title_fuzzywuzzy, ['014255', 36, 36, 2, 0, 2, 1]),
-        (59301, find_title_regex, ['059301', 30, 30, 2, 1, 1, 1]),
-        (59301, find_title_fuzzywuzzy, ['059301', 30, 30, 2, 0, 2, 1]),
+        (14255, find_title_regex, ['014255', 36, 36, 2, 0, 2, 1, 2]),
+        (14255, find_title_fuzzywuzzy, ['014255', 36, 36, 2, 0, 2, 1, 2]),
+        (59301, find_title_regex, ['059301', 30, 30, 2, 1, 1, 1, 1]),
+        (59301, find_title_fuzzywuzzy, ['059301', 30, 30, 2, 0, 2, 1, 1]),
     ],
 )
 def test_get_stats_returns_expected_values(courier_id, method, expected):
