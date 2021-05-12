@@ -22,6 +22,7 @@ pdfplumber = "^0.5.27"
 nltk = "^3.6.2"
 fuzzysearch = "^0.7.3"
 fuzzywuzzy = {extras = ["speedup"], version = "^0.18.0"}
+JPype1 = "^1.2.1"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
