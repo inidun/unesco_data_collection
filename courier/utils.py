@@ -50,7 +50,7 @@ def corrected_page_number(courier_id: str, page_number: int) -> int:
 
 
 def get_illegal_chars() -> re.Pattern:
-    """ See: https://stackoverflow.com/a/64570125 """
+    """See: https://stackoverflow.com/a/64570125"""
 
     illegal_unichrs = [
         (0x00, 0x08),
