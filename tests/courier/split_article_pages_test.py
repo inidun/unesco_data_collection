@@ -12,6 +12,13 @@ CONFIG = get_config()
 # TODO: test find_title_by_regex
 
 
+def test_find_title_by_fuzzymatch_with_out_of_bounds_min_score_raises_value_error():
+    with pytest.raises(ValueError, match='min_score'):
+        find_title_fuzzywuzzy('test', 'test', min_score=101)
+    with pytest.raises(ValueError, match='min_score'):
+        find_title_fuzzywuzzy('test', 'test', min_score=-1)
+
+
 def test_create_regexp():
     title = 'A nice and happy! title.? 77Maybe#'
     expr = create_regexp(title)
