@@ -23,6 +23,7 @@ nltk = "^3.6.2"
 fuzzysearch = "^0.7.3"
 fuzzywuzzy = {extras = ["speedup"], version = "^0.18.0"}
 JPype1 = "^1.2.1"
+more-itertools = "^8.8.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.0"
