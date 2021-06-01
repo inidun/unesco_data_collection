@@ -3,7 +3,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Union
 
+# TODO: No pdf2image, get page numbers from Java
 import pdf2image
+
+# TODO: Create new courier_pdfbox class, replace this
 import pdfbox
 from loguru import logger
 
@@ -28,9 +31,13 @@ class PDFBoxExtractor(ITextExtractor):
         last_page: Optional[int] = None,
     ) -> None:
         basename = Path(filename).stem
+        # TODO Remove num_pages
         num_pages = pdf2image.pdfinfo_from_path(filename)['Pages']
         if last_page is None or last_page > num_pages:
             last_page = int(num_pages)
+
+        # TODO
+        # for page in p.get_pages('filename'): -> sorted list of strings (or list of strings + titles, or markup)
         for page in range(first_page, last_page + 1):
             output_filename = Path(output_folder) / f'{basename}_{page:04}.txt'
             self.p.extract_text(
