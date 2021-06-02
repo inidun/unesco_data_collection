@@ -2,7 +2,7 @@
 Script and code related to collecting and curating UNESCO data.
 
 
-### Changelog (branch: `courier`)
+### Changelog
 
 - Updated Python from 3.7 to 3.8
 - Using `poetry` instead of `pipenv`
