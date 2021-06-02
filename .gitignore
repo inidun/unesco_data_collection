@@ -138,7 +138,7 @@ dmypy.json
 archive/
 tmp/
 notes/
+deprecated/
 *.out
-
-data/legal_instrument_corpus.txt/
-src/courier_ocr/data/
+tests/output/*
+data/courier/tmp
