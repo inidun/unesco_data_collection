@@ -45,8 +45,7 @@ class JavaExtractor:
     def extract_texts(self, filename: Union[str, os.PathLike]) -> List[str]:
         extractor = pdfbox_tools.PDFCourier2Text(5.5, 8)
         pages = [str(page) for page in extractor.extractText(filename)]
-        titles = [[(str(y.title), int(y.position)) for y in x] for x in extractor.getTitles()]
-
+        titles = [[(str(y.title), int(y.position)) for y in x] for x in extractor.getTitles()]  # pylint: disable=W0631
         text = [insert_titles(page, page_titles) for page, page_titles in zip(pages, titles)]
         return text
 
@@ -54,15 +53,12 @@ class JavaExtractor:
 # %%
 java_extractor = JavaExtractor()
 content = java_extractor.extract_texts(str(CONFIG.pdf_dir / '012656engo.pdf'))
-# %%
-
-len(content)
 # print(content[5])
 
 # %%
+with open(CONFIG.project_root / 'tests/output/java_extractor_tmp.txt', 'w') as fp:
+    for i, x in enumerate(content, start=1):
+        fp.write(f'---------- Page {i} ----------\n{x}\n')
 
-with open('tmp.txt', 'w') as fp:
-    for x in content:
-        fp.write(x)
-        fp.write('\n--------------------\n')
+len(content)
 # %%
