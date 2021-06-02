@@ -37,7 +37,7 @@ def insert_titles(page: str, titles: List[Tuple[str, int]]) -> str:
     if not titles:
         return page
     parts = split_by_idx(page, [title_info[1] - len(title_info[0]) for title_info in titles])
-    titled_text = ''.join(list(interleave_longest(parts, [f'\n[_{title[0]}_]\n' for title in titles])))
+    titled_text = ''.join(list(interleave_longest(parts, [f'\n[___{title[0]}___]\n' for title in titles])))
     return titled_text
 
 
@@ -56,11 +56,13 @@ java_extractor = JavaExtractor()
 content = java_extractor.extract_texts(str(CONFIG.pdf_dir / '012656engo.pdf'))
 # %%
 
-# for x in content:
-#     print(x)
-# jpype.shutdownJVM()
-
 len(content)
-print(content[5])
+# print(content[5])
 
+# %%
+
+with open('tmp.txt', 'w') as fp:
+    for x in content:
+        fp.write(x)
+        fp.write('\n--------------------\n')
 # %%
