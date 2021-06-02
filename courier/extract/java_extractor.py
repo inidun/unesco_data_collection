@@ -22,8 +22,9 @@ import org.apache.pdfbox.tools as pdfbox_tools  # isort: skip  # noqa: E402
 
 # %%
 
-# https://stackoverflow.com/a/57342460
+
 def split_by_idx(S: str, list_of_indices: List[int]) -> Iterator[str]:
+    """See: https://stackoverflow.com/a/57342460"""
     left, right = 0, list_of_indices[0]
     yield S[left:right]
     left = right
@@ -41,6 +42,8 @@ def insert_titles(page: str, titles: List[Tuple[str, int]]) -> str:
     return titled_text
 
 
+# TODO: Use this in `pdfbox_extractor` or new `custom_pdfbox_extractor`
+# TODO: Add parameters `titleFontSizeInPt`, `minTitleLengthInCharacters`
 class JavaExtractor:
     def extract_texts(self, filename: Union[str, os.PathLike]) -> List[str]:
         extractor = pdfbox_tools.PDFCourier2Text(5.5, 8)
