@@ -6,7 +6,7 @@ from typing import Iterator, List, Tuple, Union
 
 import jpype
 import jpype.imports
-from more_itertools import interleave_longest
+from more_itertools import roundrobin
 
 from courier.config import get_config
 
@@ -38,7 +38,7 @@ def insert_titles(page: str, titles: List[Tuple[str, int]]) -> str:
     if not titles:
         return page
     parts = split_by_idx(page, [title_info[1] - len(title_info[0]) for title_info in titles])
-    titled_text = ''.join(list(interleave_longest(parts, [f'\n[___{title[0]}___]\n' for title in titles])))
+    titled_text = ''.join(list(roundrobin(parts, [f'\n[___{title[0]}___]\n' for title in titles])))
     return titled_text
 
 
