@@ -1,5 +1,5 @@
 # pyright: reportMissingImports=false
-# pylint: disable=import-error, wrong-import-position
+# pylint: disable=import-error, wrong-import-position, import-outside-toplevel, consider-using-from-import
 
 import os
 from dataclasses import dataclass
@@ -9,26 +9,26 @@ from typing import List, Tuple, Union
 import jpype
 import jpype.imports
 from appdirs import AppDirs
+from pkg_resources import parse_version
 
 from courier.config import get_config
 
 CONFIG = get_config()
 
-# FIXME: Cleanup
-# pdfcourier2text_path = CONFIG.project_root / 'courier/lib/pdfbox-app-3.0.0-SNAPSHOT.jar'
-cache_dir = Path(AppDirs('python-pdfbox').user_cache_dir)
-pdfbox_path = list(cache_dir.glob('pdfbox-app-*.jar'))[-1]
-# FIXME: Create repo for pdfextract
+# TODO: Create repo for pdfextract
 pdfcourier2text_path = CONFIG.project_root / 'courier/lib/pdfextract-1.0-SNAPSHOT.jar'
 
-# FIXME: Move to JavaExtractor class, add java args as option, add class paths at appropriate places, rename alias in 'import as'
-if not jpype.isJVMStarted():
-    jpype.addClassPath(pdfbox_path)
-    jpype.addClassPath(pdfcourier2text_path)
-    # jpype.startJVM(convertStrings=False)
-    jpype.startJVM('-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog', convertStrings=False)
-# import org.apache.pdfbox.tools as pdfbox_tools  # isort: skip  # noqa: E402
-import se.umu.humlab.pdfextract as pdfbox_tools  # isort: skip  # noqa: E402
+# FIXME: Cleanup
+# pdfcourier2text_path = CONFIG.project_root / 'courier/lib/pdfbox-app-3.0.0-SNAPSHOT.jar'
+
+
+def get_pdfbox_path() -> Path:
+    app_dir = AppDirs('python-pdfbox')
+    cache_dir = Path(app_dir.user_cache_dir)
+    file_list = list(cache_dir.glob('pdfbox-app-*.jar'))
+    if not file_list:
+        raise RuntimeError('PDFBox not found')
+    return sorted(file_list, key=lambda x: parse_version(str(x)))[-1]
 
 
 @dataclass
@@ -55,11 +55,30 @@ class ExtractedIssue:
         return '\n\n'.join([str(p.content) for p in self.pages])
 
 
+# FIXME: Add java args as option to JavaExtractor class
 # TODO: Use this in `pdfbox_extractor` or new `custom_pdfbox_extractor`
-# TODO: Add parameters `titleFontSizeInPt`, `minTitleLengthInCharacters`
 class JavaExtractor:
-    def __init__(self) -> None:
-        self.extractor = pdfbox_tools.PDFCourier2Text(5.5, 8)
+    def __init__(
+        self,
+        title_font_size: float = 5.5,
+        min_title_length: int = 8,
+    ):
+
+        self.title_font_size = title_font_size
+        self.min_title_length = min_title_length
+
+        if str(pdfcourier2text_path) not in jpype.getClassPath():
+            jpype.addClassPath(pdfcourier2text_path)
+
+        if not jpype.isJVMStarted():
+            jpype.addClassPath(get_pdfbox_path())
+            jpype.startJVM(
+                '-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog', convertStrings=False
+            )
+
+        import se.umu.humlab.pdfextract as pdfextract  # isort: skip  # noqa: E402
+
+        self.extractor = pdfextract.PDFCourier2Text(self.title_font_size, self.min_title_length)
 
     def extract_issue(self, filename: Union[str, os.PathLike]) -> ExtractedIssue:
         filename = str(filename)
