@@ -81,6 +81,7 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
     article_index['eng_host_item'] = article_index['host_item'].apply(get_english_host_item)
     article_index.drop(columns=['document_type', 'languages', 'host_item'], axis=1, inplace=True)
 
+    # FIXME: #46 Missing pages in article index. Fix pattern matching.
     # - get article pages
     pattern = r'((?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*)(?:\,\s*\d{1,3}(?:-\d{1,3})*\s)*)'
     article_index['page_ref'] = article_index['eng_host_item'].str.extract(pattern).values

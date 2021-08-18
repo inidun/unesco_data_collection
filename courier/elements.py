@@ -276,6 +276,7 @@ class ConsolidateArticleTexts:
                 if position is not None:
                     A1.texts.append((page.page_number, page.text[:position]))
                 else:
+                    # TODO: #43 Handle case: `Unable to find title on page (1st)`
                     article.errors.append(
                         f'Unhandled case: Page {page.page_number}. Unable to find title on page (1st).'
                     )
@@ -287,12 +288,14 @@ class ConsolidateArticleTexts:
                 if position is not None:
                     A1.texts.append((page.page_number, page.text[position:]))
                 else:
+                    # TODO: #44 Handle case: `Unable to find title on page (2nd)`
                     article.errors.append(
                         f'Unhandled case: Page {page.page_number}. Unable to find title on page (2nd).'
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
 
             else:
+                # TODO: #45 Handle case: `Two articles starting on same page`
                 article.errors.append(f'Unhandled case: Page {page.page_number}. Two articles starting on same page.')
 
             # segments = page.segments()
