@@ -77,6 +77,7 @@ class JavaExtractor:
 
         self.extractor = pdfextract.PDFCourier2Text(self.title_font_size, self.min_title_length)
 
+    # FIXME: #48 Title position offset error
     def extract_issue(self, filename: Union[str, os.PathLike]) -> ExtractedIssue:
         filename = str(filename)
         pages = []
