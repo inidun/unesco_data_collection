@@ -69,6 +69,9 @@ def test_get_courier_id_with_invalid_id_raises_value_error():
         ('page 1', [1]),
         ('p., 1-2', [1, 2]),
         ('p. 1-2, 4-5 ', [1, 2, 4, 5]),
+        ('p. 1-2, 4-5 ', [1, 2, 4, 5]),
+        ('p. 15-16, 20-21, 31-32', [15, 16, 20, 21, 31, 32]),
+        ('p. 4-8, 32', [4, 5, 6, 7, 8, 32]),
     ],
 )
 def test_get_expanded_article_pages_returns_exptected_values(test_input_page_refs, expected):
@@ -90,6 +93,17 @@ def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_c
     ]
 
     assert set(article_index.columns) == set(expected_columns)
+
+
+# TODO Add failed + slumped
+def test_get_article_index_from_file_contains_correct_pages():
+    article_index = get_article_index_from_file(CONFIG.metadata_file)
+    assert article_index[article_index['record_number'] == 58762]['pages'].iloc[0] == [15, 16, 20, 21, 31, 32]
+
+
+def get_record_info(record_number: int) -> dict:
+    article_index = get_article_index_from_file(CONFIG.metadata_file)
+    return article_index[article_index['record_number'] == record_number].iloc[0].to_dict()
 
 
 def test_article_index_to_csv(tmp_path):

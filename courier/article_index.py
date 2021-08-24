@@ -32,14 +32,25 @@ def get_expanded_article_pages(page_ref: str) -> List[int]:
     """['p. D-D', 'p. D', 'p. D, D ', 'p. D, D-D ', 'p.D-D', 'p.D',
     'p. D-D, D ', 'page D', 'p., D-D', 'p. D-D, D-D ']"""
 
-    page_ref = re.sub(r'^(p\.\,?|pages?)', '', page_ref).replace(' ', '').split(',')
-    ix = itertools.chain(
-        *(
-            [list(range(int(x), int(y) + 1)) for x, y in [w.split('-') for w in page_ref if '-' in w]]
-            + [[int(x)] for x in page_ref if '-' not in x]
+    try:
+        page_ref = re.sub(r'^(p\.\,?|pages?)', '', page_ref).replace(' ', '').split(',')
+        ix = itertools.chain(
+            *(
+                [list(range(int(x), int(y) + 1)) for x, y in [w.split('-') for w in page_ref if '-' in w]]
+                + [[int(x)] for x in page_ref if '-' not in x]
+            )
         )
-    )
-    return sorted(list(ix))
+        return sorted(list(ix))
+    except:
+        return []
+
+
+def extract_page_ref(item: str) -> str:
+    pattern = r'(?:(?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*))(?:(?:(?:\,\s+)(?:\d{1,3}))(?:-\d{1,3})?)*'
+    m = re.search(pattern, item)
+    if m is None:
+        return None
+    return m.group(0)
 
 
 def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
@@ -83,10 +94,14 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
 
     # FIXME: #46 Missing pages in article index. Fix pattern matching.
     # - get article pages
-    pattern = r'((?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*)(?:\,\s*\d{1,3}(?:-\d{1,3})*\s)*)'
-    article_index['page_ref'] = article_index['eng_host_item'].str.extract(pattern).values
+    # pattern = r'((?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*)(?:\,\s*\d{1,3}(?:-\d{1,3})*\s)*)'
+    # pattern = r'(?:(?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*))(?:(?:(?:\,\s+)(?:\d{1,3}))(?:-\d{1,3})?)*'
+    # article_index['page_ref'] = article_index['eng_host_item'].str.extract(pattern).values
+
+    article_index['page_ref'] = article_index['eng_host_item'].apply(extract_page_ref)
     article_index.loc[article_index.record_number == 187812, 'page_ref'] = 'p. 18-31'  # Manual fix
     article_index.loc[article_index.record_number == 64927, 'page_ref'] = 'p. 28-29'  # Manual fix
+
     article_index['pages'] = article_index.page_ref.apply(get_expanded_article_pages)
     article_index.drop(columns=['page_ref'], axis=1, inplace=True)
 
