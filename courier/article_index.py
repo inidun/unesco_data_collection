@@ -28,27 +28,27 @@ def get_courier_id(eng_host_item: str) -> Optional[str]:
     return courier_id.zfill(6)
 
 
-def get_expanded_article_pages(page_ref: str) -> List[int]:
+def get_expanded_article_pages(page_ref: Optional[str]) -> List[int]:
     """['p. D-D', 'p. D', 'p. D, D ', 'p. D, D-D ', 'p.D-D', 'p.D',
     'p. D-D, D ', 'page D', 'p., D-D', 'p. D-D, D-D ']"""
 
-    try:
-        page_ref = re.sub(r'^(p\.\,?|pages?)', '', page_ref).replace(' ', '').split(',')
-        ix = itertools.chain(
-            *(
-                [list(range(int(x), int(y) + 1)) for x, y in [w.split('-') for w in page_ref if '-' in w]]
-                + [[int(x)] for x in page_ref if '-' not in x]
-            )
-        )
-        return sorted(list(ix))
-    except:
+    if page_ref is None:
         return []
+    pr = re.sub(r'^(p\.\,?|pages?)', '', str(page_ref or '')).replace(' ', '').split(',')
+    ix = itertools.chain(
+        *(
+            [list(range(int(x), int(y) + 1)) for x, y in [w.split('-') for w in pr if '-' in w]]
+            + [[int(x)] for x in pr if '-' not in x]
+        )
+    )
+    return sorted(list(ix))
 
 
-def extract_page_ref(item: str) -> str:
+def extract_page_ref(item: str) -> Optional[str]:
     pattern = r'(?:(?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*))(?:(?:(?:\,\s+)(?:\d{1,3}))(?:-\d{1,3})?)*'
     m = re.search(pattern, item)
     if m is None:
+        logger.debug(f'No match found for "{item}"')
         return None
     return m.group(0)
 
