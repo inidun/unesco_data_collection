@@ -196,7 +196,7 @@ def test_to_pdf_page_number():
 def test_issue_statistics_has_expected_values():
     issue = CourierIssue('012656')
     assert IssueStatistics(issue).assigned_pages == 0
-    assert IssueStatistics(issue).expected_article_pages == 23
+    assert IssueStatistics(issue).expected_article_pages == 24
     assert IssueStatistics(issue).number_of_articles == 5
     assert IssueStatistics(issue).total_pages == 36
 
@@ -210,38 +210,12 @@ def test_issue_has_no_assigned_pages_as_default():
 def test_AssignArticlesToPages_assignes_expected_pages_to_issue():
     issue = CourierIssue('012656')
     AssignArticlesToPages().assign(issue)
-    assert issue.get_assigned_pages() == {
-        7,
-        8,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-    }
-    assert IssueStatistics(issue).assigned_pages == 22
-    assert IssueStatistics(issue).consolidated_pages == 0
 
-    # assert len(issue.get_consolidated_pages()) == 0
-    # assert len(issue.get_assigned_pages()) == 22
-    # ConsolidateArticleTexts().consolidate(issue)
-    # assert len(issue.get_consolidated_pages()) == 22
-    # assert IssueStatistics(issue).assigned_pages == 22
+    assert issue.get_assigned_pages() == set(
+        [16, 17, 18, 20, 21] + [7, 8] + [11, 12, 13, 14, 15, 32] + [29, 30, 31] + [22, 23, 24, 25, 26, 27, 28]
+    )
+    assert IssueStatistics(issue).assigned_pages == 23
+    assert IssueStatistics(issue).consolidated_pages == 0
 
 
 def test_issue_has_no_consolidated_pages_as_default():

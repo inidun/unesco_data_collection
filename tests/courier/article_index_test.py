@@ -59,6 +59,7 @@ def test_get_courier_id_with_invalid_id_raises_value_error():
 @pytest.mark.parametrize(
     'test_input_page_refs, expected',
     [
+        (None, []),
         ('p. 1-2', [1, 2]),
         ('p. 1', [1]),
         ('p. 1, 2 ', [1, 2]),
@@ -96,9 +97,16 @@ def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_c
 
 
 # TODO Add failed + slumped
-def test_get_article_index_from_file_contains_correct_pages():
-    article_index = get_article_index_from_file(CONFIG.metadata_file)
-    assert article_index[article_index['record_number'] == 58762]['pages'].iloc[0] == [15, 16, 20, 21, 31, 32]
+@pytest.mark.parametrize(
+    'record_number, expected',
+    [
+        (58762, [15, 16, 20, 21, 31, 32]),
+        (64927, [28, 29]),
+    ],
+)
+def test_get_article_index_from_file_contains_correct_pages(record_number, expected):
+    pages = get_record_info(record_number)['pages']
+    assert pages == expected
 
 
 def get_record_info(record_number: int) -> dict:
