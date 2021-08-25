@@ -305,17 +305,22 @@ class ConsolidateArticleTexts:
         else:
             article.errors.append(f'Unhandled page {page.page_number}. More than two articles on page.')
 
-    # NOTE: Main logic
+    # NOTE: Also return title
     def find_matching_title_position(self, article: Article, titles: List) -> Optional[int]:
-        if article.catalogue_title is None:
-            return None
-        title_bow: Set[str] = set(article.catalogue_title.lower().split())
-        for position, candidate_title in titles:
-            candidate_title_bow: Set[str] = set(candidate_title.lower().split())
-            common_words = title_bow.intersection(candidate_title_bow)
-            if len(common_words) >= 2 and len(common_words) >= len(title_bow) / 2:
-                return position
-        return None
+        return fuzzy_find_title(article.catalogue_title, titles)[0]
+
+
+# NOTE: Main logic
+def fuzzy_find_title(title: str, titles: List) -> Tuple[Optional[int], Optional[str]]:
+    if title is None:
+        return (None, None)
+    title_bow: Set[str] = set(title.lower().split())
+    for candidate_title, position in titles:
+        candidate_title_bow: Set[str] = set(candidate_title.lower().split())
+        common_words = title_bow.intersection(candidate_title_bow)
+        if len(common_words) >= 2 and len(common_words) >= len(title_bow) / 2:
+            return position, candidate_title
+    return (None, None)
 
 
 @dataclass
