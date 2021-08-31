@@ -55,6 +55,7 @@ def test_extract_issue_returns_expected_content():
     assert p == text
 
 
+# TODO: Add more test cases
 @pytest.mark.parametrize(
     'filename, title, page_number',
     [(CONFIG.pdf_dir / '077050engo.pdf', 'The rubber man', 33)],
@@ -72,6 +73,9 @@ def test_title_position(filename, title, page_number):
     # title_list = [(t, p) for t, p in issue.pages[page_number].titles if t.startswith(title)]
     # assert len(title_list) == 1
 
-    extracted_title_position, _ = fuzzy_find_title(title, issue.pages[page_number].titles)
+    # extracted_title_position, _ = fuzzy_find_title(title, issue.pages[page_number].titles)
+    extracted_title_position, _ = fuzzy_find_title(
+        title, [(position, title) for title, position in issue.pages[page_number].titles]
+    )
     assert extracted_title_position is not None
     assert expected_title_position - 10 < extracted_title_position <= expected_title_position
