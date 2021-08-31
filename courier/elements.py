@@ -10,7 +10,9 @@ from typing import List, Optional, Set, Tuple, Union
 
 import ftfy
 import untangle
+from loguru import logger
 
+from courier.article_index import article_index_to_csv
 from courier.config import get_config
 from courier.extract.java_extractor import ExtractedIssue, ExtractedPage, JavaExtractor
 from courier.utils import flatten, get_courier_ids, split_by_idx, valid_xml
@@ -315,7 +317,7 @@ def fuzzy_find_title(title: str, titles: List) -> Tuple[Optional[int], Optional[
     if title is None:
         return (None, None)
     title_bow: Set[str] = set(title.lower().split())
-    for candidate_title, position in titles:
+    for position, candidate_title in titles:
         candidate_title_bow: Set[str] = set(candidate_title.lower().split())
         common_words = title_bow.intersection(candidate_title_bow)
         if len(common_words) >= 2 and len(common_words) >= len(title_bow) / 2:
@@ -380,8 +382,12 @@ def export_articles(
     issue_statistics = ExtractArticles.statistics(issue)
 
     # TODO: Move to method in IssueStatistics
-    print(
-        f'Courier ID: {courier_id}. Total pages: {issue_statistics.total_pages}. Assigned {issue_statistics.assigned_pages} of {issue_statistics.expected_article_pages} pages ({100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.2f}%)'
+    # print(
+    #     f'Courier ID: {courier_id}. Total pages: {issue_statistics.total_pages}. Assigned {issue_statistics.assigned_pages} of {issue_statistics.expected_article_pages} pages ({100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.2f}%)'
+    # )
+
+    logger.info(
+        f'{courier_id};{issue_statistics.total_pages};{issue_statistics.expected_article_pages};{issue_statistics.assigned_pages};{100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.0f}'
     )
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
@@ -396,12 +402,26 @@ def export_articles(
 
 
 if __name__ == '__main__':
+
+    export_folder = CONFIG.articles_dir / 'exported'
+    article_index_to_csv(CONFIG.article_index, export_folder)
+
+    logfile = Path(export_folder) / 'extract_log.csv'
+    file_logger = logger.add(
+        Path(logfile),
+        format='{message}',
+        # format='{message};{time:YYYY-MM-DD;HH:mm:ss}',
+    )
+    logger.info('courier_id;total_pages;article_pages;assigned_pages;percentage_assigned')
+
     courier_ids = [x[:6] for x in get_courier_ids()]
     for courier_id in courier_ids:
         if courier_id not in CONFIG.article_index.courier_id.values:
             print(f'{courier_id} not in article index')
             continue
-        export_articles(courier_id)
+        export_articles(courier_id, export_folder)
+
+    logger.remove(file_logger)
 
     # export_articles('014255')
     # export_articles('015480')
