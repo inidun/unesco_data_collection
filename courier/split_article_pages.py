@@ -37,8 +37,8 @@ def find_title_fuzzywuzzy(text: str, title: str, min_score: int = 90) -> bool:
     if not 0 <= min_score <= 100:
         raise ValueError('min_score must be in the range [0, 100]')
     lines = text.splitlines()
-    _, value = process.extractOne(title, lines)
-    return bool(value > min_score)
+    value = process.extractOne(title, lines)
+    return bool(value and value[1] > min_score)
 
 
 def find_uppercase_sequences(text: str, min_word_len: int = 1, min_seq_len: int = 1) -> List[str]:
