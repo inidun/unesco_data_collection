@@ -10,6 +10,7 @@ from courier.config import get_config
 from courier.elements import (
     Article,
     AssignArticlesToPages,
+    ConsolidateArticleTexts,
     CourierIssue,
     DoubleSpreadRightPage,
     IssueStatistics,
@@ -212,7 +213,7 @@ def test_AssignArticlesToPages_assignes_expected_pages_to_issue():
     AssignArticlesToPages().assign(issue)
 
     assert issue.get_assigned_pages() == set(
-        [16, 17, 18, 20, 21] + [7, 8] + [11, 12, 13, 14, 15, 32] + [29, 30, 31] + [22, 23, 24, 25, 26, 27, 28]
+        [7, 8] + [11, 12, 13, 14, 15, 32] + [16, 17, 18, 20, 21] + [22, 23, 24, 25, 26, 27, 28] + [29, 30, 31]
     )
     assert IssueStatistics(issue).assigned_pages == 23
     assert IssueStatistics(issue).consolidated_pages == 0
@@ -223,11 +224,49 @@ def test_issue_has_no_consolidated_pages_as_default():
     assert IssueStatistics(issue).consolidated_pages == 0
 
 
-def test_ConsolidateArticleTexts():
-    issue = CourierIssue('012656')
-    assert issue is not None
+@pytest.mark.parametrize(
+    # fmt: off
+    'issue_number, page_number, record_number, article_title, expected, comment',
+    [
+        # Base case
+        ('062404', 27, 62421, 'UNESCO in retrospect and perspective', True, 'Base case: only one article on page'),
+
+        # TODO: #43, #44 Handle cases: `Unable to find title on page (1st)` and `Unable to find title on page (2nd)`
+        # ('033144', 14, None, 'Two decades in the world of science', True, '2 articles: Unable to find title (1st article).'),
+        # ('033144', 14, None, 'New outposts of science', True, '2 articles: Unable to find title (2nd article).'),
+
+        # TODO: #45 Handle case: `Two articles starting on same page`
+        # ('062404', 26, 62420, 'UNESCO art pocket books: a new venture in art publishing', True, '2 articles: Starting on same page'),
+        # ('062404', 26, 62421, 'UNESCO in retrospect and perspective', True, '2 articles: Starting on same page'),
+
+        # Unhandled
+        ('063436', 23, 63295, 'Index of prosperity: S.T.P. (scientific and technical potential)', False, '2 articles: None of them starts on page. (19,20,21,22,23)'),
+        ('063436', 23, 63435, 'UNESCO expands its science programme', False, '2 articles: None of them starts on page. (22,23)'),
+        ('073938', 7, 73939, 'The Internationalist', False, 'More than two articles on page.'),
+    ],
+    # fmt: on
+)
+def test_ConsolidateArticleTexts(issue_number, page_number, record_number, article_title, expected, comment):
+
+    issue = CourierIssue(issue_number)
+    AssignArticlesToPages().assign(issue)
+
+    if record_number is not None:
+        article = issue.get_article_from_record_number(record_number)  # type: ignore
+    else:
+        article = issue.get_article_from_title(article_title)  # type: ignore
+    assert article is not None
+
+    page = issue.get_page(page_number)
+
+    service = ConsolidateArticleTexts()
+    service.assign_segments_to_articles(article, page, min_second_article_position=0)
+
+    result = any(x for x in article.texts if x[0] == page_number)
+    assert result == expected, comment
 
 
+@pytest.mark.skip('Update')
 def test_export_articles_generates_expected_output():
     with TemporaryDirectory() as output_dir:
         export_articles('012656', output_dir)
