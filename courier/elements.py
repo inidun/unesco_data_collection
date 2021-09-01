@@ -78,7 +78,7 @@ class Page:
         return titles
 
     def get_pritty_titles(self) -> str:
-        return f'{5*"-"}' + f'\n{5*"-"}'.join([f'\tposition {position}:\t"{title}"' for position, title in self.titles])
+        return '\n'.join([f'\t{position}:\t"{title}"' for position, title in self.titles])
 
     def segments(self) -> List[str]:
         if not self.titles:
@@ -127,11 +127,21 @@ class Article:
 
     def get_text(self) -> str:
         text: str = ''
-        text += f'{5*"-"} Title according to index: {self.catalogue_title}\n'
-        text += f'{5*"-"} Pages according to index: {",".join(str(x) for x in self.page_numbers)}\n'
-        text += f'{5*"-"} Assigned according to index: {self.page_numbers}\n'
-        text += f'{5*"-"} Missing pages: {self.get_not_found_pages()}\n'
-        text += f'{5*"-"}'.join(self.errors)
+        # text += f'{5*"-"} Title according to index: {self.catalogue_title}\n'
+        # text += f'{5*"-"} Pages according to index: {",".join(str(x) for x in self.page_numbers)}\n'
+        # text += f'{5*"-"} Assigned according to index: {self.page_numbers}\n'
+        # text += f'{5*"-"} Missing pages: {self.get_not_found_pages()}\n'
+
+        text += f'Title: {self.catalogue_title}\n'
+        text += f'Pages: {",".join(str(x) for x in self.page_numbers)}\n'
+
+        missing_pages = self.get_not_found_pages()
+        if missing_pages:
+            text += f'Missing: {",".join(str(x) for x in missing_pages)}\n\n'
+
+        text += '\n'.join(self.errors)
+        text += '\n'
+
         for page_number, page_text in self.texts:
             text += f'\n{20*"-"} Page {page_number} {20*"-"}\n\n{page_text}\n'
         return text
@@ -167,6 +177,12 @@ class CourierIssue:
         return _pdf_page_number
 
     def get_article(self, record_number: str) -> Optional[Article]:
+        return next((x for x in self.articles if x.record_number == record_number), None)
+
+    def get_article_from_title(self, title: str) -> Optional[Article]:
+        return next((x for x in self.articles if x.catalogue_title == title), None)
+
+    def get_article_from_record_number(self, record_number: int) -> Optional[Article]:
         return next((x for x in self.articles if x.record_number == record_number), None)
 
     def _get_articles(self) -> List[Article]:
@@ -253,12 +269,13 @@ class AssignArticlesToPages:
 
 
 class ConsolidateArticleTexts:
-    def consolidate(self, issue: CourierIssue) -> None:
+    def consolidate(self, issue: CourierIssue, min_second_article_position: int = 80) -> None:
         for article in issue.articles:
             for page in article.pages:
-                self.assign_segments_to_articles(article, page)
+                self.assign_segments_to_articles(article, page, min_second_article_position)
 
-    def assign_segments_to_articles(self, article: Article, page: Page) -> None:
+    def assign_segments_to_articles(self, article: Article, page: Page, min_second_article_position: int = 80) -> None:
+
         if len(page.articles) == 1:
             article.texts.append((page.page_number, page.text))
 
@@ -272,40 +289,63 @@ class ConsolidateArticleTexts:
             A1: Article = article
             A2: Article = page.articles[1] if page.articles[1] is not article else page.articles[0]
 
+            # Case: A1 start before, A2 starts on page
+            # TODO: #43 Handle case: `Unable to find title on page (1st)`
             if A1.min_page_number < page.page_number and A2.min_page_number == page.page_number:
                 """A1 ligger först på sidan: => Hitta A2's titel"""
                 position = self.find_matching_title_position(A2, page.titles)
                 if position is not None:
                     A1.texts.append((page.page_number, page.text[:position]))
                 else:
-                    # TODO: #43 Handle case: `Unable to find title on page (1st)`
                     article.errors.append(
-                        f'Unhandled case: Page {page.page_number}. Unable to find title on page (1st).'
+                        f'Unhandled case: Page {page.page_number}. 2 articles: Unable to find title (1st article).'
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
 
+            # Case: A2 start before, A1 starts on page
+            # TODO: #44 Handle case: `Unable to find title on page (2nd)`
             elif A2.min_page_number < page.page_number and A1.min_page_number == page.page_number:
                 """A1 ligger sist på sidan: => Hitta A1's titel"""
                 position = self.find_matching_title_position(A1, page.titles)
                 if position is not None:
                     A1.texts.append((page.page_number, page.text[position:]))
                 else:
-                    # TODO: #44 Handle case: `Unable to find title on page (2nd)`
                     article.errors.append(
-                        f'Unhandled case: Page {page.page_number}. Unable to find title on page (2nd).'
+                        f'Unhandled case: Page {page.page_number}. 2 articles: Unable to find title (2nd article).'
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
 
+            # Case: A1 and A2 starts on page
+            # TODO: #45 Handle case: `Two articles starting on same page`
+            elif A1.min_page_number == A2.min_page_number == page.page_number:
+                position_A1 = self.find_matching_title_position(A1, page.titles)
+                position_A2 = self.find_matching_title_position(A2, page.titles)
+
+                if position_A1 is not None and position_A2 is not None:
+                    if position_A1 < position_A2:
+                        A1.texts.append((page.page_number, page.text[:position_A2]))
+                    else:
+                        A1.texts.append((page.page_number, page.text[position_A1:]))
+                elif position_A1 is not None and position_A1 > min_second_article_position:
+                    A1.texts.append((page.page_number, page.text[position_A1:]))
+                elif position_A2 is not None and position_A2 > min_second_article_position:
+                    A1.texts.append((page.page_number, page.text[:position_A2]))
+                else:
+                    article.errors.append(
+                        f'Unhandled case: Page {page.page_number}. 2 articles: Starting on same page.'
+                    )
+
             else:
-                # TODO: #45 Handle case: `Two articles starting on same page`
-                article.errors.append(f'Unhandled case: Page {page.page_number}. Two articles starting on same page.')
+                article.errors.append(
+                    f'Unhandled case: Page {page.page_number}. 2 articles: None of them starts on page.'
+                )
 
             # segments = page.segments()
             # text: str = self.extract_article_text(article, page)
             # page_titles = page.titles
 
         else:
-            article.errors.append(f'Unhandled page {page.page_number}. More than two articles on page.')
+            article.errors.append(f'Unhandled case: Page {page.page_number}. More than two articles on page.')
 
     # NOTE: Also return title
     def find_matching_title_position(self, article: Article, titles: List) -> Optional[int]:
@@ -386,7 +426,7 @@ def export_articles(
     #     f'Courier ID: {courier_id}. Total pages: {issue_statistics.total_pages}. Assigned {issue_statistics.assigned_pages} of {issue_statistics.expected_article_pages} pages ({100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.2f}%)'
     # )
 
-    logger.info(
+    logger.trace(
         f'{courier_id};{issue_statistics.total_pages};{issue_statistics.expected_article_pages};{issue_statistics.assigned_pages};{100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.0f}'
     )
 
@@ -407,12 +447,8 @@ if __name__ == '__main__':
     article_index_to_csv(CONFIG.article_index, export_folder)
 
     logfile = Path(export_folder) / 'extract_log.csv'
-    file_logger = logger.add(
-        Path(logfile),
-        format='{message}',
-        # format='{message};{time:YYYY-MM-DD;HH:mm:ss}',
-    )
-    logger.info('courier_id;total_pages;article_pages;assigned_pages;percentage_assigned')
+    file_logger = logger.add(Path(logfile), format='{message}', level='TRACE')
+    logger.trace('courier_id;total_pages;article_pages;assigned_pages;percentage_assigned')
 
     courier_ids = [x[:6] for x in get_courier_ids()]
     for courier_id in courier_ids:
@@ -422,8 +458,3 @@ if __name__ == '__main__':
         export_articles(courier_id, export_folder)
 
     logger.remove(file_logger)
-
-    # export_articles('014255')
-    # export_articles('015480')
-    # export_articles('074873')
-    # export_articles('098493')
