@@ -172,6 +172,7 @@ class CourierIssue:
         self.double_pages: List[int] = [x + i for i, x in enumerate(self._pdf_double_page_numbers)]
         self.pages: List[Page] = PagesFactory().create(self)
 
+    # FIXME: Rename get_page_index
     def to_pdf_page_number(self, page_number: int) -> int:
         _pdf_page_number = page_number - 1 - len([x for x in self.double_pages if x < page_number])
         return _pdf_page_number
@@ -210,21 +211,6 @@ class CourierIssue:
 
     def get_article_pages(self) -> Set[int]:
         return set(flatten([a.page_numbers for a in self.articles]))
-
-    # FIXME: Return correct item/type
-    # def page_numbers_mapping(self) -> Mapping[int, int]:
-    #     total_pages = len(self.pages) + len(self.double_pages)
-    #     corrected_double_pages = [x + i for i, x in enumerate(self.double_pages)]
-    #     pages = [x for x in range(1, total_pages + 1) if x - 1 in corrected_double_pages]
-    #     return pages
-
-    # def find_pattern(self, pattern: str) -> List[Tuple[int, int]]:
-    #     page_numbers = []
-    #     for i, page in enumerate(self.content.document.page, 1):
-    #         m = re.search(pattern, page.cdata, re.IGNORECASE)
-    #         if m:
-    #             page_numbers.append((i, page['number']))
-    #     return page_numbers
 
 
 class PagesFactory:
@@ -364,10 +350,7 @@ def fuzzy_find_title(title: str, titles: List) -> Tuple[Optional[int], Optional[
 
 @dataclass
 class IssueStatistics:
-    # all articles
-    #   expected pages
-    #   assigned pages
-    # all pages
+
     issue: CourierIssue
 
     @property
