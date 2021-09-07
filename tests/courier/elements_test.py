@@ -252,7 +252,7 @@ def test_ConsolidateArticleTexts(issue_number, page_number, record_number, artic
     AssignArticlesToPages().assign(issue)
 
     if record_number is not None:
-        article = issue.get_article_from_record_number(record_number)  # type: ignore
+        article = issue.get_article(record_number)  # type: ignore
     else:
         article = issue.get_article_from_title(article_title)  # type: ignore
     assert article is not None

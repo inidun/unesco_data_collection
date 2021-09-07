@@ -182,9 +182,6 @@ class CourierIssue:
     def get_article_from_title(self, title: str) -> Optional[Article]:
         return next((x for x in self.articles if x.catalogue_title == title), None)
 
-    def get_article_from_record_number(self, record_number: int) -> Optional[Article]:
-        return next((x for x in self.articles if x.record_number == record_number), None)
-
     def _get_articles(self) -> List[Article]:
         articles: List[Article] = [
             Article(courier_issue=self, **items) for items in CONFIG.get_issue_article_index(self.courier_id)
