@@ -23,7 +23,7 @@ clean:
 	@rm -rf tests/output
 
 test: output-dir
-	@poetry run pytest --durations=0 tests
+	@poetry run pytest --durations=0 tests/courier
 	@rm -rf ./tests/output/*
 
 test-no-java: output-dir
