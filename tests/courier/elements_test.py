@@ -96,14 +96,13 @@ def test_create_article():
     assert article.year == 1966
 
 
-# @pytest.mark.legacy
-# def test_create_courier_issue():
-#     courier_issue = CourierIssue('061468')
-#     assert isinstance(courier_issue, CourierIssue)
+def test_create_courier_issue():
+    courier_issue = CourierIssue('061468')
+    assert isinstance(courier_issue, CourierIssue)
 
-#     assert courier_issue.num_articles == 3
-#     assert len(courier_issue) == 36
-#     assert courier_issue.double_pages == [10, 17]
+    assert len(courier_issue) == 36
+    assert courier_issue.num_articles == 3
+    assert courier_issue.double_pages == [10, 18]
 
 
 def test_create_non_existing_issue_raises_value_error():
@@ -113,41 +112,18 @@ def test_create_non_existing_issue_raises_value_error():
         CourierIssue('000000')
 
 
-# @pytest.mark.legacy
-# @pytest.mark.parametrize(
-#     'courier_id, expected',
-#     [
-#         ('061468', [10, 17]),
-#         ('069916', [10, 11, 24]),
-#         ('125736', []),  # no double pages
-#         ('110425', []),  # excluded
-#     ],
-# )
-# def test_courier_issues_has_correct_double_pages(courier_id, expected):
-#     result = CourierIssue(courier_id).double_pages
-#     assert result == expected
-
-
-# @pytest.mark.skip('deprecated')
-# def test_courier_issue_has_correct_index():
-#     courier_issue = CourierIssue('061468')
-#     assert not courier_issue.index.empty
-#     assert courier_issue.index.shape == (3, 5)
-
-
-# @pytest.mark.legacy
-# @pytest.mark.parametrize(
-#     'courier_id, pattern, expected',
-#     [
-#         ('061468', 'MARCH 1964', [(1, '1'), (3, '3')]),
-#         ('061468', r'a.*open.*world', [(1, '1')]),
-#         ('061468', 'nonmatchingpattern', []),
-#         ('074891', 'drought over africa', [(3, '3'), (45, '45'), (67, '67')]),
-#     ],
-# )
-# def test_courier_issue_find_pattern_returns_expected_values(courier_id, pattern, expected):
-#     result = CourierIssue(courier_id).find_pattern(pattern)
-#     assert result == expected
+@pytest.mark.parametrize(
+    'courier_id, expected',
+    [
+        ('061468', [10, 18]),  # 10, 17 in PDF
+        ('069916', [10, 12, 26]),  # 10, 11, 24 in PDF
+        ('125736', []),  # no double pages
+        ('110425', []),  # excluded
+    ],
+)
+def test_courier_issues_has_correct_double_pages(courier_id, expected):
+    result = CourierIssue(courier_id).double_pages
+    assert result == expected
 
 
 def test_courier_issue_get_page_when_issue_has_double_pages_returns_expected():
@@ -164,22 +140,26 @@ def test_courier_issue_get_page_when_issue_has_double_pages_returns_expected():
     assert courier_issue.get_page(11).text == courier_issue.get_page(13).text == courier_issue.get_page(27).text == ''
 
 
-# @pytest.mark.skip('deprecated')
-# def test_courier_issue_pages_when_issue_has_double_pages_returns_expected():
-#     courier_issue = CourierIssue('069916')
-#     pages = [p for p in courier_issue.pages]
-#     assert len(pages) == courier_issue.num_pages
-#     assert pages[8].text != pages[9].text == pages[10].text == pages[11].text != pages[12].text
-
-
-# 069916;"10 11 24"
-def test_to_pdf_page_number():
-    issue = CourierIssue('012656')
-    assert issue.to_pdf_page_number(15) == 14
-    assert issue.to_pdf_page_number(18) == 17
-    assert issue.to_pdf_page_number(19) == 17
-    assert issue.to_pdf_page_number(20) == 18
-    assert issue.to_pdf_page_number(21) == 19
+# FIXME: Rename get_page_index
+@pytest.mark.parametrize(
+    'courier_id, page_number, expected',
+    [
+        ('012656', 15, 14),
+        ('012656', 18, 17),
+        ('012656', 19, 17),
+        ('012656', 20, 18),
+        ('012656', 21, 19),
+        ('069916', 10, 9),
+        ('069916', 11, 9),
+        ('069916', 12, 10),
+        ('069916', 26, 23),
+        ('069916', 27, 23),
+    ],
+)
+def test_to_pdf_page_number_returns_expected(courier_id, page_number, expected):
+    issue = CourierIssue(courier_id)
+    result = issue.to_pdf_page_number(page_number)
+    assert result == expected
 
 
 # TODO
