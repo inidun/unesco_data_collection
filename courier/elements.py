@@ -398,37 +398,22 @@ def export_articles(
     issue_statistics = ExtractArticles.statistics(issue)
 
     # TODO: Move to method in IssueStatistics
-    # print(
-    #     f'Courier ID: {courier_id}. Total pages: {issue_statistics.total_pages}. Assigned {issue_statistics.assigned_pages} of {issue_statistics.expected_article_pages} pages ({100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.2f}%)'
-    # )
-
     logger.trace(
         f'{courier_id};{issue_statistics.total_pages};{issue_statistics.expected_article_pages};{issue_statistics.assigned_pages};{100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.0f}'
     )
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
 
-    rename_logger = logger.add(
-        CONFIG.articles_dir / 'exported/rename.sh',
-        filter=lambda record: record['level'].name == 'INFO',
-        format='{message}',
-    )
-
     for article in issue.articles:
         if article.catalogue_title is None:
             continue
         safe_title = re.sub(r'[^\w]+', '_', str(article.catalogue_title).lower())
-        file = Path(export_folder) / f'{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
-        # file = Path(export_folder) / f'{article.year or "0000"}_{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
-
-        logger.info(
-            f'git mv {article.courier_id}_{article.record_number}_{safe_title[:60]}.txt {article.year or "0000"}_{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
+        file = (
+            Path(export_folder)
+            / f'{article.year or "0000"}_{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
         )
-
         with open(file, 'w') as fp:
             fp.write(article.get_text())
-
-    logger.remove(rename_logger)
 
 
 if __name__ == '__main__':
