@@ -78,7 +78,9 @@ class Page:
         return titles
 
     def get_pritty_titles(self) -> str:
-        return '\n'.join([f'\t{position}:\t"{title}"' for position, title in self.titles])
+        # return '\n'.join([f'\t{position}:\t"{title}"' for position, title in self.titles])
+        # TEMP
+        return f'{5*"-"}' + f'\n{5*"-"}'.join([f'\tposition {position}:\t"{title}"' for position, title in self.titles])
 
     def segments(self) -> List[str]:
         if not self.titles:
@@ -125,23 +127,30 @@ class Article:
     def max_page_number(self) -> int:
         return 0 if self.page_numbers is None else max(self.page_numbers)
 
+    # def get_text(self) -> str:
+    #     text: str = ''
+    #     text += f'Title:\t{self.catalogue_title}\n'
+    #     text += f'Pages:\t{",".join(str(x) for x in self.page_numbers)}\n'
+
+    #     missing_pages = self.get_not_found_pages()
+    #     if missing_pages:
+    #         text += f'Missing: {",".join(str(x) for x in missing_pages)}\n\n'
+
+    #     text += '\n'.join(self.errors)
+    #     text += '\n'
+
+    #     for page_number, page_text in self.texts:
+    #         text += f'\n{20*"-"} Page {page_number} {20*"-"}\n\n{page_text}\n'
+    #     return text
+
+    # TEMP
     def get_text(self) -> str:
         text: str = ''
-        # text += f'{5*"-"} Title according to index: {self.catalogue_title}\n'
-        # text += f'{5*"-"} Pages according to index: {",".join(str(x) for x in self.page_numbers)}\n'
-        # text += f'{5*"-"} Assigned according to index: {self.page_numbers}\n'
-        # text += f'{5*"-"} Missing pages: {self.get_not_found_pages()}\n'
-
-        text += f'Title: {self.catalogue_title}\n'
-        text += f'Pages: {",".join(str(x) for x in self.page_numbers)}\n'
-
-        missing_pages = self.get_not_found_pages()
-        if missing_pages:
-            text += f'Missing: {",".join(str(x) for x in missing_pages)}\n\n'
-
-        text += '\n'.join(self.errors)
-        text += '\n'
-
+        text += f'{5*"-"} Title according to index: {self.catalogue_title}\n'
+        text += f'{5*"-"} Pages according to index: {",".join(str(x) for x in self.page_numbers)}\n'
+        text += f'{5*"-"} Assigned according to index: {self.page_numbers}\n'
+        text += f'{5*"-"} Missing pages: {self.get_not_found_pages()}\n'
+        text += f'{5*"-"}'.join(self.errors)
         for page_number, page_text in self.texts:
             text += f'\n{20*"-"} Page {page_number} {20*"-"}\n\n{page_text}\n'
         return text
@@ -149,6 +158,7 @@ class Article:
     def get_assigned_pages(self) -> Set[int]:
         return {p[0] for p in self.texts}
 
+    # FIXME: Exclude double pages from missing
     def get_not_found_pages(self) -> Set[int]:
         return {x for x in self.page_numbers if x not in self.get_assigned_pages()}
 
@@ -177,7 +187,7 @@ class CourierIssue:
         _pdf_page_number = page_number - 1 - len([x for x in self.double_pages if x < page_number])
         return _pdf_page_number
 
-    def get_article(self, record_number: str) -> Optional[Article]:
+    def get_article(self, record_number: int) -> Optional[Article]:
         return next((x for x in self.articles if x.record_number == record_number), None)
 
     def get_article_from_title(self, title: str) -> Optional[Article]:
@@ -281,7 +291,8 @@ class ConsolidateArticleTexts:
                     A1.texts.append((page.page_number, page.text[:position]))
                 else:
                     article.errors.append(
-                        f'Unhandled case: Page {page.page_number}. 2 articles: Unable to find title (1st article).'
+                        # f'Unhandled case: Page {page.page_number}. 2 articles: Unable to find title (1st article).'
+                        f'Unhandled case: Page {page.page_number}. Unable to find title on page (1st).'
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
 
@@ -294,7 +305,8 @@ class ConsolidateArticleTexts:
                     A1.texts.append((page.page_number, page.text[position:]))
                 else:
                     article.errors.append(
-                        f'Unhandled case: Page {page.page_number}. 2 articles: Unable to find title (2nd article).'
+                        # f'Unhandled case: Page {page.page_number}. 2 articles: Unable to find title (2nd article).'
+                        f'Unhandled case: Page {page.page_number}. Unable to find title on page (2nd).'
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
 
@@ -315,7 +327,8 @@ class ConsolidateArticleTexts:
                     A1.texts.append((page.page_number, page.text[:position_A2]))
                 else:
                     article.errors.append(
-                        f'Unhandled case: Page {page.page_number}. 2 articles: Starting on same page.'
+                        # f'Unhandled case: Page {page.page_number}. 2 articles: Starting on same page.'
+                        f'Unhandled case: Page {page.page_number}. Two articles starting on same page.'
                     )
 
             else:
@@ -328,7 +341,9 @@ class ConsolidateArticleTexts:
             # page_titles = page.titles
 
         else:
-            article.errors.append(f'Unhandled case: Page {page.page_number}. More than two articles on page.')
+            # article.errors.append(f'Unhandled case: Page {page.page_number}. More than two articles on page.')
+            article.errors.append(f'Unhandled page {page.page_number}. More than two articles on page.')
+            
 
     # NOTE: Also return title
     def find_matching_title_position(self, article: Article, titles: List) -> Optional[int]:
@@ -423,10 +438,10 @@ def export_articles(
             continue
         safe_title = re.sub(r'[^\w]+', '_', str(article.catalogue_title).lower())
         file = Path(export_folder) / f'{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
-        # file = Path(export_folder) / f'{article.year or "XXXX"}_{article.courier_id}_{article.record_number}.txt'
+        # file = Path(export_folder) / f'{article.year or "0000"}_{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
 
         logger.info(
-            f'git-mv {article.courier_id}_{article.record_number}_{safe_title[:60]}.txt {article.year or "XXXX"}_{article.courier_id}_{article.record_number}.txt'
+            f'git mv {article.courier_id}_{article.record_number}_{safe_title[:60]}.txt {article.year or "0000"}_{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
         )
 
         with open(file, 'w') as fp:
@@ -441,7 +456,7 @@ if __name__ == '__main__':
     article_index_to_csv(CONFIG.article_index, export_folder)
 
     logfile = Path(export_folder) / 'extract_log.csv'
-    file_logger = logger.add(Path(logfile), format='{message}', level='TRACE')
+    file_logger = logger.add(Path(logfile), filter=lambda record: record['level'].name == 'TRACE', format='{message}', level='TRACE')
     logger.trace('courier_id;total_pages;article_pages;assigned_pages;percentage_assigned')
 
     courier_ids = [x[:6] for x in get_courier_ids()]
