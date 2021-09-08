@@ -255,12 +255,14 @@ def test_export_articles_generates_expected_output():
         assert len(filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'not_expected').diff_files) == 1
 
 
-# def test_assign_segments_to_articles_case_A1_and_A2_starts_on_page():
-#     issue = CourierIssue('068778')
-#     AssignArticlesToPages().assign(issue)
-#     ConsolidateArticleTexts().consolidate(issue)
+@pytest.mark.skip('Incomplete.')
+def test_assign_segments_to_articles_case_A1_and_A2_starts_on_page():
+    issue = CourierIssue('068778')
+    AssignArticlesToPages().assign(issue)
+    ConsolidateArticleTexts().consolidate(issue)
+    A1 = issue.get_article(189520)
+    A2 = issue.get_article(68780)
 
-#     A1 = issue.get_article(189520)
-#     A2 = issue.get_article(68780)
-
-#     assert True
+    # TODO: Test if offset error
+    assert A1 is not None
+    assert A2 is not None
