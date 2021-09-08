@@ -233,8 +233,6 @@ class AssignArticlesToPages:
             warnings.warn(f'Pages already assigned to {issue.courier_id}', stacklevel=2)
             return
         for page in issue.pages:
-            if isinstance(page, DoubleSpreadRightPage):
-                continue
             articles: List[Article] = self._find_articles_on_page(issue, page)
             page.articles = articles
             for article in articles:
@@ -247,6 +245,7 @@ class AssignArticlesToPages:
         return articles
 
 
+# FIXME: Rename 'AddTextToArticles'?
 class ConsolidateArticleTexts:
     def consolidate(self, issue: CourierIssue, min_second_article_position: int = 80) -> None:
         for article in issue.articles:
@@ -399,7 +398,7 @@ def export_articles(
 
     # TODO: Move to method in IssueStatistics
     logger.trace(
-        f'{courier_id};{issue_statistics.total_pages};{issue_statistics.expected_article_pages};{issue_statistics.assigned_pages};{100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.0f}'
+        f'{courier_id};{issue_statistics.total_pages};{issue_statistics.expected_article_pages};{issue_statistics.assigned_pages};{100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.0f};{issue_statistics.consolidated_pages};{100*issue_statistics.consolidated_pages/issue_statistics.expected_article_pages:.0f}'
     )
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
@@ -425,7 +424,9 @@ if __name__ == '__main__':
     file_logger = logger.add(
         Path(logfile), filter=lambda record: record['level'].name == 'TRACE', format='{message}', level='TRACE'
     )
-    logger.trace('courier_id;total_pages;article_pages;assigned_pages;percentage_assigned')
+    logger.trace(
+        'courier_id;total_pages;article_pages;assigned_pages;percentage_assigned;pages_with_text;percentage_pages_with_text'
+    )
 
     courier_ids = [x[:6] for x in get_courier_ids()]
     for courier_id in courier_ids:
