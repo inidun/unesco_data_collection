@@ -86,7 +86,7 @@ def test_create_article():
     assert len(courier_issue) == 36
     assert courier_issue.double_pages == [18]
 
-    article: Optional[Article] = courier_issue.get_article('61469')
+    article: Optional[Article] = courier_issue.get_article(61469)
     assert article is None
 
     article: Article = courier_issue.articles[0]
@@ -253,3 +253,14 @@ def test_export_articles_generates_expected_output():
         assert len(sorted(Path(output_dir).glob('*.txt'))) == 5
         assert filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'expected/export_articles').diff_files == []
         assert len(filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'not_expected').diff_files) == 1
+
+
+# def test_assign_segments_to_articles_case_A1_and_A2_starts_on_page():
+#     issue = CourierIssue('068778')
+#     AssignArticlesToPages().assign(issue)
+#     ConsolidateArticleTexts().consolidate(issue)
+
+#     A1 = issue.get_article(189520)
+#     A2 = issue.get_article(68780)
+
+#     assert True
