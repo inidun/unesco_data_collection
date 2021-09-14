@@ -191,11 +191,14 @@ def test_issue_has_no_assigned_pages_as_default():
 def test_AssignArticlesToPages_assignes_expected_pages_to_issue():
     issue = CourierIssue('012656')
     AssignArticlesToPages().assign(issue)
-
     assert issue.get_assigned_pages() == set(
-        [7, 8] + [11, 12, 13, 14, 15, 32] + [16, 17, 18, 20, 21] + [22, 23, 24, 25, 26, 27, 28] + [29, 30, 31]
-    )
-    assert IssueStatistics(issue).assigned_pages == 23
+        [7, 8] +                        # 13356
+        [11, 12, 13, 14, 15, 32] +      # 14257
+        [16, 17, 18, 19, 20, 21] +      # 15043
+        [22, 23, 24, 25, 26, 27, 28] +  # 15498
+        [29, 30, 31]                    # 16256
+    )  # fmt: skip
+    assert IssueStatistics(issue).assigned_pages == 24
     assert IssueStatistics(issue).consolidated_pages == 0
 
 
