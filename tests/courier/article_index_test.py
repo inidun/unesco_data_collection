@@ -6,6 +6,7 @@ from courier.article_index import (
     get_courier_id,
     get_english_host_item,
     get_expanded_article_pages,
+    get_issue_index_from_file,
 )
 from courier.config import get_config
 
@@ -87,6 +88,7 @@ def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_c
     article_index = get_article_index_from_file(CONFIG.metadata_file)
     assert len(article_index) == 7612
     assert article_index.shape == (7612, 5)
+    assert not article_index.isnull().values.any()
 
     expected_columns = [
         'record_number',
@@ -140,3 +142,8 @@ def get_record_info(record_number: int) -> dict:
 def test_article_index_to_csv(tmp_path):
     article_index_to_csv(get_article_index_from_file(CONFIG.metadata_file), tmp_path)
     assert (tmp_path / 'article_index.csv').exists()
+
+
+def test_get_issue_index_from_file_has_no_empty_values():
+    issue_index = get_issue_index_from_file(CONFIG.metadata_file)
+    assert not issue_index.isnull().values.any()

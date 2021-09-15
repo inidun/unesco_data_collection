@@ -54,7 +54,7 @@ def extract_page_ref(item: str) -> Optional[str]:
 
 
 def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
-    """Returns a pandas data frame that contains a processed version if the Courier article index
+    """Returns a pandas data frame that contains a processed version of the Courier article index
 
     Args:
         filename (Union[str, bytes, os.PathLike]): [description]
@@ -62,6 +62,7 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
     Returns:
         pd.DataFrame: [description]
     """
+
     columns = [
         'Record number',
         'Catalogue - Title',
@@ -72,7 +73,6 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
     ]
     dtypes = {'Record number': 'uint32', 'Document type': 'category'}
 
-    # Create article index
     article_index = pd.read_csv(filename, usecols=columns, sep=';', dtype=dtypes, memory_map=True)
     article_index.columns = [
         'record_number',
@@ -83,20 +83,12 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
         'publication_date',
     ]
 
-    # Keep only articles in english
     article_index = article_index[article_index['document_type'] == 'article']
     article_index = article_index[article_index.languages.str.contains('eng')]
     article_index.reset_index()
 
-    # From host_item
     article_index['eng_host_item'] = article_index['host_item'].apply(get_english_host_item)
     article_index.drop(columns=['document_type', 'languages', 'host_item'], axis=1, inplace=True)
-
-    # FIXME: #46 Missing pages in article index. Fix pattern matching.
-    # - get article pages
-    # pattern = r'((?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*)(?:\,\s*\d{1,3}(?:-\d{1,3})*\s)*)'
-    # pattern = r'(?:(?:p\.\,?|pages?)(?:\s*\d+(?:-\d+)*))(?:(?:(?:\,\s+)(?:\d{1,3}))(?:-\d{1,3})?)*'
-    # article_index['page_ref'] = article_index['eng_host_item'].str.extract(pattern).values
 
     article_index['page_ref'] = article_index['eng_host_item'].apply(extract_page_ref)
     article_index.loc[article_index.record_number == 187812, 'page_ref'] = 'p. 18-31'  # Manual fix
@@ -105,13 +97,11 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
     article_index['pages'] = article_index.page_ref.apply(get_expanded_article_pages)
     article_index.drop(columns=['page_ref'], axis=1, inplace=True)
 
-    # - get courier_id
     article_index['courier_id'] = article_index.eng_host_item.apply(get_courier_id)
 
-    # Get year
     article_index['year'] = article_index.publication_date.apply(lambda x: int(x[:4])).astype('uint16')
 
-    # Set index
+    # FIXME: Change index to record_number
     article_index = article_index.set_index(article_index['courier_id'].astype('uint32'))
     article_index.index.rename('id', inplace=True)
 
@@ -123,3 +113,44 @@ def article_index_to_csv(
 ) -> None:
     Path(output_folder).mkdir(exist_ok=True)
     article_index.to_csv(Path(output_folder) / 'article_index.csv', sep=sep, index=save_index)
+
+
+def get_issue_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
+    """Returns a pandas data frame that contains a processed version of the Courier issue index
+
+    Args:
+        filename (Union[str, bytes, os.PathLike]): [description]
+
+    Returns:
+        pd.DataFrame: [description]
+    """
+
+    columns = [
+        'Record number',
+        'Catalogue - Title',
+        'Languages',
+        'Catalogue - Subjects',
+        'Document type',
+        'Catalogue - Publication date',
+    ]
+    dtypes = {'Record number': 'uint32', 'Document type': 'category'}
+
+    issue_index = pd.read_csv(filename, usecols=columns, sep=';', dtype=dtypes, memory_map=True)
+    issue_index.columns = [
+        'courier_id',
+        'title',
+        'languages',
+        'subjects',
+        'document_type',
+        'publication_date',
+    ]
+
+    issue_index = issue_index[issue_index['document_type'] == 'periodical issue']
+    issue_index = issue_index[issue_index.languages.str.contains('eng')]
+    issue_index.drop(columns=['document_type', 'languages'], axis=1, inplace=True)
+    issue_index['year'] = issue_index.publication_date.apply(lambda x: int(x[:4])).astype('uint16')
+    issue_index = issue_index.set_index(issue_index['courier_id'].astype('uint32'))
+    issue_index.index.rename('id', inplace=True)
+    issue_index.fillna(value={'subjects': ' '}, inplace=True)
+
+    return issue_index

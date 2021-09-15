@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Union
 
 import pandas as pd
 
-from courier.article_index import get_article_index_from_file
+from courier.article_index import get_article_index_from_file, get_issue_index_from_file
 
 # from loguru import logger
 
@@ -56,10 +56,12 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     overlap_file: Path = metadata_dir / 'overlap.csv'
     default_template: str = 'article.xml.jinja'
     article_index: pd.DataFrame = None
+    issue_index: pd.DataFrame = None
     double_pages: Dict[str, List[int]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.article_index: pd.DataFrame = get_article_index_from_file(self.metadata_file)
+        self.issue_index: pd.DataFrame = get_issue_index_from_file(self.metadata_file)
         self.double_pages: Dict[str, List[int]] = read_double_pages(self.exclusions_file, self.double_pages_file)
 
     def get_issue_article_index(self, courier_id: str) -> List[Dict[str, Any]]:
