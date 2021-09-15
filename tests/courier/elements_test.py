@@ -269,3 +269,14 @@ def test_assign_segments_to_articles_case_A1_and_A2_starts_on_page():
     # TODO: Test if offset error
     assert A1 is not None
     assert A2 is not None
+
+
+@pytest.mark.skip('Incomplete.')
+def test_cosolidated_pages():
+    issue = CourierIssue('012656')
+    # issue = CourierIssue('068778')
+    # issue = CourierIssue('073649')
+    AssignArticlesToPages().assign(issue)
+    ConsolidateArticleTexts().consolidate(issue)
+
+    assert IssueStatistics(issue).num_missing_pages == 0

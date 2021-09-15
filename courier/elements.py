@@ -375,7 +375,15 @@ class IssueStatistics:
 
     @property
     def year(self) -> int:
-        return CONFIG.issue_index.loc[int(self.issue.courier_id.lstrip("0"))].year
+        return CONFIG.issue_index.loc[int(self.issue.courier_id.lstrip('0'))].year
+
+    @property
+    def missing_pages(self) -> List[Tuple[str, int, int]]:
+        return [(x.courier_id or '', x.record_number or 0, len(x.pages) - len(x.texts)) for x in self.issue.articles]
+
+    @property
+    def num_missing_pages(self) -> int:
+        return sum([len(x.pages) - len(x.texts) for x in self.issue.articles])
 
 
 class ExtractArticles:
@@ -402,7 +410,7 @@ def export_articles(
 
     # TODO: Move to method in IssueStatistics
     logger.trace(
-        f'{courier_id};{issue_statistics.year};{issue_statistics.total_pages};{issue_statistics.expected_article_pages};{issue_statistics.assigned_pages};{100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.0f};{issue_statistics.consolidated_pages};{100*issue_statistics.consolidated_pages/issue_statistics.expected_article_pages:.0f}'
+        f'{courier_id};{issue_statistics.year};{issue_statistics.total_pages};{issue_statistics.expected_article_pages};{issue_statistics.assigned_pages};{100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.0f};{issue_statistics.consolidated_pages};{100*issue_statistics.consolidated_pages/issue_statistics.expected_article_pages:.0f};{issue_statistics.num_missing_pages}'
     )
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
@@ -429,7 +437,7 @@ if __name__ == '__main__':
         Path(logfile), filter=lambda record: record['level'].name == 'TRACE', format='{message}', level='TRACE'
     )
     logger.trace(
-        'courier_id;year;total_pages;article_pages;assigned_pages;percentage_assigned;pages_with_text;percentage_pages_with_text'
+        'courier_id;year;total_pages;article_pages;assigned_pages;percentage_assigned;consolidated_pages;percentage_consolidated_pages;total_missing_pages'
     )
 
     courier_ids = [x[:6] for x in get_courier_ids()]
