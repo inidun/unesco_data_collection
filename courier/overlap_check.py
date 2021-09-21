@@ -35,5 +35,21 @@ def create_copy_script(overlap_df: pd.DataFrame, copy_folder: str = './tmp') -> 
     d.to_csv(CONFIG.project_root / 'courier/scripts/copy_overlapping_pages.sh', index=False, header='#!/bin/bash')
 
 
+def get_articles_with_overlap_of_two_or_more_other_articles(article_index: pd.DataFrame) -> pd.DataFrame:
+    df_pages = article_index[['courier_id', 'record_number', 'pages']].explode('pages')
+    df_pages['courier_id'] = df_pages.courier_id.astype('int')
+    df_pages = df_pages.rename(columns={'pages': 'page'})
+
+    df_pages_with_multiple_articles = df_pages.groupby(['courier_id', 'page'])['record_number'].apply(list)
+    df = (
+        df_pages_with_multiple_articles[df_pages_with_multiple_articles.apply(lambda x: len(x) > 2)]
+        .explode()
+        .reset_index()
+    )
+
+    return df.groupby(['courier_id', 'record_number'])['page'].apply(list).reset_index()
+
+
 if __name__ == '__main__':
     pass
+    # get_articles_with_overlap_of_two_or_more_other_articles(CONFIG.article_index)
