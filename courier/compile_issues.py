@@ -34,7 +34,6 @@ def join_pages(basename: str, folder: Union[str, os.PathLike], template: Optiona
 
 class IssueCompiler:
     def __init__(self, template: Union[str, Template]):
-        global jinja_env
         if isinstance(template, str):
             if not template.endswith('.jinja'):
                 template += '.jinja'
