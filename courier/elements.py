@@ -406,12 +406,9 @@ def export_articles(
 
     issue = CourierIssue(courier_id)
     ExtractArticles.extract(issue)
-    issue_statistics = ExtractArticles.statistics(issue)
+    # issue_statistics = ExtractArticles.statistics(issue)
 
     # TODO: Move to method in IssueStatistics
-    logger.trace(
-        f'{courier_id};{issue_statistics.year};{issue_statistics.total_pages};{issue_statistics.expected_article_pages};{issue_statistics.assigned_pages};{100*issue_statistics.assigned_pages/issue_statistics.expected_article_pages:.0f};{issue_statistics.consolidated_pages};{100*issue_statistics.consolidated_pages/issue_statistics.expected_article_pages:.0f};{issue_statistics.num_missing_pages}'
-    )
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
 
@@ -423,6 +420,11 @@ def export_articles(
             Path(export_folder)
             / f'{article.year or "0000"}_{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
         )
+
+        logger.trace(
+            f'{courier_id};{article.year};{article.record_number};{len(article.get_assigned_pages())};{len(article.get_not_found_pages())};{len(article.page_numbers)}'
+        )
+
         with open(file, 'w') as fp:
             fp.write(article.get_text())
 
@@ -436,9 +438,7 @@ if __name__ == '__main__':
     file_logger = logger.add(
         Path(logfile), filter=lambda record: record['level'].name == 'TRACE', format='{message}', level='TRACE'
     )
-    logger.trace(
-        'courier_id;year;total_pages;article_pages;assigned_pages;percentage_assigned;consolidated_pages;percentage_consolidated_pages;total_missing_pages'
-    )
+    logger.trace('courier_id;year;record_number;assigned;not_found;total')
 
     courier_ids = [x[:6] for x in get_courier_ids()]
     for courier_id in courier_ids:
