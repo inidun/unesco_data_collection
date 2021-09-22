@@ -75,6 +75,13 @@ def extraxt_raw_corpora(
 
 
 if __name__ == '__main__':
+
     date = datetime.now().strftime('%Y%m%d')
-    extraxt_raw_corpora(CONFIG.pdf_dir, 'issue', CONFIG.base_data_dir / f'corpora/courier_issue_{date}.zip')
-    extraxt_raw_corpora(CONFIG.pdf_dir, 'page', CONFIG.base_data_dir / f'corpora/courier_page_{date}.zip')
+
+    extraxt_raw_corpora(
+        CONFIG.pdf_dir, 'issue', CONFIG.base_data_dir / f'corpora/{date}_courier_issue_corpus_article_pages_only.zip'
+    )
+
+    extraxt_raw_corpora(
+        CONFIG.pdf_dir, 'page', CONFIG.base_data_dir / f'corpora/{date}_courier_page_corpus_article_pages_only.zip'
+    )
