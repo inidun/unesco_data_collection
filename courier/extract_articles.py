@@ -41,7 +41,9 @@ def extract_articles_from_issue(
 
     for i, article in enumerate(courier_issue.articles, 1):
         article_text = template.render(article=article)
-        with open(Path(extract_folder / f'{article.courier_id}_{i:02}_{article.record_number}.{ext}'), 'w') as fp:
+        with open(
+            Path(extract_folder / f'{article.courier_id}_{i:02}_{article.record_number}.{ext}'), 'w', encoding='utf-8'
+        ) as fp:
             fp.write(article_text)
 
 

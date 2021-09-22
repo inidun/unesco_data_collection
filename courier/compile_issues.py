@@ -19,7 +19,7 @@ jinja_env.filters['cdata'] = cdata
 
 
 def read(filename: Union[str, bytes, os.PathLike]) -> str:
-    with open(filename, 'r') as fp:
+    with open(filename, 'r', encoding='utf-8') as fp:
         text = fp.read()
     return text
 
@@ -54,7 +54,7 @@ class IssueCompiler:
         for basename in pbar:
             pbar.set_description(f'Processing {basename}')
             if (len(list(Path(input_folder).glob(f'{basename}*.txt')))) > 0:
-                with open(Path(output_folder) / f'{basename}.{extension}', 'w') as fp:
+                with open(Path(output_folder) / f'{basename}.{extension}', 'w', encoding='utf-8') as fp:
                     fp.write(join_pages(basename, input_folder, self.template))
 
 

@@ -28,7 +28,7 @@ class PDFPlumberExtractor(ITextExtractor):
                     data = page.extract_text()
                     if data is None:
                         data = ''
-                    with open(Path(output_folder) / f'{basename}_{i+1:04}.txt', 'w') as fp:
+                    with open(Path(output_folder) / f'{basename}_{i+1:04}.txt', 'w', encoding='utf-8') as fp:
                         fp.write(data)
         logger.success(f'Extracted: {basename}, pages: {num_pages}')
 

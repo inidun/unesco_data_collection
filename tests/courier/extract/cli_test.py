@@ -81,7 +81,7 @@ def test_extract(extractor, first_page, last_page, expected):
 )
 def test_extract_with_logfile_partially_completed_jobs(extractor, first_page, last_page, expected):
     with TemporaryDirectory() as output_dir:
-        with open(Path(output_dir) / 'extract.log', 'w') as fp:
+        with open(Path(output_dir) / 'extract.log', 'w', encoding='utf-8') as fp:
             fp.write('2021-05-03 12:00:00.776 | SUCCESS | Extracted: 3_pages, pages: 3')
         assert (Path(output_dir) / 'extract.log').exists()
         extract(
@@ -108,7 +108,7 @@ def test_extract_with_logfile_partially_completed_jobs(extractor, first_page, la
 )
 def test_extract_with_logfile_fully_completed_jobs(extractor, first_page, last_page, expected):
     with TemporaryDirectory() as output_dir:
-        with open(Path(output_dir) / 'extract.log', 'w') as fp:
+        with open(Path(output_dir) / 'extract.log', 'w', encoding='utf-8') as fp:
             fp.writelines(
                 [
                     '2021-05-03 12:00:00.776 | SUCCESS | Extracted: 3_pages, pages: 3\n',

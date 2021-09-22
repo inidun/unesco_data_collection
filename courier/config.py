@@ -24,10 +24,10 @@ def get_project_root() -> Path:
 def read_double_pages(
     exclusions_file: Union[str, os.PathLike], double_pages_file: Union[str, os.PathLike]
 ) -> Dict[str, List[int]]:
-    with open(exclusions_file, newline='') as fp:
+    with open(exclusions_file, newline='', encoding='utf-8') as fp:
         reader = csv.reader(fp, delimiter=';')
         exclusions = [line[0] for line in reader]
-    with open(double_pages_file, 'r') as fp:
+    with open(double_pages_file, 'r', encoding='utf-8') as fp:
         reader = csv.reader(fp, delimiter=';')
         filtered_data = [line for line in reader if all(e not in line for e in exclusions)]
         pages = {line[0]: list(map(int, line[1].split())) for line in filtered_data}

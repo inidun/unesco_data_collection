@@ -21,7 +21,7 @@ CONFIG = get_config()
 
 
 def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
-    with open(filename, 'r') as fp:
+    with open(filename, 'r', encoding='utf-8') as fp:
         content = fp.read()
         content = valid_xml(content)
         xml = io.StringIO(content)
@@ -425,7 +425,7 @@ def export_articles(
             f'{courier_id};{article.year};{article.record_number};{len(article.get_assigned_pages())};{len(article.get_not_found_pages())};{len(article.page_numbers)}'
         )
 
-        with open(file, 'w') as fp:
+        with open(file, 'w', encoding='utf-8') as fp:
             fp.write(article.get_text())
 
 

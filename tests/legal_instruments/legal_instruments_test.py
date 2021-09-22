@@ -19,13 +19,13 @@ def project_root():
 
 
 def get_sample_convention_html():
-    with open(f"{project_root()}/tests/fixtures/sample_response_page.html", "r") as fp:
+    with open(f'{project_root()}/tests/fixtures/sample_response_page.html', 'r', encoding='utf-8') as fp:
         return fp.read()
 
 
 def get_sample_convention_index_html():
     # http://portal.unesco.org/en/ev.php-URL_ID=12025&URL_DO=DO_TOPIC&URL_SECTION=-471.html
-    with open(f"{project_root()}/tests/fixtures/sample_response_index_page.html", "r") as fp:
+    with open(f'{project_root()}/tests/fixtures/sample_response_index_page.html', 'r', encoding='utf-8') as fp:
         return fp.read()
 
 

@@ -42,7 +42,7 @@ class TesseractExtractor(ITextExtractor):
         i = 0
         for i, image in enumerate(images):
             text_filename = Path(output_folder) / f'{basename}_{i+first_page:04}.txt'
-            with open(text_filename, 'w') as fp:
+            with open(text_filename, 'w', encoding='utf-8') as fp:
                 fp.write(pytesseract.image_to_string(image, lang='eng', config=self.image_to_string_config))
 
         logger.success(f'Extracted: {basename}, pages: {i+1}, dpi: {self.dpi}, fmt: {self.fmt}')

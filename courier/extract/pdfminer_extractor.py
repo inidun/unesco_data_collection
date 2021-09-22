@@ -38,7 +38,7 @@ class PDFMinerExtractor(ITextExtractor):
                 if i not in range(first_page - 1, last_page):
                     continue
                 interpreter.process_page(page)
-                with open(Path(output_folder) / f'{basename}_{i+1:04}.txt', 'w') as fp_out:
+                with open(Path(output_folder) / f'{basename}_{i+1:04}.txt', 'w', encoding='utf-8') as fp_out:
                     fp_out.write(pagestr.getvalue())
                 pagestr.truncate(0)
                 pagestr.seek(0)

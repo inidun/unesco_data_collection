@@ -49,7 +49,7 @@ def test_extract_issue_returns_expected_content():
     issue: ExtractedIssue = extractor.extract_issue(filename)
 
     p = issue.pages[2].content
-    with open(CONFIG.pages_dir / 'pdfbox/012656engo_0003.txt', 'r') as fp:
+    with open(CONFIG.pages_dir / 'pdfbox/012656engo_0003.txt', 'r', encoding='utf-8') as fp:
         text = fp.read().strip()
 
     assert p == text
