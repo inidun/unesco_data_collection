@@ -455,7 +455,7 @@ tests = ["pytest"]
 
 [[package]]
 name = "jupyter-client"
-version = "7.0.3"
+version = "7.0.4"
 description = "Jupyter protocol implementation and client libraries"
 category = "dev"
 optional = false
@@ -1456,8 +1456,8 @@ jpype1 = [
     {file = "JPype1-1.3.0.tar.gz", hash = "sha256:4fc27dba89750cb0c9d692466341ce60c0fe86a16051091cb5347a37cf884151"},
 ]
 jupyter-client = [
-    {file = "jupyter_client-7.0.3-py3-none-any.whl", hash = "sha256:b07ceecb8f845f908bbd0f78bb17c0abac7b393de9d929bd92190e36c24c201e"},
-    {file = "jupyter_client-7.0.3.tar.gz", hash = "sha256:bb58e3218d74e072673948bd1e2a6bb3b65f32447b3e8c143eeca16b946ee230"},
+    {file = "jupyter_client-7.0.4-py3-none-any.whl", hash = "sha256:0b18f85dfc4b2c48ee65ccd7d57382d151ecb8469cedde0138b7294c1a747d46"},
+    {file = "jupyter_client-7.0.4.tar.gz", hash = "sha256:67aaadbbbb022cd481146924e5911b56863177456aaf5622049c96ae384edc06"},
 ]
 jupyter-core = [
     {file = "jupyter_core-4.8.1-py3-none-any.whl", hash = "sha256:8dd262ec8afae95bd512518eb003bc546b76adbf34bf99410e9accdf4be9aa3a"},
