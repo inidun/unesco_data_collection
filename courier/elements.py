@@ -16,6 +16,7 @@ from courier.article_index import article_index_to_csv
 from courier.config import get_config
 from courier.extract.java_extractor import ExtractedIssue, ExtractedPage, JavaExtractor
 from courier.utils import flatten, get_courier_ids, split_by_idx, valid_xml
+from courier.utils.logging import file_logger
 
 CONFIG = get_config()
 
@@ -433,18 +434,14 @@ if __name__ == '__main__':
 
     export_folder = CONFIG.articles_dir / 'exported'
     article_index_to_csv(CONFIG.article_index, export_folder)
-
     logfile = Path(export_folder) / 'extract_log.csv'
-    file_logger = logger.add(
-        Path(logfile), filter=lambda record: record['level'].name == 'TRACE', format='{message}', level='TRACE'
-    )
-    logger.trace('courier_id;year;record_number;assigned;not_found;total')
 
-    courier_ids = [x[:6] for x in get_courier_ids()]
-    for courier_id in courier_ids:
-        if courier_id not in CONFIG.article_index.courier_id.values:
-            print(f'{courier_id} not in article index')
-            continue
-        export_articles(courier_id, export_folder)
+    with file_logger(logfile, filter=lambda record: record['level'].name == 'TRACE', format='{message}', level='TRACE'):
+        logger.trace('courier_id;year;record_number;assigned;not_found;total')
 
-    logger.remove(file_logger)
+        courier_ids = [x[:6] for x in get_courier_ids()]
+        for courier_id in courier_ids:
+            if courier_id not in CONFIG.article_index.courier_id.values:
+                print(f'{courier_id} not in article index')
+                continue
+            export_articles(courier_id, export_folder)
