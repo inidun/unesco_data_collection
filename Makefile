@@ -36,11 +36,11 @@ test-java: output-dir
 	@rm -rf ./tests/output/*
 
 test-legal-instruments: output-dir
-	@poetry run pytest --durations=0 --cov=tests/legal_instruments --cov-report=xml --cov-report=html --cov-branch tests/legal_instruments
+	@poetry run pytest --durations=0 --cov=legal_instruments --cov-report=xml --cov-report=html --cov-branch tests/legal_instruments
 	@rm -rf ./tests/output/*
 
 test-courier: output-dir
-	@poetry run pytest --durations=0 -m "not java" tests/courier
+	@poetry run pytest --durations=0 --cov=courier --cov-report=xml --cov-report=html --cov-branch tests/courier
 	@rm -rf ./tests/output/*
 
 retest: output-dir
