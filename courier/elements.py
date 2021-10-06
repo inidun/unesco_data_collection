@@ -70,6 +70,10 @@ class Page:
     def __str__(self) -> str:
         return self.text
 
+    @property
+    def number_of_articles(self) -> int:
+        return len(self.articles)
+
     def cleanup_titles(self, titles: List[Tuple[str, int]]) -> List[Tuple[int, str]]:
         if titles is None:
             return []
@@ -227,7 +231,7 @@ class PagesFactory:
         return pages
 
 
-class AssignArticlesToPages:
+class AssignPageService:
     def assign(self, issue: CourierIssue) -> None:
         if issue.get_assigned_pages():
             warnings.warn(f'Pages already assigned to {issue.courier_id}', stacklevel=2)
@@ -246,31 +250,27 @@ class AssignArticlesToPages:
 
 
 # FIXME: Rename 'AddTextToArticles'?
-class ConsolidateArticleTexts:
+class ConsolidateTextService:
     def consolidate(self, issue: CourierIssue, min_second_article_position: int = 80) -> None:
         for article in issue.articles:
             for page in article.pages:
-                self.assign_segments_to_articles(article, page, min_second_article_position)
+                self._assign_segment(article, page, min_second_article_position)
 
-    def assign_segments_to_articles(self, article: Article, page: Page, min_second_article_position: int = 80) -> None:
+    def _assign_segment(self, article: Article, page: Page, min_second_article_position: int = 80) -> None:
 
-        if len(page.articles) == 1:
+        if page.number_of_articles == 1:
             article.texts.append((page.page_number, page.text))
 
-        elif len(page.articles) == 2:
+        elif page.number_of_articles == 2:
             """Find break position and which part belongs to which article"""
-            # Rule #1: If max(A1.page_number) == min(A2.page_numbers) ==> article A1 first on page
-            # Rule #2: If min(A.page_number) == page then title is on page
-            # A1 = [1,2,3]
-            # A2 = [3,4,5]
-
             A1: Article = article
             A2: Article = page.articles[1] if page.articles[1] is not article else page.articles[0]
 
-            # Case: A1 start before, A2 starts on page
+            # Case 1: Article 1 starts before current page, Article 2 starts on current page
             # TODO: #43 Handle case: `Unable to find title on page (1st)`
             if A1.min_page_number < page.page_number and A2.min_page_number == page.page_number:
-                """A1 ligger först på sidan: => Hitta A2's titel"""
+                """Assumption: Article 1 is at the beginning of the page. Find Article 2's title"""
+
                 position = self.find_matching_title_position(A2, page.titles)
                 if position is not None:
                     A1.texts.append((page.page_number, page.text[:position]))
@@ -280,7 +280,7 @@ class ConsolidateArticleTexts:
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
 
-            # Case: A2 start before, A1 starts on page
+            # Case 2: Article 2 starts before current page, Article 1 starts on current page
             # TODO: #44 Handle case: `Unable to find title on page (2nd)`
             elif A2.min_page_number < page.page_number and A1.min_page_number == page.page_number:
                 """A1 ligger sist på sidan: => Hitta A1's titel"""
@@ -293,7 +293,7 @@ class ConsolidateArticleTexts:
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
 
-            # Case: A1 and A2 starts on page
+            # Case 3: Article 1 and Article 2 both start on current page
             # TODO: #45 Handle case: `Two articles starting on same page`
             elif A1.min_page_number == A2.min_page_number == page.page_number:
                 position_A1 = self.find_matching_title_position(A1, page.titles)
@@ -312,20 +312,16 @@ class ConsolidateArticleTexts:
                     article.errors.append(
                         f'Unhandled case: Page {page.page_number}. 2 articles: Starting on same page.'
                     )
-
+            # Case 4: Neither Article 1 or Article 2 start on current page
             else:
                 article.errors.append(
                     f'Unhandled case: Page {page.page_number}. 2 articles: None of them starts on page.'
                 )
 
-            # segments = page.segments()
-            # text: str = self.extract_article_text(article, page)
-            # page_titles = page.titles
-
+        # Case 5: Current page contains more than 2 articles
         else:
             article.errors.append(f'Unhandled case: Page {page.page_number}. More than two articles on page.')
 
-    # NOTE: Also return title
     def find_matching_title_position(self, article: Article, titles: List) -> Optional[int]:
         return fuzzy_find_title(article.catalogue_title, titles)[0]
 
@@ -389,8 +385,8 @@ class IssueStatistics:
 class ExtractArticles:
     @staticmethod
     def extract(issue: CourierIssue) -> CourierIssue:
-        AssignArticlesToPages().assign(issue)
-        ConsolidateArticleTexts().consolidate(issue)
+        AssignPageService().assign(issue)
+        ConsolidateTextService().consolidate(issue)
         return issue
 
     @staticmethod
@@ -406,9 +402,6 @@ def export_articles(
 
     issue = CourierIssue(courier_id)
     ExtractArticles.extract(issue)
-    # issue_statistics = ExtractArticles.statistics(issue)
-
-    # TODO: Move to method in IssueStatistics
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
 
