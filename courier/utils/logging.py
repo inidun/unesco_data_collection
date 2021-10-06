@@ -1,5 +1,4 @@
 import os
-import sys
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Generator, Union
@@ -10,11 +9,10 @@ from tqdm import tqdm
 
 @contextmanager
 def file_logger(logfile: Union[str, os.PathLike], **kwargs) -> Generator:  # type: ignore
+    logger.patch(lambda msg: tqdm.write(msg, end=''))
     try:
-        logger.configure(handlers=[{'sink': sys.stderr, 'level': 'WARNING'}])
-        handler = logger.add(Path(logfile), **kwargs)
-        logger.patch(lambda msg: tqdm.write(msg, end=''))
-        yield
+        name = Path(logfile).stem
+        handler = logger.add(Path(logfile), filter=lambda record: record['extra']['task'] == name, **kwargs)
+        yield logger.bind(task=name)
     finally:
         logger.remove(handler)
-        logger.configure(handlers=[{'sink': sys.stderr, 'level': 'INFO'}])
