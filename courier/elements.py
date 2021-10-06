@@ -148,7 +148,6 @@ class Article:
     def get_assigned_pages(self) -> Set[int]:
         return {p[0] for p in self.texts}
 
-    # FIXME: Exclude double pages from missing
     def get_not_found_pages(self) -> Set[int]:
         return {x for x in self.page_numbers if x not in self.get_assigned_pages()}
 
