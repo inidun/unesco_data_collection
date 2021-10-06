@@ -9,8 +9,8 @@ import untangle
 from courier.config import get_config
 from courier.elements import (
     Article,
-    AssignArticlesToPages,
-    ConsolidateArticleTexts,
+    AssignPageService,
+    ConsolidateTextService,
     CourierIssue,
     DoubleSpreadRightPage,
     IssueStatistics,
@@ -190,7 +190,7 @@ def test_issue_has_no_assigned_pages_as_default():
 # FIXME: Check this
 def test_AssignArticlesToPages_assignes_expected_pages_to_issue():
     issue = CourierIssue('012656')
-    AssignArticlesToPages().assign(issue)
+    AssignPageService().assign(issue)
     assert issue.get_assigned_pages() == set(
         [7, 8] +                        # 13356
         [11, 12, 13, 14, 15, 32] +      # 14257
@@ -232,7 +232,7 @@ def test_issue_has_no_consolidated_pages_as_default():
 def test_ConsolidateArticleTexts(issue_number, page_number, record_number, article_title, expected, comment):
 
     issue = CourierIssue(issue_number)
-    AssignArticlesToPages().assign(issue)
+    AssignPageService().assign(issue)
 
     if record_number is not None:
         article = issue.get_article(record_number)  # type: ignore
@@ -242,8 +242,8 @@ def test_ConsolidateArticleTexts(issue_number, page_number, record_number, artic
 
     page = issue.get_page(page_number)
 
-    service = ConsolidateArticleTexts()
-    service.assign_segments_to_articles(article, page, min_second_article_position=0)
+    service = ConsolidateTextService()
+    service._assign_segment(article, page, min_second_article_position=0)  # pylint: disable=protected-access
 
     result = any(x for x in article.texts if x[0] == page_number)
     assert result == expected, comment
@@ -261,8 +261,8 @@ def test_export_articles_generates_expected_output():
 @pytest.mark.skip('Incomplete.')
 def test_assign_segments_to_articles_case_A1_and_A2_starts_on_page():
     issue = CourierIssue('068778')
-    AssignArticlesToPages().assign(issue)
-    ConsolidateArticleTexts().consolidate(issue)
+    AssignPageService().assign(issue)
+    ConsolidateTextService().consolidate(issue)
     A1 = issue.get_article(189520)
     A2 = issue.get_article(68780)
 
@@ -276,7 +276,7 @@ def test_cosolidated_pages():
     issue = CourierIssue('012656')
     # issue = CourierIssue('068778')
     # issue = CourierIssue('073649')
-    AssignArticlesToPages().assign(issue)
-    ConsolidateArticleTexts().consolidate(issue)
+    AssignPageService().assign(issue)
+    ConsolidateTextService().consolidate(issue)
 
     assert IssueStatistics(issue).num_missing_pages == 0
