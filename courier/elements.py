@@ -10,7 +10,6 @@ from typing import List, Optional, Set, Tuple, Union
 
 import ftfy
 import untangle
-from loguru import logger
 
 from courier.article_index import article_index_to_csv
 from courier.config import get_config
@@ -434,14 +433,14 @@ if __name__ == '__main__':
 
     export_folder = CONFIG.articles_dir / 'exported'
     article_index_to_csv(CONFIG.article_index, export_folder)
-    logfile = Path(export_folder) / 'extract_log.csv'
 
-    with file_logger(logfile, filter=lambda record: record['level'].name == 'TRACE', format='{message}', level='TRACE'):
+    with file_logger(Path(export_folder) / 'extract_log.csv', format='{message}', level='TRACE') as logger:
         logger.trace('courier_id;year;record_number;assigned;not_found;total')
 
         courier_ids = [x[:6] for x in get_courier_ids()]
         for courier_id in courier_ids:
             if courier_id not in CONFIG.article_index.courier_id.values:
-                print(f'{courier_id} not in article index')
+                if len(CONFIG.get_issue_article_index(courier_id)) != 0:
+                    raise Exception(f'{courier_id} not in article index but has articles')
                 continue
             export_articles(courier_id, export_folder)
