@@ -20,40 +20,6 @@ from courier.utils.logging import file_logger
 CONFIG = get_config()
 
 
-def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
-    with open(filename, 'r', encoding='utf-8') as fp:
-        content = fp.read()
-        content = valid_xml(content)
-        xml = io.StringIO(content)
-        element = untangle.parse(xml)
-        return element
-
-
-# NOTE: Needed for test discovery (WIP). Remove later if deemed deprecated.
-def get_xml_issue_content(courier_id: str) -> ExtractedIssue:
-
-    if len(courier_id) != 6:
-        raise ValueError(f'Not a valid courier id "{courier_id}')
-    if courier_id not in CONFIG.article_index.courier_id.values:
-        raise ValueError(f'{courier_id} not in article index')
-
-    untangle_element = read_xml(list(CONFIG.xml_dir.glob(f'{courier_id}*.xml'))[0])
-    pages = []
-    for pdf_page_number, content in enumerate(untangle_element.document.page, 1):
-        page: ExtractedPage = ExtractedPage(pdf_page_number=pdf_page_number, content=content, titles=[])
-        pages.append(page)
-
-    issue: ExtractedIssue = ExtractedIssue(pages=pages)
-    return issue
-
-
-def get_pdf_issue_content(courier_id: str) -> ExtractedIssue:
-    extractor: JavaExtractor = JavaExtractor()
-    filename: str = str(list(CONFIG.pdf_dir.glob(f'{courier_id}*.pdf'))[0])
-    issue: ExtractedIssue = extractor.extract_issue(filename)
-    return issue
-
-
 class Page:
     def __init__(
         self,
@@ -230,6 +196,83 @@ class PagesFactory:
         return pages
 
 
+@dataclass
+class IssueStatistics:
+
+    issue: CourierIssue
+
+    @property
+    def total_pages(self) -> int:
+        """Number of pages in issue"""
+        return len(self.issue)
+
+    @property
+    def assigned_pages(self) -> int:
+        """Number of pages in issue assigned to an article"""
+        return len(self.issue.get_assigned_pages())
+
+    @property
+    def consolidated_pages(self) -> int:
+        """Number of consolidated pages in issue"""
+        return len(self.issue.get_consolidated_pages())
+
+    @property
+    def expected_article_pages(self) -> int:
+        """Number of article pages in issue according to index"""
+        return len(self.issue.get_article_pages())
+
+    @property
+    def number_of_articles(self) -> int:
+        """Number of articles in issue"""
+        return self.issue.num_articles
+
+    @property
+    def year(self) -> int:
+        return CONFIG.issue_index.loc[int(self.issue.courier_id.lstrip('0'))].year
+
+    @property
+    def missing_pages(self) -> List[Tuple[str, int, int]]:
+        return [(x.courier_id or '', x.record_number or 0, len(x.pages) - len(x.texts)) for x in self.issue.articles]
+
+    @property
+    def num_missing_pages(self) -> int:
+        return sum([len(x.pages) - len(x.texts) for x in self.issue.articles])
+
+
+def get_pdf_issue_content(courier_id: str) -> ExtractedIssue:
+    extractor: JavaExtractor = JavaExtractor()
+    filename: str = str(list(CONFIG.pdf_dir.glob(f'{courier_id}*.pdf'))[0])
+    issue: ExtractedIssue = extractor.extract_issue(filename)
+    return issue
+
+
+def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
+    with open(filename, 'r', encoding='utf-8') as fp:
+        content = fp.read()
+        content = valid_xml(content)
+        xml = io.StringIO(content)
+        element = untangle.parse(xml)
+        return element
+
+
+# NOTE: Needed for test discovery (WIP). Remove later if deemed deprecated.
+def get_xml_issue_content(courier_id: str) -> ExtractedIssue:
+
+    if len(courier_id) != 6:
+        raise ValueError(f'Not a valid courier id "{courier_id}')
+    if courier_id not in CONFIG.article_index.courier_id.values:
+        raise ValueError(f'{courier_id} not in article index')
+
+    untangle_element = read_xml(list(CONFIG.xml_dir.glob(f'{courier_id}*.xml'))[0])
+    pages = []
+    for pdf_page_number, content in enumerate(untangle_element.document.page, 1):
+        page: ExtractedPage = ExtractedPage(pdf_page_number=pdf_page_number, content=content, titles=[])
+        pages.append(page)
+
+    issue: ExtractedIssue = ExtractedIssue(pages=pages)
+    return issue
+
+
 class AssignPageService:
     def assign(self, issue: CourierIssue) -> None:
         if issue.get_assigned_pages():
@@ -336,49 +379,6 @@ def fuzzy_find_title(title: str, titles: List) -> Tuple[Optional[int], Optional[
         if len(common_words) >= 2 and len(common_words) >= len(title_bow) / 2:
             return position, candidate_title
     return (None, None)
-
-
-@dataclass
-class IssueStatistics:
-
-    issue: CourierIssue
-
-    @property
-    def total_pages(self) -> int:
-        """Number of pages in issue"""
-        return len(self.issue)
-
-    @property
-    def assigned_pages(self) -> int:
-        """Number of pages in issue assigned to an article"""
-        return len(self.issue.get_assigned_pages())
-
-    @property
-    def consolidated_pages(self) -> int:
-        """Number of consolidated pages in issue"""
-        return len(self.issue.get_consolidated_pages())
-
-    @property
-    def expected_article_pages(self) -> int:
-        """Number of article pages in issue according to index"""
-        return len(self.issue.get_article_pages())
-
-    @property
-    def number_of_articles(self) -> int:
-        """Number of articles in issue"""
-        return self.issue.num_articles
-
-    @property
-    def year(self) -> int:
-        return CONFIG.issue_index.loc[int(self.issue.courier_id.lstrip('0'))].year
-
-    @property
-    def missing_pages(self) -> List[Tuple[str, int, int]]:
-        return [(x.courier_id or '', x.record_number or 0, len(x.pages) - len(x.texts)) for x in self.issue.articles]
-
-    @property
-    def num_missing_pages(self) -> int:
-        return sum([len(x.pages) - len(x.texts) for x in self.issue.articles])
 
 
 class ExtractArticles:
