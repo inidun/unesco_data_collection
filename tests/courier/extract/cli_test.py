@@ -49,9 +49,9 @@ def test_get_extractor_with_unknown_method_raises_value_error():
         ('PDFPlumber', 1, None, 5),
         ('PDFPlumber', 2, 100, 3),
         ('PDFPlumber', 100, None, 0),
-        pytest.param('Tesseract', 1, None, 5, marks=pytest.mark.skip(reason='slow')),  # FIXME: Patch tesseract settings
-        pytest.param('Tesseract', 2, 100, 3, marks=pytest.mark.skip(reason='slow')),
-        pytest.param('Tesseract', 100, None, 0, marks=pytest.mark.skip(reason='slow')),
+        pytest.param('Tesseract', 1, None, 5, marks=pytest.mark.slow),  # FIXME: Patch tesseract settings
+        pytest.param('Tesseract', 2, 100, 3, marks=pytest.mark.slow),
+        pytest.param('Tesseract', 100, None, 0, marks=pytest.mark.slow),
     ],
 )
 def test_extract(extractor, first_page, last_page, expected):
@@ -76,7 +76,7 @@ def test_extract(extractor, first_page, last_page, expected):
         ('PDFBoxHTML', 1, None, 2),
         ('PDFMiner', 1, None, 2),
         ('PDFPlumber', 1, None, 2),
-        pytest.param('Tesseract', 1, None, 2, marks=pytest.mark.skip(reason='slow')),  # FIXME: Patch tesseract settings
+        pytest.param('Tesseract', 1, None, 2, marks=pytest.mark.slow),  # FIXME: Patch tesseract settings
     ],
 )
 def test_extract_with_logfile_partially_completed_jobs(extractor, first_page, last_page, expected):
