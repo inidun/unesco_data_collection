@@ -154,3 +154,7 @@ def get_issue_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.Da
     issue_index.fillna(value={'subjects': ' '}, inplace=True)
 
     return issue_index
+
+
+if __name__ == '__main__':
+    pass
