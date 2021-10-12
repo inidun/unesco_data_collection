@@ -16,3 +16,7 @@ def file_logger(logfile: Union[str, os.PathLike], **kwargs) -> Generator:  # typ
         yield logger.bind(task=name)
     finally:
         logger.remove(handler)
+
+
+if __name__ == '__main__':
+    pass
