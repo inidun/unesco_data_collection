@@ -1058,7 +1058,7 @@ test = ["pytest"]
 
 [[package]]
 name = "types-requests"
-version = "2.25.9"
+version = "2.25.10"
 description = "Typing stubs for requests"
 category = "dev"
 optional = false
@@ -1066,7 +1066,7 @@ python-versions = "*"
 
 [[package]]
 name = "types-setuptools"
-version = "57.4.0"
+version = "57.4.1"
 description = "Typing stubs for setuptools"
 category = "dev"
 optional = false
@@ -1074,7 +1074,7 @@ python-versions = "*"
 
 [[package]]
 name = "types-toml"
-version = "0.10.0"
+version = "0.10.1"
 description = "Typing stubs for toml"
 category = "dev"
 optional = false
@@ -1987,16 +1987,16 @@ traitlets = [
     {file = "traitlets-5.1.0.tar.gz", hash = "sha256:bd382d7ea181fbbcce157c133db9a829ce06edffe097bcf3ab945b435452b46d"},
 ]
 types-requests = [
-    {file = "types-requests-2.25.9.tar.gz", hash = "sha256:4ec8b71da73e5344adb9bee725a74ec8598e7286f9bcb17500d627f259fe4fb9"},
-    {file = "types_requests-2.25.9-py3-none-any.whl", hash = "sha256:543ba8b3b23e38ac028da1d163aecbbc27d3cc8f654ae64339da539a191a2b1c"},
+    {file = "types-requests-2.25.10.tar.gz", hash = "sha256:3e121988168cffcfa61effaf48f90ebc5ee023f6cc50d04c0144edd7a2265b65"},
+    {file = "types_requests-2.25.10-py3-none-any.whl", hash = "sha256:bf3681e9258df22b27b623167b132869a26f04d5ca570e6a81a932db2a19ab72"},
 ]
 types-setuptools = [
-    {file = "types-setuptools-57.4.0.tar.gz", hash = "sha256:5034f81b237429c1dc0ad84d3e9015e74730400c4db2b4db40daba216d39289b"},
-    {file = "types_setuptools-57.4.0-py3-none-any.whl", hash = "sha256:986630532705e8c77740b6d3cd86aaafd1e0ba6b04119c73c39dc4a67ceae579"},
+    {file = "types-setuptools-57.4.1.tar.gz", hash = "sha256:ae7bb9a024e69d41256be44042c2727f83ea7919d8775a9087febca8efb11ea5"},
+    {file = "types_setuptools-57.4.1-py3-none-any.whl", hash = "sha256:68c06bc8bb24084240de3625e2333235a16babffdcf53a0a1c8ec16df8571358"},
 ]
 types-toml = [
-    {file = "types-toml-0.10.0.tar.gz", hash = "sha256:64f88a257dd62465b01fcf0d1ed4ffcaf19e320ee3e731c26a2e9dcc5090fdbb"},
-    {file = "types_toml-0.10.0-py3-none-any.whl", hash = "sha256:c1bbb97ebe59593378769447343f78187017458cce8c3f1e76c80b9a930eef01"},
+    {file = "types-toml-0.10.1.tar.gz", hash = "sha256:5c1f8f8d57692397c8f902bf6b4d913a0952235db7db17d2908cc110e70610cb"},
+    {file = "types_toml-0.10.1-py3-none-any.whl", hash = "sha256:8cdfd2b7c89bed703158b042dd5cf04255dae77096db66f4a12ca0a93ccb07a5"},
 ]
 typing-extensions = [
     {file = "typing_extensions-3.10.0.2-py2-none-any.whl", hash = "sha256:d8226d10bc02a29bcc81df19a26e56a9647f8b0a6d4a83924139f4a8b01f17b7"},
