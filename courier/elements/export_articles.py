@@ -2,7 +2,9 @@
 import os
 import re
 from pathlib import Path
-from typing import Union
+from typing import Any, Dict, List, Union
+
+from loguru import logger
 
 from courier.article_index import article_index_to_csv
 from courier.config import get_config
@@ -32,7 +34,7 @@ class ExtractArticles:
 def export_articles(
     courier_id: str,
     export_folder: Union[str, os.PathLike] = CONFIG.articles_dir / 'exported',
-) -> None:
+) -> List[Dict[str, Any]]:
 
     issue: CourierIssue = CourierIssue(courier_id)
     ExtractArticles.extract(issue)
@@ -55,13 +57,17 @@ def export_articles(
         with open(file, 'w', encoding='utf-8') as fp:
             fp.write(article.get_text())
 
+    return IssueStatistics(issue).errors
+
 
 if __name__ == '__main__':
 
     export_folder: Path = CONFIG.articles_dir / 'exported'
     article_index_to_csv(CONFIG.article_index, export_folder)
 
-    with file_logger(Path(export_folder) / 'extract_log.csv', format='{message}', level='TRACE') as logger:
+    with file_logger(
+        Path(export_folder) / 'extract_log.csv', format='{message}', level='TRACE'
+    ) as logger:  # noqa: F811
         logger.trace('courier_id;year;record_number;assigned;not_found;total')
 
         courier_ids = [x[:6] for x in get_courier_ids()]
