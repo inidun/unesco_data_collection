@@ -1,7 +1,6 @@
------ Title according to index: Ungathered harvests in the ocean; man's vast potential food reserve
------ Pages according to index: 11,12,13,14,15,32
------ Assigned according to index: [11, 12, 13, 14, 15, 32]
------ Missing pages: set()
+Title:	Ungathered harvests in the ocean; man's vast potential food reserve
+Pages:	11,12,13,14,15,32
+
 
 -------------------- Page 11 --------------------
 

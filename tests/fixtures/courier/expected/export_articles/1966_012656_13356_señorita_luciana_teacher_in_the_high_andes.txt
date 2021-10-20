@@ -1,7 +1,6 @@
------ Title according to index: Señorita Luciana, teacher in the High Andes
------ Pages according to index: 7,8
------ Assigned according to index: [7, 8]
------ Missing pages: set()
+Title:	Señorita Luciana, teacher in the High Andes
+Pages:	7,8
+
 
 -------------------- Page 7 --------------------
 

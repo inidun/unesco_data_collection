@@ -1,7 +1,6 @@
------ Title according to index: Bronze miniatures from ancient Sardinia
------ Pages according to index: 16,17,18,19,20,21
------ Assigned according to index: [16, 17, 18, 19, 20, 21]
------ Missing pages: {19}
+Title:	Bronze miniatures from ancient Sardinia
+Pages:	16,17,18,19,20,21
+
 
 -------------------- Page 16 --------------------
 
@@ -109,6 +108,10 @@ combat. Like most ancient peoples,
 those of Sardinia probably held
 tournaments and games during
 the celebration of religious festivals.
+
+-------------------- Page 19 --------------------
+
+
 
 -------------------- Page 20 --------------------
 

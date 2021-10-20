@@ -1,7 +1,6 @@
------ Title according to index: United Nations Day, 1966: the world's refugees
------ Pages according to index: 29,30,31
------ Assigned according to index: [29, 30, 31]
------ Missing pages: set()
+Title:	United Nations Day, 1966: the world's refugees
+Pages:	29,30,31
+
 
 -------------------- Page 29 --------------------
 
