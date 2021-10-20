@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from courier.config import get_config
+from courier.utils import flatten
 
 from .elements import CourierIssue
 
@@ -49,6 +50,12 @@ class IssueStatistics:
     @property
     def num_missing_pages(self) -> int:
         return sum([len(x.pages) - len(x.texts) for x in self.issue.articles])
+
+    @property
+    def errors(self) -> List[Dict[str, Any]]:
+        return flatten(
+            [[error.to_dict() for error in page.errors] for page in self.issue.pages if len(page.errors) != 0]
+        )
 
 
 if __name__ == '__main__':
