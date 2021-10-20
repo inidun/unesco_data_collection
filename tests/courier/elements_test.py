@@ -249,13 +249,23 @@ def test_ConsolidateArticleTexts(issue_number, page_number, record_number, artic
     assert result == expected, comment
 
 
-@pytest.mark.skip('Update')
+def test_IssueStatistics_errors():
+    issue_number = '063436'
+    issue = CourierIssue(issue_number)
+    AssignPageService().assign(issue)
+    ConsolidateTextService().consolidate(issue)
+
+    assert IssueStatistics(issue).assigned_pages == 58
+    assert len(IssueStatistics(issue).errors) == 4
+
+
 def test_export_articles_generates_expected_output():
     with TemporaryDirectory() as output_dir:
-        export_articles('012656', output_dir)
+        errors = export_articles('012656', output_dir)
         assert len(sorted(Path(output_dir).glob('*.txt'))) == 5
         assert filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'expected/export_articles').diff_files == []
         assert len(filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'not_expected').diff_files) == 1
+        assert errors is not None
 
 
 @pytest.mark.skip('Incomplete.')
