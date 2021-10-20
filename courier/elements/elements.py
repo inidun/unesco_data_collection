@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import List, Optional, Set, Tuple
+from dataclasses import asdict, dataclass
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import ftfy
 
@@ -10,6 +10,37 @@ from courier.utils import flatten, split_by_idx
 from .utils import get_pdf_issue_content
 
 CONFIG = get_config()
+
+CASE = {
+    0: 'One article on page',
+    1: '2 articles - 1 starts before page, 2 start on page',
+    2: '2 articles - 2 starts before page, 1 start on page',
+    3: '2 articles - Both start on page',
+    4: '2 articles - None start on page',
+    5: '> 2 articles - Unhandled',
+}
+
+
+@dataclass
+class ExtractionError:
+    courier_id: Optional[str]
+    record_number: Optional[int]
+    page: int
+    case: int
+    comment: Optional[str] = None
+
+    def __str__(self) -> str:
+        s = f'Page {self.page}: {CASE[self.case]}'
+        if self.comment:
+            s += '\n\t' + self.comment
+        return s
+
+    def __repr__(self) -> str:
+        return str(self)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
 
 class Page:
     def __init__(
@@ -23,7 +54,7 @@ class Page:
         self.text: str = str(text)
         self.titles: List[Tuple[int, str]] = self.cleanup_titles(titles) if titles is not None else []
         self.articles: List['Article'] = articles or []
-        self.errors: List[int] = []
+        self.errors: List[ExtractionError] = []
 
     def __str__(self) -> str:
         return self.text
