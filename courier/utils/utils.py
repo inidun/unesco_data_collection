@@ -2,31 +2,11 @@ import functools
 import operator
 import re
 import sys
-from pathlib import Path
-from statistics import median
-from typing import Any, Dict, Iterable, Iterator, List
-
-import pdf2image
-
-from courier.config import get_config
-
-CONFIG = get_config()
+from typing import Any, Iterable, Iterator, List
 
 
 def flatten(list_of_list: Iterable[Iterable[Any]]) -> List[Any]:
     return functools.reduce(operator.iconcat, list_of_list, [])
-
-
-def pdf_stats() -> Dict[str, int]:
-    tot_pages = []
-    for file in Path(CONFIG.pdf_dir).glob('*.pdf'):
-        tot_pages.append(pdf2image.pdfinfo_from_path(file)['Pages'])
-    return {
-        'files': len(tot_pages),
-        'pages': sum(tot_pages),
-        'mean': round(sum(tot_pages) / len(tot_pages)),
-        'median': round(median(tot_pages)),
-    }
 
 
 def get_illegal_chars() -> re.Pattern:
@@ -78,11 +58,6 @@ def valid_xml(value: str) -> str:
 def cdata(value: str) -> str:
     value = value.replace(']]>', ']]]]><![CDATA[>')
     return f'<![CDATA[\n{value}\n]]>'
-
-
-def get_courier_ids() -> List[str]:
-    issues = sorted(list(Path(CONFIG.pdf_dir).glob('*.pdf')))
-    return [x.stem for x in issues]
 
 
 def split_by_idx(S: str, list_of_indices: List[int]) -> Iterator[str]:
