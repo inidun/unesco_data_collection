@@ -6,7 +6,8 @@ import argh
 from jinja2 import Environment, PackageLoader, Template, select_autoescape
 from tqdm import tqdm
 
-from courier.utils import cdata, get_courier_ids, valid_xml
+from courier.config import get_config
+from courier.utils import cdata, valid_xml
 
 jinja_env = Environment(
     loader=PackageLoader('courier', 'templates'),
@@ -65,7 +66,7 @@ def pages_to_issues(
     template: Union[str, Template] = 'courier_issue.xml',
 ) -> None:
     compiler = IssueCompiler(template)
-    compiler.compile_issues(get_courier_ids(), input_folder, output_folder, extension)
+    compiler.compile_issues(get_config().get_courier_ids(), input_folder, output_folder, extension)
 
 
 if __name__ == '__main__':
