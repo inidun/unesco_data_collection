@@ -3,7 +3,7 @@ import sys
 import pytest
 
 from courier.config import get_config
-from courier.utils import cdata, flatten, get_courier_ids, get_illegal_chars, pdf_stats
+from courier.utils import cdata, flatten, get_illegal_chars
 
 CONFIG = get_config()
 
@@ -11,15 +11,6 @@ CONFIG = get_config()
 def test_flatten_returns_expected_values():
     assert flatten([[1, 2, 3], (4, 5, 6), [7, 8]]) == [1, 2, 3, 4, 5, 6, 7, 8]
     assert flatten((('a', 'b'), [1, 2])) == ['a', 'b', 1, 2]
-
-
-def test_pdf_stats(monkeypatch):
-    monkeypatch.setattr(CONFIG, 'pdf_dir', CONFIG.test_files_dir)
-    stats = pdf_stats()
-    assert stats['files'] == 1
-    assert stats['mean'] == 8
-    assert stats['median'] == 8
-    assert stats['pages'] == 8
 
 
 @pytest.mark.parametrize(
@@ -50,5 +41,5 @@ def test_cdata_nests_unallowed_string():
 
 
 def test_get_courier_ids_returns_list_of_basenames():
-    assert all(isinstance(s, str) for s in get_courier_ids())
-    assert all('.' not in s for s in get_courier_ids())
+    assert all(isinstance(s, str) for s in CONFIG.get_courier_ids())
+    assert all('.' not in s for s in CONFIG.get_courier_ids())
