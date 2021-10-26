@@ -55,19 +55,29 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     exclusions_file: Path = metadata_dir / 'double_pages_exclusions.csv'
     overlap_file: Path = metadata_dir / 'overlap.csv'
     default_template: str = 'article.xml.jinja'
-    article_index: pd.DataFrame = None
+
     issue_index: pd.DataFrame = None
     double_pages: Dict[str, List[int]] = field(default_factory=dict)
+    _article_index: pd.DataFrame = field(init=False, default=None)
 
     def __post_init__(self) -> None:
-        self.article_index: pd.DataFrame = get_article_index_from_file(self.metadata_file)
         self.issue_index: pd.DataFrame = get_issue_index_from_file(self.metadata_file)
         self.double_pages: Dict[str, List[int]] = read_double_pages(self.exclusions_file, self.double_pages_file)
+
+    @property
+    def article_index(self) -> pd.DataFrame:
+        if self._article_index is None:
+            self._article_index: pd.DataFrame = get_article_index_from_file(self.metadata_file)
+        return self._article_index
 
     def get_issue_article_index(self, courier_id: str) -> List[Dict[str, Any]]:
         index: pd.DataFrame = self.article_index[self.article_index['courier_id'] == courier_id]
         article_index: List[Dict[str, Any]] = [record for record in index.to_dict('records')]
         return article_index
+
+    def get_courier_ids(self) -> List[str]:
+        issues = sorted(list(Path(self.pdf_dir).glob('*.pdf')))
+        return [x.stem for x in issues]
 
 
 def get_config() -> CourierConfig:
