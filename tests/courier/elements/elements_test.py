@@ -4,8 +4,17 @@ import pytest
 
 from courier.config import get_config
 from courier.elements import Article, CourierIssue, DoubleSpreadRightPage, Page
+from courier.elements.elements import ExtractionError
 
 CONFIG = get_config()
+
+
+def test_create_ExtractionError():
+    courier_issue: CourierIssue = CourierIssue('012656')
+    article: Optional[Article] = courier_issue.get_article(15043)
+    assert article is not None
+    extraction_error = ExtractionError(article, page=1, case=2)
+    assert extraction_error is not None
 
 
 @pytest.mark.parametrize(
