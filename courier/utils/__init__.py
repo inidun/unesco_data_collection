@@ -1,2 +1,2 @@
 from .logging import file_logger
-from .utils import cdata, flatten, get_courier_ids, get_illegal_chars, pdf_stats, split_by_idx, valid_xml
+from .utils import cdata, flatten, get_illegal_chars, split_by_idx, valid_xml
