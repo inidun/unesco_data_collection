@@ -33,11 +33,7 @@ class ConsolidateTextService:
                         f'Unhandled case: Page {page.page_number}. 2 articles: Unable to find title (1st article).'
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
-                    page.errors.append(
-                        ExtractionError(
-                            article.courier_id, article.record_number, page.page_number, 1, page.get_pritty_titles()
-                        )
-                    )
+                    page.errors.append(ExtractionError(article, page.page_number, 1, page.get_pritty_titles()))
 
             # Case 2: Article 2 starts before current page, Article 1 starts on current page
             # TODO: #44 Handle case: `Unable to find title on page (2nd)`
@@ -51,11 +47,7 @@ class ConsolidateTextService:
                         f'Unhandled case: Page {page.page_number}. 2 articles: Unable to find title (2nd article).'
                     )
                     article.errors.append(f'\nTitles on page {page.page_number}:\n{page.get_pritty_titles()}')
-                    page.errors.append(
-                        ExtractionError(
-                            article.courier_id, article.record_number, page.page_number, 2, page.get_pritty_titles()
-                        )
-                    )
+                    page.errors.append(ExtractionError(article, page.page_number, 2, page.get_pritty_titles()))
 
             # Case 3: Article 1 and Article 2 both start on current page
             # TODO: #45 Handle case: `Two articles starting on same page`
@@ -76,19 +68,19 @@ class ConsolidateTextService:
                     article.errors.append(
                         f'Unhandled case: Page {page.page_number}. 2 articles: Starting on same page.'
                     )
-                    page.errors.append(ExtractionError(article.courier_id, article.record_number, page.page_number, 3))
+                    page.errors.append(ExtractionError(article, page.page_number, 3))
 
             # Case 4: Neither Article 1 or Article 2 start on current page
             else:
                 article.errors.append(
                     f'Unhandled case: Page {page.page_number}. 2 articles: None of them starts on page.'
                 )
-                page.errors.append(ExtractionError(article.courier_id, article.record_number, page.page_number, 4))
+                page.errors.append(ExtractionError(article, page.page_number, 4))
 
         # Case 5: Current page contains more than 2 articles
         else:
             article.errors.append(f'Unhandled case: Page {page.page_number}. More than two articles on page.')
-            page.errors.append(ExtractionError(article.courier_id, article.record_number, page.page_number, 5))
+            page.errors.append(ExtractionError(article, page.page_number, 5))
 
     def find_matching_title_position(self, article: Article, titles: List) -> Optional[int]:
         return fuzzy_find_title(article.catalogue_title, titles)[0]
