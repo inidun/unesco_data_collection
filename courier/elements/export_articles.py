@@ -4,17 +4,16 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Union
 
+import pandas as pd
 from loguru import logger
 
 from courier.article_index import article_index_to_csv
 from courier.config import get_config
-from courier.utils import get_courier_ids
+from courier.elements.assign_page_service import AssignPageService
+from courier.elements.consolidate_text_service import ConsolidateTextService
+from courier.elements.elements import CourierIssue
+from courier.elements.statistics import IssueStatistics
 from courier.utils.logging import file_logger
-
-from .assign_page_service import AssignPageService
-from .consolidate_text_service import ConsolidateTextService
-from .elements import CourierIssue
-from .statistics import IssueStatistics
 
 CONFIG = get_config()
 
@@ -64,16 +63,19 @@ if __name__ == '__main__':
 
     export_folder: Path = CONFIG.articles_dir / 'exported'
     article_index_to_csv(CONFIG.article_index, export_folder)
+    stats: List[Dict[str, Any]] = []
 
     with file_logger(
         Path(export_folder) / 'extract_log.csv', format='{message}', level='TRACE'
     ) as logger:  # noqa: F811
         logger.trace('courier_id;year;record_number;assigned;not_found;total')
 
-        courier_ids = [x[:6] for x in get_courier_ids()]
+        courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
         for courier_id in courier_ids:
             if courier_id not in CONFIG.article_index.courier_id.values:
                 if len(CONFIG.get_issue_article_index(courier_id)) != 0:
                     raise Exception(f'{courier_id} not in article index but has articles')
                 continue
-            export_articles(courier_id, export_folder)
+            stats += export_articles(courier_id, export_folder)
+
+    pd.DataFrame(stats).to_csv(Path(export_folder) / 'stats.csv', sep=';')
