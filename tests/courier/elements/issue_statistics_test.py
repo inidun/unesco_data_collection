@@ -12,11 +12,13 @@ def test_issue_statistics_has_expected_values():
     assert all(missing == 0 for _, _, missing in IssueStatistics(issue).missing_pages)
     assert IssueStatistics(issue).num_missing_pages == 0
     assert IssueStatistics(issue).errors == []
+    assert IssueStatistics(issue).num_errors == 0
 
 
 def test_IssueStatistics_errors_returns_expected_values():
     issue_number = '063436'
     issue = CourierIssue(issue_number)
+
     AssignPageService().assign(issue)
     ConsolidateTextService().consolidate(issue)
 
