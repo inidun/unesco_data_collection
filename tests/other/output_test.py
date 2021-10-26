@@ -1,10 +1,35 @@
+from pathlib import Path
+from statistics import median
+from typing import Dict
+
+import pdf2image
 import pytest
 
 from courier.config import get_config
 from courier.extract.utils import get_filenames
-from courier.utils import pdf_stats
 
 CONFIG = get_config()
+
+
+def pdf_stats() -> Dict[str, int]:
+    tot_pages = []
+    for file in Path(CONFIG.pdf_dir).glob('*.pdf'):
+        tot_pages.append(pdf2image.pdfinfo_from_path(file)['Pages'])
+    return {
+        'files': len(tot_pages),
+        'pages': sum(tot_pages),
+        'mean': round(sum(tot_pages) / len(tot_pages)),
+        'median': round(median(tot_pages)),
+    }
+
+
+def test_pdf_stats(monkeypatch):
+    monkeypatch.setattr(CONFIG, 'pdf_dir', CONFIG.test_files_dir)
+    stats = pdf_stats()
+    assert stats['files'] == 1
+    assert stats['mean'] == 8
+    assert stats['median'] == 8
+    assert stats['pages'] == 8
 
 
 @pytest.mark.slow
