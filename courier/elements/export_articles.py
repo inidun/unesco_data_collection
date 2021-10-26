@@ -78,4 +78,6 @@ if __name__ == '__main__':
                 continue
             stats += export_articles(courier_id, export_folder)
 
-    pd.DataFrame(stats).to_csv(Path(export_folder) / 'stats.csv', sep=';')
+    pd.DataFrame(stats).drop(columns=['article']).sort_values(
+        by=['year', 'courier_id', 'record_number', 'page', 'case']
+    ).to_csv(Path(export_folder) / 'stats.csv', sep=';')
