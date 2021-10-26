@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import ftfy
@@ -23,11 +23,22 @@ CASE = {
 
 @dataclass
 class ExtractionError:
-    courier_id: Optional[str]
-    record_number: Optional[int]
+    article: 'Article'
+    year: Optional[int] = field(init=False)
+    courier_id: Optional[str] = field(init=False)
+    record_number: Optional[int] = field(init=False)
     page: int
     case: int
+    error: str = field(init=False)
+    title: str = field(init=False)
     comment: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        self.year = self.article.year
+        self.courier_id = self.article.courier_id
+        self.record_number = self.article.record_number
+        self.error = CASE[self.case]
+        self.title = self.article.catalogue_title
 
     def __str__(self) -> str:
         s = f'Page {self.page}: {CASE[self.case]}'
@@ -38,7 +49,8 @@ class ExtractionError:
     def __repr__(self) -> str:
         return str(self)
 
-    def to_dict(self) -> Dict[str, Any]:
+    @property
+    def asdict(self) -> Dict[str, Any]:
         return asdict(self)
 
 
@@ -111,6 +123,9 @@ class Article:
         self.texts: List[Tuple[int, str]] = []
         self.errors: List[str] = []
 
+    def __repr__(self) -> str:
+        return self.catalogue_title
+
     # FIXME: Check this
     @property
     def min_page_number(self) -> int:
@@ -162,6 +177,9 @@ class CourierIssue:
 
         self.double_pages: List[int] = [x + i for i, x in enumerate(self._pdf_double_page_numbers)]
         self.pages: List[Page] = PagesFactory().create(self)
+
+    def __repr__(self) -> str:
+        return self.courier_id
 
     # FIXME: Rename get_page_index
     def to_pdf_page_number(self, page_number: int) -> int:
