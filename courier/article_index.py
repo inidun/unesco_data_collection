@@ -1,11 +1,56 @@
+# pylint: disable=no-member
+# FIXME: Remove `disable=no-member` when fixed (see https://github.com/PyCQA/pylint/issues/4577)
+
 import itertools
 import os
 import re
+from io import StringIO
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Set, Union
 
 import pandas as pd
 from loguru import logger
+
+# TODO: Add correction for https://github.com/inidun/inidun_data/issues/4
+# TODO: Add correction for https://github.com/inidun/inidun_data/issues/5
+# TODO: Remove manual fixes from get_article_index_from_file
+# TODO: USe PageRefCorrectionService in get_article_index_from_file
+
+
+class PageRefCorrectionService:
+    def __init__(self, filename: Union[str, bytes, os.PathLike, StringIO]) -> None:
+        self.data: pd.DataFrame = pd.read_csv(filename, sep=';', index_col=0)
+
+    def correct(self, record_number: int, corrected_pages: List[int]) -> List[int]:
+        if record_number not in self.data.record_id.values:
+            return corrected_pages
+
+        corrected_pages = set(corrected_pages)
+
+        corrections = [x for x in self.data.to_dict('records') if x['record_id'] == record_number]
+
+        for correction in corrections:
+            pages_to_correct = self.split_page_ref_to_pages(correction['page'])
+            if correction['op'] == 'DELETE':
+                corrected_pages.difference_update(pages_to_correct)
+            if correction['op'] == 'ADD':
+                corrected_pages.update(pages_to_correct)
+
+        return sorted(corrected_pages)
+
+    @staticmethod
+    def split_page_ref_to_pages(page_ref: str) -> List[int]:
+        page_ref = page_ref.replace(' ', '')
+        if not page_ref:
+            return []
+        pages: Set[int] = set()
+        for p in page_ref.split(','):
+            if '-' in p:
+                r = p.split('-')
+                pages.update(range(int(r[0]), int(r[1]) + 1))
+            else:
+                pages.add(int(p))
+        return sorted(pages)
 
 
 def get_english_host_item(host_item: str) -> Optional[str]:
@@ -96,6 +141,10 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
 
     article_index['pages'] = article_index.page_ref.apply(get_expanded_article_pages)
     article_index.drop(columns=['page_ref'], axis=1, inplace=True)
+
+    # TODO: Add correction
+    # service = PageRefCorrectionService(correction_file)
+    # article_index['pages'] = article_index.apply(lambda x: service.correct(x['record_number'], x['pages']))
 
     article_index['courier_id'] = article_index.eng_host_item.apply(get_courier_id)
 
