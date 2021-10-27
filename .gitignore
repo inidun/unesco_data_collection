@@ -144,3 +144,4 @@ deprecated/
 *.out
 tests/output/*
 data/courier/tmp
+~$*
