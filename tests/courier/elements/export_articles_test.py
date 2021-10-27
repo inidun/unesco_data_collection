@@ -41,4 +41,24 @@ def test_stats():
         .drop(columns=['article'])
         .sort_values(by=['year', 'courier_id', 'record_number', 'page', 'case'])
     )
+
+    statistics['case'] = statistics.case.astype('str')
     assert statistics is not None
+
+    # with pd.ExcelWriter('Report.xlsx') as writer:
+    #     for group, data in statistics.groupby('case'):
+    #         data.to_excel(writer, group, index=False)
+    #     writer.save()
+
+    # writer = pd.ExcelWriter(CONFIG.project_root / 'tests/output/stats.xlsx')  # pylint: disable=abstract-class-instantiated
+    # for case in statistics.case.unique():
+    #     data = statistics[statistics.case == case]
+    #     data.to_excel(writer, sheet_name=str(case), index=False)
+    # writer.save()
+
+    stat_groups = statistics.groupby('case')
+    with pd.ExcelWriter(CONFIG.project_root / 'tests/output/stats.xlsx') as writer:
+        for key, _ in stat_groups:
+            stat_groups.get_group(key).to_excel(writer, sheet_name=key, index=False)
+
+    assert True
