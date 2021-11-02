@@ -135,12 +135,12 @@ def test_get_article_index_from_file_contains_correct_pages(record_number, expec
 
 
 def get_record_info(record_number: int) -> dict:
-    article_index = get_article_index_from_file(CONFIG.metadata_file)
+    article_index = get_article_index_from_file(CONFIG.metadata_file, CONFIG.correction_file)
     return article_index[article_index['record_number'] == record_number].iloc[0].to_dict()
 
 
 def test_article_index_to_csv(tmp_path):
-    article_index_to_csv(get_article_index_from_file(CONFIG.metadata_file), tmp_path)
+    article_index_to_csv(get_article_index_from_file(CONFIG.metadata_file, CONFIG.correction_file), tmp_path)
     assert (tmp_path / 'article_index.csv').exists()
 
 
