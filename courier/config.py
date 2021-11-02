@@ -54,6 +54,7 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     double_pages_file: Path = metadata_dir / 'double_pages.csv'
     exclusions_file: Path = metadata_dir / 'double_pages_exclusions.csv'
     overlap_file: Path = metadata_dir / 'overlap.csv'
+    correction_file: Path = metadata_dir / 'article_index_page_corrections.csv'
     default_template: str = 'article.xml.jinja'
 
     issue_index: pd.DataFrame = None
@@ -67,7 +68,7 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     @property
     def article_index(self) -> pd.DataFrame:
         if self._article_index is None:
-            self._article_index: pd.DataFrame = get_article_index_from_file(self.metadata_file)
+            self._article_index: pd.DataFrame = get_article_index_from_file(self.metadata_file, self.correction_file)
         return self._article_index
 
     def get_issue_article_index(self, courier_id: str) -> List[Dict[str, Any]]:

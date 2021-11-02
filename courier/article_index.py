@@ -11,12 +11,6 @@ from typing import List, Optional, Set, Union
 import pandas as pd
 from loguru import logger
 
-# TODO: Add correction for https://github.com/inidun/inidun_data/issues/4
-# TODO: Add correction for https://github.com/inidun/inidun_data/issues/5
-# TODO: Remove manual fixes from get_article_index_from_file
-# TODO: USe PageRefCorrectionService in get_article_index_from_file
-
-
 class PageRefCorrectionService:
     def __init__(self, filename: Union[str, bytes, os.PathLike, StringIO]) -> None:
         self.data: pd.DataFrame = pd.read_csv(filename, sep=';', index_col=0)
@@ -98,7 +92,9 @@ def extract_page_ref(item: str) -> Optional[str]:
     return m.group(0)
 
 
-def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.DataFrame:
+def get_article_index_from_file(
+    filename: Union[str, bytes, os.PathLike], correction_file: Optional[Union[str, bytes, os.PathLike, StringIO]] = None
+) -> pd.DataFrame:
     """Returns a pandas data frame that contains a processed version of the Courier article index
 
     Args:
@@ -136,15 +132,13 @@ def get_article_index_from_file(filename: Union[str, bytes, os.PathLike]) -> pd.
     article_index.drop(columns=['document_type', 'languages', 'host_item'], axis=1, inplace=True)
 
     article_index['page_ref'] = article_index['eng_host_item'].apply(extract_page_ref)
-    article_index.loc[article_index.record_number == 187812, 'page_ref'] = 'p. 18-31'  # Manual fix
-    article_index.loc[article_index.record_number == 64927, 'page_ref'] = 'p. 28-29'  # Manual fix
-
     article_index['pages'] = article_index.page_ref.apply(get_expanded_article_pages)
-    article_index.drop(columns=['page_ref'], axis=1, inplace=True)
 
-    # TODO: Add correction
-    # service = PageRefCorrectionService(correction_file)
-    # article_index['pages'] = article_index.apply(lambda x: service.correct(x['record_number'], x['pages']))
+    if correction_file is not None:
+        service = PageRefCorrectionService(correction_file)
+        article_index['pages'] = article_index.apply(lambda x: service.correct(x['record_number'], x['pages']), axis=1)
+
+    article_index.drop(columns=['page_ref'], axis=1, inplace=True)
 
     article_index['courier_id'] = article_index.eng_host_item.apply(get_courier_id)
 
