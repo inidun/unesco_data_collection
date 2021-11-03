@@ -16,6 +16,7 @@ def test_get_overlapping_pages_return_expected():
     assert overlapping_pages.shape == (1248, 3)
     assert set(overlapping_pages.columns) == set(['courier_id', 'page', 'count'])
 
+
 def test_save_overlapping_pages():
     with TemporaryDirectory() as output_dir:
         overlapping_pages = get_overlapping_pages(CONFIG.article_index)
