@@ -11,6 +11,7 @@ from typing import List, Optional, Set, Union
 import pandas as pd
 from loguru import logger
 
+
 class PageRefCorrectionService:
     def __init__(self, filename: Union[str, bytes, os.PathLike, StringIO]) -> None:
         self.data: pd.DataFrame = pd.read_csv(filename, sep=';', index_col=0)
