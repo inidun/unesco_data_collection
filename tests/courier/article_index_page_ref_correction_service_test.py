@@ -56,7 +56,7 @@ def get_record_info(article_index: pd.DataFrame, record_number: int) -> dict:
         (68978, [9, 10, 11]),
         (52516, [19]),
         (52554, [25, 26, 27, 28]),
-        (73971, [])
+        (73971, []),
     ],
 )
 def test_get_article_index_from_file_contains_correct_pages(record_number, expected):
