@@ -15,7 +15,6 @@ from courier.config import get_config
 
 CONFIG = get_config()
 
-# TODO: Create repo for pdfextract
 pdfcourier2text_path = CONFIG.project_root / 'courier/lib/pdfextract-1.0-SNAPSHOT.jar'
 
 
@@ -52,8 +51,7 @@ class ExtractedIssue:
         return '\n\n'.join([str(p.content) for p in self.pages])
 
 
-# FIXME: Add java args as option to JavaExtractor class
-# TODO: Use this in `pdfbox_extractor` or new `custom_pdfbox_extractor`
+# TODO: Add java args as option to JavaExtractor class
 class JavaExtractor:
     def __init__(
         self,
