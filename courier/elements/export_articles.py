@@ -78,6 +78,13 @@ if __name__ == '__main__':
                 continue
             stats += export_articles(courier_id, export_folder)
 
-    pd.DataFrame(stats).drop(columns=['article']).sort_values(
-        by=['year', 'courier_id', 'record_number', 'page', 'case']
-    ).to_csv(Path(export_folder) / 'stats.csv', sep=';', index=False)
+    statistics = (
+        pd.DataFrame(stats)
+        .drop(columns=['article'])
+        .sort_values(by=['year', 'courier_id', 'record_number', 'page', 'case'])
+    )
+    statistics['case'] = statistics.case.astype('str')
+    stat_groups = statistics.groupby('case')
+    with pd.ExcelWriter(Path(export_folder) / 'stats.xlsx') as writer:  # pylint: disable=abstract-class-instantiated
+        for key, _ in stat_groups:
+            stat_groups.get_group(key).to_excel(writer, sheet_name=key, index=False)
