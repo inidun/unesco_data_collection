@@ -1,11 +1,15 @@
+# pylint: disable=redefined-outer-name
 import filecmp
+from io import StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pandas as pd
+import pytest
 
 from courier.config import get_config
 from courier.elements import CourierIssue, IssueStatistics, export_articles
+from courier.elements.export_articles import display_extract_percentage
 
 CONFIG = get_config()
 
@@ -51,3 +55,18 @@ def test_stats():
                 stat_groups.get_group(key).to_excel(writer, sheet_name=key, index=False)
 
         assert (Path(output_dir) / 'stats.xlsx').exists()
+
+
+@pytest.fixture
+def extract_log():
+    return StringIO(
+        """courier_id;year;record_number;assigned;not_found;total
+012345;1900;11111;3;0;6
+123456;1900;11112;2;0;2"""
+    )
+
+
+def test_display_extract_percentage(extract_log):
+    success_ratio = display_extract_percentage(extract_log)
+    assert isinstance(success_ratio, float)
+    assert success_ratio == 0.5

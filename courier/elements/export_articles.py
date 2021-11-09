@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Union
 
+import numpy as np
 import pandas as pd
 from loguru import logger
 
@@ -59,6 +60,13 @@ def export_articles(
     return IssueStatistics(issue).errors
 
 
+def display_extract_percentage(filename: Union[str, os.PathLike]) -> float:
+    df = pd.read_csv(filename, sep=';')
+    complete_ratio = np.count_nonzero(df.assigned == df.total) / len(df)  # pylint: disable=no-member
+    print(f'Success ratio {complete_ratio*100:2f}%')
+    return complete_ratio
+
+
 if __name__ == '__main__':
 
     export_folder: Path = CONFIG.articles_dir / 'exported'
@@ -88,3 +96,5 @@ if __name__ == '__main__':
     with pd.ExcelWriter(Path(export_folder) / 'stats.xlsx') as writer:  # pylint: disable=abstract-class-instantiated
         for key, _ in stat_groups:
             stat_groups.get_group(key).to_excel(writer, sheet_name=key, index=False)
+
+    display_extract_percentage(Path(export_folder) / 'extract_log.csv')
