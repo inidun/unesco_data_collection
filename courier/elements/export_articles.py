@@ -63,7 +63,7 @@ def export_articles(
 def display_extract_percentage(filename: Union[str, os.PathLike]) -> float:
     df = pd.read_csv(filename, sep=';')
     complete_ratio = np.count_nonzero(df.assigned == df.total) / len(df)  # pylint: disable=no-member
-    print(f'Success ratio {complete_ratio*100:2f}%')
+    logger.info(f'Success ratio {complete_ratio*100:.2f}%')
     return complete_ratio
 
 
