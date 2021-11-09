@@ -1,10 +1,19 @@
+import warnings
+
 import pytest
 
 from courier.config import get_config
 from courier.elements import fuzzy_find_title
-from courier.extract.java_extractor import ExtractedIssue, JavaExtractor
+from courier.extract.java_extractor import ExtractedIssue, JavaExtractor, get_pdfbox_path
 
 CONFIG = get_config()
+
+
+def test_get_pdfbox_path_returns_valid_path_and_emits_no_warning():
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter('always')
+        assert get_pdfbox_path().exists()
+        assert len(w) == 0
 
 
 @pytest.mark.java

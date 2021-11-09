@@ -2,6 +2,7 @@
 # pylint: disable=import-error, wrong-import-position, import-outside-toplevel, consider-using-from-import
 
 import os
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Tuple, Union
@@ -24,7 +25,10 @@ def get_pdfbox_path() -> Path:
     file_list = list(cache_dir.glob('pdfbox-app-*.jar'))
     if not file_list:
         raise RuntimeError('PDFBox not found')
-    return sorted(file_list, key=lambda x: parse_version(str(x)))[-1]
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        path = sorted(file_list, key=lambda x: parse_version(str(x)))[-1]
+    return path
 
 
 @dataclass
