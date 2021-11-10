@@ -1,4 +1,5 @@
 # pylint: disable=redefined-outer-name
+import csv
 import os
 import re
 from pathlib import Path
@@ -60,10 +61,29 @@ def export_articles(
     return IssueStatistics(issue).errors
 
 
+def save_overlap(statistics: pd.DataFrame, filename: Union[str, os.PathLike]) -> None:
+    overlap = (
+        statistics.groupby(['courier_id', 'page'])
+        .size()
+        .reset_index()
+        .rename(columns={0: 'count'})
+        .sort_values(by=['courier_id', 'page'])
+    )
+    overlap['courier_id'] = overlap.courier_id.astype('int')
+    overlap.to_csv(filename, sep='\t', index=False, quoting=csv.QUOTE_NONNUMERIC)
+
+
+def save_statistics(statistics: pd.DataFrame, filename: Union[str, os.PathLike]) -> None:
+    stat_groups = statistics.groupby('case')
+    with pd.ExcelWriter(filename) as writer:  # pylint: disable=abstract-class-instantiated
+        for key, _ in stat_groups:
+            stat_groups.get_group(key).to_excel(writer, sheet_name=key, index=False)
+
+
 def display_extract_percentage(filename: Union[str, os.PathLike]) -> float:
     df = pd.read_csv(filename, sep=';')
     complete_ratio = np.count_nonzero(df.assigned == df.total) / len(df)  # pylint: disable=no-member
-    logger.info(f'Success ratio {complete_ratio*100:.2f}%')
+    logger.info(f'Articles completely extracted: {complete_ratio*100:.2f}%')
     return complete_ratio
 
 
@@ -92,9 +112,7 @@ if __name__ == '__main__':
         .sort_values(by=['year', 'courier_id', 'record_number', 'page', 'case'])
     )
     statistics['case'] = statistics.case.astype('str')
-    stat_groups = statistics.groupby('case')
-    with pd.ExcelWriter(Path(export_folder) / 'stats.xlsx') as writer:  # pylint: disable=abstract-class-instantiated
-        for key, _ in stat_groups:
-            stat_groups.get_group(key).to_excel(writer, sheet_name=key, index=False)
 
+    save_overlap(statistics, Path(export_folder) / 'overlap.csv')
+    save_statistics(statistics, Path(export_folder) / 'stats.xlsx')
     display_extract_percentage(Path(export_folder) / 'extract_log.csv')
