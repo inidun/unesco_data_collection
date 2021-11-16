@@ -110,3 +110,19 @@ def test_save_overlap(statistics, overlap_with_cases):
     overlap = save_overlap(statistics)
     assert all(overlap.columns == ['courier_id', 'page', 'count', 'cases'])
     assert overlap.equals(overlap_with_cases)
+
+
+@pytest.fixture
+def overlap_file():
+    return StringIO(
+        """"courier_id"	"page"	"count"
+111111  6   1
+222222  2   1
+222222  8   1
+333333  1   1
+333333  2   2
+444444  6   2
+555555  6   2
+555555  6   2
+"""
+    )
