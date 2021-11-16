@@ -92,4 +92,9 @@ def stats():
 
 def test_save_overlap(stats):
     statistics = pd.read_csv(stats, sep=';')
-    assert statistics is not None
+
+    statistics['case'] = statistics.case.astype('str')
+    overlap = statistics.groupby(['courier_id','page'])['case'].agg(['count', ','.join]).reset_index().rename(columns={'join': 'cases'})
+
+    assert all(overlap.columns == ['courier_id', 'page', 'count', 'cases'])
+
