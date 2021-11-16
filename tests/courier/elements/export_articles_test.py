@@ -9,7 +9,7 @@ import pytest
 
 from courier.config import get_config
 from courier.elements import CourierIssue, IssueStatistics, export_articles
-from courier.elements.export_articles import display_extract_percentage
+from courier.elements.export_articles import display_extract_percentage, save_overlap
 
 CONFIG = get_config()
 
@@ -73,28 +73,40 @@ def test_display_extract_percentage(extract_log):
 
 
 @pytest.fixture
-def stats():
-    return StringIO(
+def statistics():
+    statistics = StringIO(
         """year;courier_id;record_number;page;case;error;title;comment
-1948;111111;73655;6;1;case 1;Highlights of projects and budget for 2nd year
-1948;222222;73788;8;1;case 1;An Opinion on UNESCO's role in political meetings
-1948;222222;74502;2;1;case 1;Work-plan for Germany prepared by Secretariat
-1948;333333;73654;1;5;case 5;"UNESCO appeal; war not inevitable"
-1948;333333;73655;1;5;case 5;Highlights of projects and budget for 2nd year
-1948;333333;73657;2;5;case 5;Natural sciences: practical steps for international cooperation among scientists
-1948;333333;73658;2;5;case 5;Dr. Walker elected Chairman of Executive Board
-1948;333333;73659;2;5;case 5;National Commissions to play big role, UNESCO Conference agrees
-1948;444444;73791;6;1;case 1;Educators study school reforms 1
-1948;444444;73792;6;2;case 2;Educators study school reforms 2
+2000;111111;73655;6;1;case 1;Title A
+2000;222222;73788;8;1;case 1;Title B
+2000;222222;74502;2;1;case 1;Title C
+2000;333333;73654;1;5;case 5;Title D
+2000;333333;73655;1;5;case 5;Title E
+2000;333333;73657;2;5;case 5;Title F
+2000;333333;73658;2;5;case 5;Title G
+2000;333333;73659;2;5;case 5;Title H
+2000;444444;73791;6;1;case 1;Title I
+2000;444444;73792;6;2;case 2;Title J
 """
     )
+    return pd.read_csv(statistics, sep=';')
 
 
-def test_save_overlap(stats):
-    statistics = pd.read_csv(stats, sep=';')
+@pytest.fixture
+def overlap_with_cases():
+    overlap = StringIO(
+        """courier_id;page;count;cases
+111111;6;1;1
+222222;2;1;1
+222222;8;1;1
+333333;1;2;5,5
+333333;2;3;5,5,5
+444444;6;2;1,2
+"""
+    )
+    return pd.read_csv(overlap, sep=';')
 
-    statistics['case'] = statistics.case.astype('str')
-    overlap = statistics.groupby(['courier_id','page'])['case'].agg(['count', ','.join]).reset_index().rename(columns={'join': 'cases'})
 
+def test_save_overlap(statistics, overlap_with_cases):
+    overlap = save_overlap(statistics)
     assert all(overlap.columns == ['courier_id', 'page', 'count', 'cases'])
-
+    assert overlap.equals(overlap_with_cases)
