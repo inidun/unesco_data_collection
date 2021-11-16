@@ -3,7 +3,7 @@ import csv
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -61,16 +61,21 @@ def export_articles(
     return IssueStatistics(issue).errors
 
 
-def save_overlap(statistics: pd.DataFrame, filename: Union[str, os.PathLike]) -> None:
+def save_overlap(statistics: pd.DataFrame, filename: Optional[Union[str, os.PathLike]] = None) -> pd.DataFrame:
+
+    statistics['case'] = statistics.case.astype('str')
     overlap = (
-        statistics.groupby(['courier_id', 'page'])
-        .size()
+        statistics.groupby(['courier_id', 'page'])['case']
+        .agg(['count', ','.join])
         .reset_index()
-        .rename(columns={0: 'count'})
-        .sort_values(by=['courier_id', 'page'])
+        .rename(columns={'join': 'cases'})
     )
     overlap['courier_id'] = overlap.courier_id.astype('int')
-    overlap.to_csv(filename, sep='\t', index=False, quoting=csv.QUOTE_NONNUMERIC)
+
+    # TODO: to_csv params
+    if filename is not None:
+        overlap.to_csv(filename, sep='\t', index=False, quoting=csv.QUOTE_NONNUMERIC)
+    return overlap
 
 
 def save_statistics(statistics: pd.DataFrame, filename: Union[str, os.PathLike]) -> None:
