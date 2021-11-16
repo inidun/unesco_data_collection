@@ -70,3 +70,26 @@ def test_display_extract_percentage(extract_log):
     success_ratio = display_extract_percentage(extract_log)
     assert isinstance(success_ratio, float)
     assert success_ratio == 0.5
+
+
+@pytest.fixture
+def stats():
+    return StringIO(
+        """year;courier_id;record_number;page;case;error;title;comment
+1948;111111;73655;6;1;case 1;Highlights of projects and budget for 2nd year
+1948;222222;73788;8;1;case 1;An Opinion on UNESCO's role in political meetings
+1948;222222;74502;2;1;case 1;Work-plan for Germany prepared by Secretariat
+1948;333333;73654;1;5;case 5;"UNESCO appeal; war not inevitable"
+1948;333333;73655;1;5;case 5;Highlights of projects and budget for 2nd year
+1948;333333;73657;2;5;case 5;Natural sciences: practical steps for international cooperation among scientists
+1948;333333;73658;2;5;case 5;Dr. Walker elected Chairman of Executive Board
+1948;333333;73659;2;5;case 5;National Commissions to play big role, UNESCO Conference agrees
+1948;444444;73791;6;1;case 1;Educators study school reforms 1
+1948;444444;73792;6;2;case 2;Educators study school reforms 2
+"""
+    )
+
+
+def test_save_overlap(stats):
+    statistics = pd.read_csv(stats, sep=';')
+    assert statistics is not None
