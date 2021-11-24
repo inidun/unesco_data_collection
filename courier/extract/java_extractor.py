@@ -54,6 +54,12 @@ class ExtractedIssue:
     def __str__(self) -> str:
         return '\n\n'.join([str(p.content) for p in self.pages])
 
+    def __getitem__(self, index: int) -> ExtractedPage:
+        return self.pages[index]
+
+    def get_page(self, page_number: int) -> ExtractedPage:
+        return self[page_number - 1]
+
 
 # TODO: Add java args as option to JavaExtractor class
 class JavaExtractor:
