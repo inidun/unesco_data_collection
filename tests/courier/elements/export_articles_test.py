@@ -115,14 +115,20 @@ def test_save_overlap(statistics, overlap_with_cases):
 @pytest.fixture
 def overlap_file():
     return StringIO(
-        """"courier_id"	"page"	"count"
-111111  6   1
-222222  2   1
-222222  8   1
-333333  1   1
-333333  2   2
-444444  6   2
-555555  6   2
-555555  6   2
+        """courier_id;page;count
+111111;6;1
+222222;2;1
+222222;8;1
+333333;1;2
+333333;2;3
+444444;6;1
+555555;1;1
 """
     )
+
+
+@pytest.mark.skip(reason='Incomplete')
+def test_diffs(overlap_file, overlap_with_cases):
+    initial_overlap = pd.read_csv(overlap_file, sep=';', index_col=False, encoding='utf-8')
+    assert initial_overlap is not None
+    assert overlap_with_cases is not None
