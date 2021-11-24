@@ -25,7 +25,7 @@ def test_java_extractor():
     assert len(issue) == 35
     assert issue.pages[1].pdf_page_number == 2
     assert 'TREASURES' in issue.pages[1].content
-    assert len(issue.pages[1].titles) == 1
+    assert len(issue.pages[1].titles) == 2
     assert len([title for title, _ in issue.pages[1].titles if 'TREASURE' in title]) != 0
 
 
@@ -67,24 +67,26 @@ def test_extract_issue_returns_expected_content():
 # TODO: Add more test cases
 @pytest.mark.parametrize(
     'filename, title, page_number',
-    [(CONFIG.pdf_dir / '077050engo.pdf', 'The rubber man', 33)],
+    [
+        (CONFIG.pdf_dir / '077050engo.pdf', 'The Rubber man', 34),
+        (CONFIG.pdf_dir / '068057engo.pdf', 'Where the sky is black', 28),
+        (CONFIG.pdf_dir / '068057engo.pdf', 'Meteors tiny wanderers through space', 28),
+    ],
 )
 def test_title_position(filename, title, page_number):
-
-    """isf startswith - find_matching_title_position"""
 
     extractor: JavaExtractor = JavaExtractor()
     issue: ExtractedIssue = extractor.extract_issue(filename)
 
-    page_text = str(issue.pages[page_number].content)
-    expected_title_position = page_text.index(title)
+    page_text = ' '.join(str(issue.get_page(page_number).content).lower().split())
+    expected_title_position = page_text.index(
+        title.lower()
+    )  # FIXME: Add expected_title_position to parameters instead of calculating it
 
-    # title_list = [(t, p) for t, p in issue.pages[page_number].titles if t.startswith(title)]
-    # assert len(title_list) == 1
-
-    # extracted_title_position, _ = fuzzy_find_title(title, issue.pages[page_number].titles)
     extracted_title_position, _ = fuzzy_find_title(
-        title, [(position, title) for title, position in issue.pages[page_number].titles]
+        title, [(position, title) for title, position in issue.get_page(page_number).titles]
     )
+
     assert extracted_title_position is not None
     assert expected_title_position - 10 < extracted_title_position <= expected_title_position
+    assert expected_title_position == extracted_title_position
