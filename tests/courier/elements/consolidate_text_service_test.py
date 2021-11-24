@@ -1,6 +1,7 @@
 import pytest
 
 from courier.elements import AssignPageService, ConsolidateTextService, CourierIssue, IssueStatistics
+from courier.elements.consolidate_text_service import fuzzy_find_title
 
 
 def test_issue_has_no_consolidated_pages_as_default():
@@ -72,3 +73,34 @@ def test_cosolidated_pages():
     ConsolidateTextService().consolidate(issue)
 
     assert IssueStatistics(issue).num_missing_pages == 0
+
+
+# TODO: Add more tests
+@pytest.mark.parametrize(
+    'title, candidate_titles, expected',
+    [
+        (
+            'Where the sky is black',
+            [(0, 'WHERE THE SKY IS BLACK (Continued)')],
+            (0, 'WHERE THE SKY IS BLACK (Continued)'),
+        ),
+        (
+            'Treasures of world art',
+            [(0, 'TREASURES\nOF\nWORLD ART O\nj Priestess of the springs\n')],
+            (0, 'TREASURES\nOF\nWORLD ART O\nj Priestess of the springs\n'),
+        ),
+        (
+            'India moves towards self-sufficency in food',
+            [(2355, 'INDIA MOVES')],
+            (2355, 'INDIA MOVES'),
+        ),
+        # (
+        #     'Messages from space with solar batteries',
+        #     [(1958, 'MESS AGES FROM SPACE WITH SOLAR JS A«, JL JL Its j JL £a kl)]')],
+        #     (1958, 'MESS AGES FROM SPACE WITH SOLAR JS A«, JL JL Its j JL £a kl)]'),
+        # ),
+    ],
+)
+def test_fuzzy_find_title(title, candidate_titles, expected):
+    result = fuzzy_find_title(title, candidate_titles)
+    assert result == expected
