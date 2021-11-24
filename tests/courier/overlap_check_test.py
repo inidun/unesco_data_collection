@@ -13,7 +13,7 @@ def test_get_overlapping_pages_return_expected():
     overlapping_pages = get_overlapping_pages(CONFIG.article_index)
     expected = pd.read_csv(CONFIG.overlap_file, sep='\t')
     assert overlapping_pages.equals(expected)
-    assert overlapping_pages.shape == (1248, 3)
+    assert overlapping_pages.shape == (1246, 3)
     assert set(overlapping_pages.columns) == set(['courier_id', 'page', 'count'])
 
 
