@@ -12,5 +12,5 @@ def test_get_filenames_returns_only_files_with_expected_extension(tmp_path):
     assert txt_file not in get_filenames(tmp_path)
     assert txt_file in get_filenames(tmp_path, 'txt')
 
-    assert get_filenames(txt_file) == []
+    assert not get_filenames(txt_file)
     assert get_filenames(pdf_file) == get_filenames(tmp_path) == [pdf_file]

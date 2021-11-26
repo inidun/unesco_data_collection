@@ -22,7 +22,7 @@ def test_extract_generates_expected_output():
         extractor.batch_extract(files, output_dir)
 
         assert len(sorted(Path(output_dir).glob('*.txt'))) == 5
-        assert filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'expected/pdfplumber').diff_files == []
+        assert not filecmp.dircmp(output_dir, CONFIG.test_files_dir / 'expected/pdfplumber').diff_files
         assert (Path(output_dir) / 'extract.log').exists()
 
 
