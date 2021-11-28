@@ -1,3 +1,4 @@
+import re
 from typing import List, Optional, Set, Tuple
 
 from .elements import Article, CourierIssue, ExtractionError, Page
@@ -88,7 +89,9 @@ class ConsolidateTextService:
 
 # NOTE: Main logic
 # FIXME: Rename: get_best_candidate()
-def fuzzy_find_title(title: str, candidate_titles: List) -> Tuple[Optional[int], Optional[str]]:
+def fuzzy_find_title(
+    title: str, candidate_titles: List, min_common_words: int = 4
+) -> Tuple[Optional[int], Optional[str]]:
     """Returns the candidate title from a list of candidate titles best matching the title
 
     Select candidate c for title t iff:
@@ -113,7 +116,7 @@ def fuzzy_find_title(title: str, candidate_titles: List) -> Tuple[Optional[int],
     if title is None:
         return (None, None)
 
-    title_bow: Set[str] = set(title.lower().split())
+    title_bow: Set[str] = set(re.sub(r'\W+', ' ', title).lower().split())
 
     # TODO: Test
     if len(candidate_titles) == 1:
@@ -121,21 +124,24 @@ def fuzzy_find_title(title: str, candidate_titles: List) -> Tuple[Optional[int],
         if candidate_title.lower().split()[:2] == title.lower().split()[:2]:
             return (position, candidate_title)
 
-    else:
+    # else:
 
-        for position, candidate_title in candidate_titles:
-            candidate_title_bow: Set[str] = set(candidate_title.lower().split())
-            common_words = title_bow.intersection(candidate_title_bow)
+    for position, candidate_title in candidate_titles:
+        candidate_title_bow: Set[str] = set(re.sub(r'\W+', ' ', candidate_title).lower().split())
+        common_words = title_bow.intersection(candidate_title_bow)
 
-            # TODO: Test
-            if len(title) > 0 and common_words == candidate_title_bow:
-                return (position, candidate_title)
+        # TODO: Test
+        # if len(title) > 0 and common_words == candidate_title_bow:
+        #     return (position, candidate_title)
 
-            if len(common_words) >= 4:
-                return (position, candidate_title)
+        if len(candidate_title_bow) > 0 and candidate_title_bow == title_bow:
+            return (position, candidate_title)
 
-            if len(common_words) >= 2 and len(common_words) >= len(title_bow) / 2:
-                return position, candidate_title
+        if len(common_words) >= min_common_words:
+            return (position, candidate_title)
+
+        if len(common_words) >= 2 and len(common_words) >= len(title_bow) / 2:
+            return position, candidate_title
 
     return (None, None)
 
