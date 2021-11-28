@@ -1,6 +1,7 @@
 from typing import List, Tuple
 
 import pytest
+from fuzzywuzzy import process
 
 from courier.config import get_config
 from courier.elements import AssignPageService, ConsolidateTextService, CourierIssue, IssueStatistics
@@ -174,8 +175,7 @@ def test_get_article_title():
         # ('078370', 21124, 22),
         # ('074875', 50320, 16),
         # ('074686', 52575, 28),
-        ('074816', 48053, 14)
-
+        ('074816', 48053, 14),
     ],
 )
 def test_fuzzy_find_title_returns_title(courier_id, record_number, page):
@@ -184,8 +184,6 @@ def test_fuzzy_find_title_returns_title(courier_id, record_number, page):
     result = fuzzy_find_title(title, candidate_titles, 4)
     assert all(result), title
 
-
-from fuzzywuzzy import process
 
 @pytest.mark.parametrize(
     'courier_id, record_number, page',
@@ -203,8 +201,7 @@ from fuzzywuzzy import process
         ('078370', 21124, 22),
         ('074875', 50320, 16),
         ('074686', 52575, 28),
-        ('074816', 48053, 14)
-
+        ('074816', 48053, 14),
     ],
 )
 def test_fuzzywuzzy(courier_id, record_number, page):
