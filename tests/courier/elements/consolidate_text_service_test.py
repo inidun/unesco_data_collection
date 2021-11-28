@@ -1,5 +1,8 @@
+from typing import List, Tuple
+
 import pytest
 
+from courier.config import get_config
 from courier.elements import AssignPageService, ConsolidateTextService, CourierIssue, IssueStatistics
 from courier.elements.consolidate_text_service import fuzzy_find_title
 
@@ -64,7 +67,7 @@ def test_assign_segments_to_articles_case_A1_and_A2_starts_on_page():
     assert A2 is not None
 
 
-@pytest.mark.skip('Incomplete.')
+# @pytest.mark.skip('Incomplete.')
 def test_cosolidated_pages():
     issue = CourierIssue('012656')
     # issue = CourierIssue('068778')
@@ -94,13 +97,118 @@ def test_cosolidated_pages():
             [(2355, 'INDIA MOVES')],
             (2355, 'INDIA MOVES'),
         ),
-        # (
-        #     'Messages from space with solar batteries',
-        #     [(1958, 'MESS AGES FROM SPACE WITH SOLAR JS A«, JL JL Its j JL £a kl)]')],
-        #     (1958, 'MESS AGES FROM SPACE WITH SOLAR JS A«, JL JL Its j JL £a kl)]'),
-        # ),
+        (
+            'Messages from space with solar batteries',
+            [(1958, 'MESS AGES FROM SPACE WITH SOLAR JS A«, JL JL Its j JL £a kl)]')],
+            (1958, 'MESS AGES FROM SPACE WITH SOLAR JS A«, JL JL Its j JL £a kl)]'),
+        ),
+        (
+            'Paris gets a new heart, a bold project is changing the appearance and cultural life of the French capital',
+            [(39, '20'), (5551, 'Paris gets new heart by Nino Frank')],
+            (5551, 'Paris gets new heart by Nino Frank'),
+        ),
+        (
+            'A Pioneer of scientific observation',
+            [(42, '16'), (3009, 'One night he dreamt that lie was'), (5313, 'pioneer scientific by Mohammed')],
+            (None, None),
+        ),
+        (
+            "The Woman we called 'la patronne'",
+            [(34, '11'), (5150, 'THE WOM by Marguerite Perey'), (5784, 'June 1929, as shy')],
+            (None, None),
+        ),
+        (
+            "Citizen Paine: the turbulent life of a fiery revolutionary who proclaimed 'my country is the world'",
+            [
+                (0, 'Yet in an indirect way there was'),
+                (2320, 'and peculiar forms. It is found in'),
+                (4675, 'CITIZEN PAINE'),
+                (5117, '28'),
+            ],
+            (None, None),
+        ),
     ],
 )
 def test_fuzzy_find_title(title, candidate_titles, expected):
-    result = fuzzy_find_title(title, candidate_titles)
+    result = fuzzy_find_title(title, candidate_titles, 4)
     assert result == expected
+
+
+def get_page_titles(courier_id: str, page: int) -> List[Tuple[int, str]]:
+    issue = CourierIssue(courier_id)
+    AssignPageService().assign(issue)
+    ConsolidateTextService().consolidate(issue)
+    return issue.get_page(page).titles
+
+
+def test_get_page_titles_returns_expected():
+    courier_id = '078370'
+    page = 22
+    titles = get_page_titles(courier_id, page)
+    assert titles == [(34, '11'), (5150, 'THE WOM by Marguerite Perey'), (5784, 'June 1929, as shy')]
+
+
+def get_article_title(record_number: int) -> str:
+    article_index = get_config().article_index
+    return article_index[article_index['record_number'] == record_number].iloc[0].catalogue_title
+
+
+def test_get_article_title():
+    title = get_article_title(66288)
+    assert title == 'Messages from space with solar batteries'
+
+
+@pytest.mark.parametrize(
+    'courier_id, record_number, page',
+    [
+        ('066285', 66288, 17),
+        ('050399', 50404, 20),
+        ('074808', 46517, 28),
+        ('074817', 48081, 12),
+        ('074642', 41135, 26),
+        ('074642', 41135, 26),
+        ('074758', 41073, 10),
+        ('074686', 52513, 17),
+        ('074686', 52554, 25),
+        # ('074826', 49572, 28),
+        # ('078370', 21124, 22),
+        # ('074875', 50320, 16),
+        # ('074686', 52575, 28),
+        ('074816', 48053, 14)
+
+    ],
+)
+def test_fuzzy_find_title_returns_title(courier_id, record_number, page):
+    title = get_article_title(record_number)
+    candidate_titles = get_page_titles(courier_id, page)
+    result = fuzzy_find_title(title, candidate_titles, 4)
+    assert all(result), title
+
+
+from fuzzywuzzy import process
+
+@pytest.mark.parametrize(
+    'courier_id, record_number, page',
+    [
+        ('066285', 66288, 17),
+        ('050399', 50404, 20),
+        ('074808', 46517, 28),
+        ('074817', 48081, 12),
+        ('074642', 41135, 26),
+        ('074642', 41135, 26),
+        ('074758', 41073, 10),
+        ('074686', 52513, 17),
+        ('074686', 52554, 25),
+        ('074826', 49572, 28),
+        ('078370', 21124, 22),
+        ('074875', 50320, 16),
+        ('074686', 52575, 28),
+        ('074816', 48053, 14)
+
+    ],
+)
+def test_fuzzywuzzy(courier_id, record_number, page):
+    title = get_article_title(record_number)
+    candidate_titles = get_page_titles(courier_id, page)
+    result = process.extractOne(title, candidate_titles)[0]
+    assert all(result), title
