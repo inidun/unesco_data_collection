@@ -204,8 +204,7 @@ def test_fuzzy_find_title_returns_title(courier_id, record_number, page):
         ('074816', 48053, 14),
         ('066943', 66935, 27),
         ('068108', 68120, 11),
-        ('076565', 76562, 38)
-
+        ('076565', 76562, 38),
     ],
 )
 def test_fuzzywuzzy(courier_id, record_number, page):
@@ -213,7 +212,3 @@ def test_fuzzywuzzy(courier_id, record_number, page):
     candidate_titles = get_page_titles(courier_id, page)
     _, result = process.extractOne(title, candidate_titles)[0]
     assert all(result), title
-
-
-
-

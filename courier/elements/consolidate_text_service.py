@@ -115,13 +115,16 @@ def common_words_equals_candidate_bow(title: str, candidate_title: str) -> int:
     common_words = bow(title).intersection(bow(candidate_title))
     return 1 if len(bow(candidate_title)) > 0 and common_words == bow(candidate_title) else 0
 
+
 # TODO: NEW (test)
 def two_first_words_equal(title: str, candidate_title: str) -> int:
     return 1 if candidate_title.lower().split()[:2] == title.lower().split()[:2] else 0
 
+
 # TODO: NEW (test)
 def title_is_one_word_and_candidate_contains_same_word(title: str, candidate_title: str) -> int:
     return 1 if len(title) == 1 and title in bow(candidate_title) else 0
+
 
 def get_best_candidate(
     title: str, title_candidates: List[Tuple[int, str]], functions: List[Callable[[str, str], int]] = None
@@ -168,7 +171,9 @@ def get_best_candidate(
             return (position, candidate_title)
 
     best_candidate = max(
-        [((p, c), evaluate_functions(functions, (title, c))) for p, c in title_candidates], key=itemgetter(1), default=((None, None), [0])
+        [((p, c), evaluate_functions(functions, (title, c))) for p, c in title_candidates],
+        key=itemgetter(1),
+        default=((None, None), [0]),
     )
     return best_candidate[0] if sum(best_candidate[1]) > 0 else (None, None)
 
