@@ -123,7 +123,8 @@ def two_first_words_equal(title: str, candidate_title: str) -> int:
 
 # TODO: NEW (test)
 def title_is_one_word_and_candidate_contains_same_word(title: str, candidate_title: str) -> int:
-    return 1 if len(title) == 1 and title in bow(candidate_title) else 0
+    common_words = bow(title).intersection(bow(candidate_title))
+    return 1 if len(bow(title)) == 1 and common_words == bow(title) else 0
 
 
 def get_best_candidate(
