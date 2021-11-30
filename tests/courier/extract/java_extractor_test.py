@@ -3,7 +3,7 @@ import warnings
 import pytest
 
 from courier.config import get_config
-from courier.elements import fuzzy_find_title
+from courier.elements import get_best_candidate
 from courier.extract.java_extractor import ExtractedIssue, JavaExtractor, get_pdfbox_path
 
 CONFIG = get_config()
@@ -83,7 +83,7 @@ def test_title_position(filename, title, page_number):
         title.lower()
     )  # FIXME: Add expected_title_position to parameters instead of calculating it
 
-    extracted_title_position, _ = fuzzy_find_title(
+    extracted_title_position, _ = get_best_candidate(
         title, [(position, title) for title, position in issue.get_page(page_number).titles]
     )
 

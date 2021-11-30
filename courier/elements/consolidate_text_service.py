@@ -1,5 +1,8 @@
 import re
-from typing import List, Optional, Set, Tuple
+
+# NOTE: Main logic
+from operator import itemgetter, methodcaller
+from typing import Callable, List, Optional, Set, Tuple
 
 from .elements import Article, CourierIssue, ExtractionError, Page
 
@@ -84,13 +87,44 @@ class ConsolidateTextService:
             page.errors.append(ExtractionError(article, page.page_number, 5))
 
     def find_matching_title_position(self, article: Article, titles: List) -> Optional[int]:
-        return fuzzy_find_title(article.catalogue_title, titles)[0]
+        return get_best_candidate(article.catalogue_title, titles)[0]
 
 
-# NOTE: Main logic
-# FIXME: Rename: get_best_candidate()
-def fuzzy_find_title(
-    title: str, candidate_titles: List, min_common_words: int = 4
+def bow(title: str) -> Set[str]:
+    return set(re.sub(r'\W+', ' ', title).lower().split())
+
+
+def evaluate_functions(functions: List[Callable[[str, str], int]], args: Tuple[str, str]) -> List[int]:
+    return list(map(methodcaller('__call__', *args), functions))
+
+
+def candidate_equals_title(title: str, candidate_title: str) -> int:
+    return 3 if len(bow(candidate_title)) > 0 and bow(candidate_title) == bow(title) else 0
+
+
+def common_words_four_or_more(title: str, candidate_title: str) -> int:
+    common_words = bow(title).intersection(bow(candidate_title))
+    return 2 if len(common_words) >= 3 else 0
+
+
+def common_words_more_than_half(title: str, candidate_title: str) -> int:
+    return 1 if len(bow(candidate_title)) > 0 and bow(candidate_title) == bow(title) else 0
+
+
+def common_words_equals_candidate_bow(title: str, candidate_title: str) -> int:
+    common_words = bow(title).intersection(bow(candidate_title))
+    return 1 if len(bow(candidate_title)) > 0 and common_words == bow(candidate_title) else 0
+
+# TODO: NEW (test)
+def two_first_words_equal(title: str, candidate_title: str) -> int:
+    return 1 if candidate_title.lower().split()[:2] == title.lower().split()[:2] else 0
+
+# TODO: NEW (test)
+def title_is_one_word_and_candidate_contains_same_word(title: str, candidate_title: str) -> int:
+    return 1 if len(title) == 1 and title in bow(candidate_title) else 0
+
+def get_best_candidate(
+    title: str, title_candidates: List[Tuple[int, str]], functions: List[Callable[[str, str], int]] = None
 ) -> Tuple[Optional[int], Optional[str]]:
     """Returns the candidate title from a list of candidate titles best matching the title
 
@@ -104,6 +138,7 @@ def fuzzy_find_title(
         - |C| > 0 and C = T
         - C∩T >= 4
         - C∩T >= 2 and C∩T >= |T|/2
+        - |C| > 0 and C∩T = C
 
     Args:
         title (str): The title
@@ -113,37 +148,29 @@ def fuzzy_find_title(
         Tuple[Optional[int], Optional[str]]: Tuple containing the position of, and the string of the best matching title
     """
 
+    functions: List[Callable[[str, str], int]] = (
+        functions
+        if functions is not None
+        else [
+            candidate_equals_title,
+            common_words_four_or_more,
+            common_words_more_than_half,
+            common_words_equals_candidate_bow,
+        ]
+    )
+
     if title is None:
         return (None, None)
 
-    title_bow: Set[str] = set(re.sub(r'\W+', ' ', title).lower().split())
-
-    # TODO: Test
-    if len(candidate_titles) == 1:
-        position, candidate_title = candidate_titles[0]
+    if len(title_candidates) == 1:
+        position, candidate_title = title_candidates[0]
         if candidate_title.lower().split()[:2] == title.lower().split()[:2]:
             return (position, candidate_title)
 
-    # else:
-
-    for position, candidate_title in candidate_titles:
-        candidate_title_bow: Set[str] = set(re.sub(r'\W+', ' ', candidate_title).lower().split())
-        common_words = title_bow.intersection(candidate_title_bow)
-
-        # TODO: Test
-        # if len(title) > 0 and common_words == candidate_title_bow:
-        #     return (position, candidate_title)
-
-        if len(candidate_title_bow) > 0 and candidate_title_bow == title_bow:
-            return (position, candidate_title)
-
-        if len(common_words) >= min_common_words:
-            return (position, candidate_title)
-
-        if len(common_words) >= 2 and len(common_words) >= len(title_bow) / 2:
-            return position, candidate_title
-
-    return (None, None)
+    best_candidate = max(
+        [((p, c), evaluate_functions(functions, (title, c))) for p, c in title_candidates], key=itemgetter(1), default=((None, None), [0])
+    )
+    return best_candidate[0] if sum(best_candidate[1]) > 0 else (None, None)
 
 
 if __name__ == '__main__':

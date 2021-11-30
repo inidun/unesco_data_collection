@@ -5,7 +5,7 @@ from fuzzywuzzy import process
 
 from courier.config import get_config
 from courier.elements import AssignPageService, ConsolidateTextService, CourierIssue, IssueStatistics
-from courier.elements.consolidate_text_service import fuzzy_find_title
+from courier.elements.consolidate_text_service import get_best_candidate
 
 
 def test_issue_has_no_consolidated_pages_as_default():
@@ -126,12 +126,12 @@ def test_cosolidated_pages():
                 (4675, 'CITIZEN PAINE'),
                 (5117, '28'),
             ],
-            (None, None),
+            (4675, 'CITIZEN PAINE'),
         ),
     ],
 )
 def test_fuzzy_find_title(title, candidate_titles, expected):
-    result = fuzzy_find_title(title, candidate_titles, 4)
+    result = get_best_candidate(title, candidate_titles)
     assert result == expected
 
 
@@ -181,8 +181,8 @@ def test_get_article_title():
 def test_fuzzy_find_title_returns_title(courier_id, record_number, page):
     title = get_article_title(record_number)
     candidate_titles = get_page_titles(courier_id, page)
-    result = fuzzy_find_title(title, candidate_titles, 4)
-    assert all(result), title
+    _, result = get_best_candidate(title, candidate_titles)
+    assert result is not None, title
 
 
 @pytest.mark.parametrize(
@@ -202,10 +202,18 @@ def test_fuzzy_find_title_returns_title(courier_id, record_number, page):
         ('074875', 50320, 16),
         ('074686', 52575, 28),
         ('074816', 48053, 14),
+        ('066943', 66935, 27),
+        ('068108', 68120, 11),
+        ('076565', 76562, 38)
+
     ],
 )
 def test_fuzzywuzzy(courier_id, record_number, page):
     title = get_article_title(record_number)
     candidate_titles = get_page_titles(courier_id, page)
-    result = process.extractOne(title, candidate_titles)[0]
+    _, result = process.extractOne(title, candidate_titles)[0]
     assert all(result), title
+
+
+
+
