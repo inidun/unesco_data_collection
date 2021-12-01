@@ -107,6 +107,7 @@ def common_words_three_or_more(title: str, candidate_title: str) -> int:
     return 2 if len(common_words) >= 3 else 0
 
 
+# TODO: Evaluate if overmatches
 def common_words_more_than_half(title: str, candidate_title: str) -> int:
     common_words = bow(title).intersection(bow(candidate_title))
     return 1 if len(bow(candidate_title)) > 0 and len(common_words) >= len(bow(title)) / 2 else 0
