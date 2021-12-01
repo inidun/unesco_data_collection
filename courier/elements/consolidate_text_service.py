@@ -160,6 +160,8 @@ def get_best_candidate(
             common_words_four_or_more,
             common_words_more_than_half,
             common_words_equals_candidate_bow,
+            two_first_words_equal,
+            title_is_one_word_and_candidate_contains_same_word
         ]
     )
 
