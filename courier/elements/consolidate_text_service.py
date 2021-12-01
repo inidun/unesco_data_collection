@@ -2,7 +2,7 @@ import re
 
 # NOTE: Main logic
 from operator import itemgetter, methodcaller
-from typing import Callable, List, Optional, Set, Tuple
+from typing import Any, Callable, List, Optional, Set, Tuple
 
 from .elements import Article, CourierIssue, ExtractionError, Page
 
@@ -94,7 +94,7 @@ def bow(title: str) -> Set[str]:
     return set(re.sub(r'\W+', ' ', title).lower().split())
 
 
-def evaluate_functions(functions: List[Callable[[str, str], int]], args: Tuple[str, str]) -> List[int]:
+def evaluate_functions(functions: List[Callable[[Any, Any], int]], args: Tuple[Any, Any]) -> List[int]:
     return list(map(methodcaller('__call__', *args), functions))
 
 
@@ -102,13 +102,14 @@ def candidate_equals_title(title: str, candidate_title: str) -> int:
     return 3 if len(bow(candidate_title)) > 0 and bow(candidate_title) == bow(title) else 0
 
 
-def common_words_four_or_more(title: str, candidate_title: str) -> int:
+def common_words_three_or_more(title: str, candidate_title: str) -> int:
     common_words = bow(title).intersection(bow(candidate_title))
     return 2 if len(common_words) >= 3 else 0
 
 
 def common_words_more_than_half(title: str, candidate_title: str) -> int:
-    return 1 if len(bow(candidate_title)) > 0 and bow(candidate_title) == bow(title) else 0
+    common_words = bow(title).intersection(bow(candidate_title))
+    return 1 if len(bow(candidate_title)) > 0 and len(common_words) >= len(bow(title)) / 2 else 0
 
 
 def common_words_equals_candidate_bow(title: str, candidate_title: str) -> int:
@@ -116,12 +117,10 @@ def common_words_equals_candidate_bow(title: str, candidate_title: str) -> int:
     return 1 if len(bow(candidate_title)) > 0 and common_words == bow(candidate_title) else 0
 
 
-# TODO: NEW (test)
 def two_first_words_equal(title: str, candidate_title: str) -> int:
     return 1 if candidate_title.lower().split()[:2] == title.lower().split()[:2] else 0
 
 
-# TODO: NEW (test)
 def title_is_one_word_and_candidate_contains_same_word(title: str, candidate_title: str) -> int:
     common_words = bow(title).intersection(bow(candidate_title))
     return 1 if len(bow(title)) == 1 and common_words == bow(title) else 0
@@ -157,11 +156,11 @@ def get_best_candidate(
         if functions is not None
         else [
             candidate_equals_title,
-            common_words_four_or_more,
+            common_words_three_or_more,
             common_words_more_than_half,
             common_words_equals_candidate_bow,
             two_first_words_equal,
-            title_is_one_word_and_candidate_contains_same_word
+            title_is_one_word_and_candidate_contains_same_word,
         ]
     )
 
