@@ -5,7 +5,17 @@ from fuzzywuzzy import process
 
 from courier.config import get_config
 from courier.elements import AssignPageService, ConsolidateTextService, CourierIssue, IssueStatistics
-from courier.elements.consolidate_text_service import get_best_candidate
+from courier.elements.consolidate_text_service import (
+    bow,
+    candidate_equals_title,
+    common_words_equals_candidate_bow,
+    common_words_more_than_half,
+    common_words_three_or_more,
+    evaluate_functions,
+    get_best_candidate,
+    title_is_one_word_and_candidate_contains_same_word,
+    two_first_words_equal,
+)
 
 
 def test_issue_has_no_consolidated_pages_as_default():
@@ -212,3 +222,94 @@ def test_fuzzywuzzy(courier_id, record_number, page):
     candidate_titles = get_page_titles(courier_id, page)
     _, result = process.extractOne(title, candidate_titles)[0]
     assert all(result), title
+
+
+def test_bow():
+    title = 'ONE two 23b ?= abc%'
+    assert bow(title) == {'23b', 'abc', 'one', 'two'}
+
+
+@pytest.mark.parametrize(
+    'functions, args, expected',
+    [
+        ([lambda x, y: x + y, lambda x, y: x * y], (2, 3), [5, 6]),
+        ([lambda x, y: x.lower() + y.upper(), lambda x, y: x.upper() + y.lower()], ('a', 'b'), ['aB', 'Ab']),
+    ],
+)
+def test_evaluate_functions(functions, args, expected):
+    result = evaluate_functions(functions, args)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    'title, candidate, expected',
+    [
+        ('These are equal', 'These are equal', 3),
+        ('These are not', 'No', 0),
+    ],
+)
+def test_candidate_equals_title(title, candidate, expected):
+    result = candidate_equals_title(title, candidate)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    'title, candidate, expected',
+    [
+        ('one two three', 'one two three', 2),
+        ('one two three', 'one two', 0),
+    ],
+)
+def test_common_words_three_or_more(title, candidate, expected):
+    result = common_words_three_or_more(title, candidate)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    'title, candidate, expected',
+    [('a b c d e', 'a b c', 1), ('a b c d e', 'a b', 0), ('a b c d', 'a b', 1)],
+)
+def test_common_words_more_than_half(title, candidate, expected):
+    result = common_words_more_than_half(title, candidate)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    'title, candidate, expected',
+    [
+        ('a b c d', 'a b c', 1),
+        ('a b c d', 'a b', 1),
+        ('a b c d', 'a b q', 0),
+        ('a b c', 'd e f', 0),
+    ],
+)
+def test_common_words_equals_candidate_bow(title, candidate, expected):
+    result = common_words_equals_candidate_bow(title, candidate)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    'title, candidate, expected',
+    [
+        ('one two', 'one two three', 1),
+        ('one two three', 'one two', 1),
+        ('one three', 'one two', 0),
+    ],
+)
+def test_two_first_words_equal(title, candidate, expected):
+    result = two_first_words_equal(title, candidate)
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    'title, candidate, expected',
+    [
+        ('oneword', 'oneword a b c', 1),
+        ('oneword', 'a b c oneword', 1),
+        ('oneword', 'a b c', 0),
+        ('two words', 'two words a b c', 0),
+    ],
+)
+def test_title_is_one_word_and_candidate_contains_same_word(title, candidate, expected):
+    result = title_is_one_word_and_candidate_contains_same_word(title, candidate)
+    assert result == expected
