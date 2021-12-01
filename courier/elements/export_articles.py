@@ -121,7 +121,5 @@ if __name__ == '__main__':
     save_overlap(statistics, Path(export_folder) / 'overlap.csv')
     save_statistics(statistics, Path(export_folder) / 'stats.xlsx')
 
-    with file_logger(
-        Path(export_folder) / 'extract_percentage.log', format='{message}', level='INFO'
-    ) as logger:
+    with file_logger(Path(export_folder) / 'extract_percentage.log', format='{message}', level='INFO') as logger:
         display_extract_percentage(Path(export_folder) / 'extract_log.csv')
