@@ -31,12 +31,13 @@ def test_issue_has_no_consolidated_pages_as_default():
         ('062404', 27, 62421, 'UNESCO in retrospect and perspective', True, 'Base case: only one article on page'),
 
         # TODO: #43, #44 Handle cases: `Unable to find title on page (1st)` and `Unable to find title on page (2nd)`
-        pytest.param('033144', 14, None, 'Two decades in the world of science', True, '2 articles: Unable to find title (1st article).', marks=pytest.mark.skip('Incomplete')),
-        pytest.param('033144', 14, None, 'New outposts of science', True, '2 articles: Unable to find title (2nd article).', marks=pytest.mark.skip('Incomplete')),
+        # NOTE: `pdfextract` does NOT find any candidates on page 14 in issue 033144. Test other page.
+        ('033144', 14, None, 'Two decades in the world of science', False, '2 articles: Unable to find title (1st article).'),
+        ('033144', 14, None, 'New outposts of science', False, '2 articles: Unable to find title (2nd article).'),
 
         # TODO: #45 Handle case: `Two articles starting on same page`
-        pytest.param('062404', 26, 62420, 'UNESCO art pocket books: a new venture in art publishing', True, '2 articles: Starting on same page', marks=pytest.mark.skip('Incomplete')),
-        pytest.param('062404', 26, 62421, 'UNESCO in retrospect and perspective', True, '2 articles: Starting on same page', marks=pytest.mark.skip('Incomplete')),
+        ('062404', 26, 62420, 'UNESCO art pocket books: a new venture in art publishing', True, '2 articles: Starting on same page'),
+        ('062404', 26, 62421, 'UNESCO in retrospect and perspective', True, '2 articles: Starting on same page'),
 
         # Unhandled
         ('063436', 23, 63295, 'Index of prosperity: S.T.P. (scientific and technical potential)', False, '2 articles: None of them starts on page. (19,20,21,22,23)'),
@@ -186,6 +187,8 @@ def test_get_article_title():
         # ('074875', 50320, 16),
         # ('074686', 52575, 28),
         ('074816', 48053, 14),
+        ('062404', 62420, 26),
+        ('062404', 62421, 26),
     ],
 )
 def test_fuzzy_find_title_returns_title(courier_id, record_number, page):
