@@ -116,10 +116,11 @@ def common_words_three_or_more(title: str, candidate_title: str) -> int:
 
 # TODO: #57 Evaluate if overmatches
 # now:          |C| > 0 and |C∩T| >= |T|/2
-# change to:    C∩T >= 2 and C∩T >= |T|/2
+# alt:          C∩T >= 2 and C∩T >= |T|/2
 def common_words_more_than_half(title: str, candidate_title: str) -> int:
     common_words = bow(title).intersection(bow(candidate_title))
     return 1 if len(bow(candidate_title)) > 0 and len(common_words) >= len(bow(title)) / 2 else 0
+    # return 1 if len(common_words) >= 2 and len(common_words) >= len(bow(title)) / 2 else 0
 
 
 def common_words_equals_candidate_bow(title: str, candidate_title: str) -> int:
@@ -148,7 +149,7 @@ def get_best_candidate(
 
         - |C| > 0 and C = T
         - C∩T >= 3
-        - C∩T >= 2 and C∩T >= |T|/2
+        - |C| > 0 and |C∩T| >= |T|/2
         - |C| > 0 and C∩T = C
         - First two words in c and t are equal
         - |T| = 1 and C∩T = T
