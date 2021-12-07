@@ -25,7 +25,6 @@ class ConsolidateTextService:
             A2: Article = page.articles[1] if page.articles[1] is not article else page.articles[0]
 
             # Case 1: Article 1 starts before current page, Article 2 starts on current page
-            # TODO: #43 Handle case: `Unable to find title on page (1st)`
             if A1.min_page_number < page.page_number and A2.min_page_number == page.page_number:
                 """Assumption: Article 1 is at the beginning of the page. Find Article 2's title"""
 
@@ -40,7 +39,6 @@ class ConsolidateTextService:
                     page.errors.append(ExtractionError(article, page.page_number, 1, page.get_pritty_titles()))
 
             # Case 2: Article 2 starts before current page, Article 1 starts on current page
-            # TODO: #44 Handle case: `Unable to find title on page (2nd)`
             elif A2.min_page_number < page.page_number and A1.min_page_number == page.page_number:
                 """A1 ligger sist på sidan: => Hitta A1's titel"""
                 position = self.find_matching_title_position(A1, page.titles)
@@ -95,10 +93,19 @@ def bow(title: str) -> Set[str]:
 
 
 def evaluate_functions(functions: List[Callable[[Any, Any], int]], args: Tuple[Any, Any]) -> List[int]:
+    """Evaluates list of functions using the same arguments and returns the return values of the functions as a list
+
+    Args:
+        functions (List[Callable[[Any, Any], int]]): List of functions to be evaluated
+        args (Tuple[Any, Any]): Arguments to pass to the functions
+
+    Returns:
+        List[int]: List of return values
+    """
     return list(map(methodcaller('__call__', *args), functions))
 
 
-def candidate_equals_title(title: str, candidate_title: str) -> int:
+def candidate_bow_equals_title_bow(title: str, candidate_title: str) -> int:
     return 3 if len(bow(candidate_title)) > 0 and bow(candidate_title) == bow(title) else 0
 
 
@@ -108,6 +115,8 @@ def common_words_three_or_more(title: str, candidate_title: str) -> int:
 
 
 # TODO: #57 Evaluate if overmatches
+# now:          |C| > 0 and |C∩T| >= |T|/2
+# change to:    C∩T >= 2 and C∩T >= |T|/2
 def common_words_more_than_half(title: str, candidate_title: str) -> int:
     common_words = bow(title).intersection(bow(candidate_title))
     return 1 if len(bow(candidate_title)) > 0 and len(common_words) >= len(bow(title)) / 2 else 0
@@ -119,6 +128,8 @@ def common_words_equals_candidate_bow(title: str, candidate_title: str) -> int:
 
 
 def two_first_words_equal(title: str, candidate_title: str) -> int:
+    if len(bow(candidate_title)) == 0 or len(bow(title)) == 0:
+        return 0
     return 1 if candidate_title.lower().split()[:2] == title.lower().split()[:2] else 0
 
 
@@ -130,40 +141,27 @@ def title_is_one_word_and_candidate_contains_same_word(title: str, candidate_tit
 def get_best_candidate(
     title: str, title_candidates: List[Tuple[int, str]], functions: List[Callable[[str, str], int]] = None
 ) -> Tuple[Optional[int], Optional[str]]:
-    """Returns the candidate title from a list of candidate titles best matching the title
+    """Returns the candidate from a list of title candidates best matching title
 
-    Select candidate c for title t iff:
-
-        - First two words in c and t are equal
-
-            Let C be the set of tokens in c and T the set of tokens in t, then
-            C∩T is the set of common tokens in C and T
+    If there is only one candidate and the first two words in candidate and title are the same, candidate is returned.
+    If there is more than one candidate, the candidate with the highest score efter being evaluated using the following (weighted) rules is selected:
 
         - |C| > 0 and C = T
-        - C∩T >= 4
+        - C∩T >= 3
         - C∩T >= 2 and C∩T >= |T|/2
         - |C| > 0 and C∩T = C
+        - First two words in c and t are equal
+        - |T| = 1 and C∩T = T
+
+    Where T is the set of tokens in title t, C is the set of tokens in candidate c, and C∩T is the set of common tokens in C and T.
 
     Args:
         title (str): The title
-        candidate_titles (List): A list of candidate titles
+        candidate_titles (List): A list of title candidates
 
     Returns:
-        Tuple[Optional[int], Optional[str]]: Tuple containing the position of, and the string of the best matching title
+        Tuple[Optional[int], Optional[str]]: Tuple containing the position of, and the string of the best matching candidate
     """
-
-    functions: List[Callable[[str, str], int]] = (
-        functions
-        if functions is not None
-        else [
-            candidate_equals_title,
-            common_words_three_or_more,
-            common_words_more_than_half,
-            common_words_equals_candidate_bow,
-            two_first_words_equal,
-            title_is_one_word_and_candidate_contains_same_word,
-        ]
-    )
 
     if title is None:
         return (None, None)
@@ -173,12 +171,25 @@ def get_best_candidate(
         if candidate_title.lower().split()[:2] == title.lower().split()[:2]:
             return (position, candidate_title)
 
-    best_candidate = max(
+    functions: List[Callable[[str, str], int]] = (
+        functions
+        if functions is not None
+        else [
+            candidate_bow_equals_title_bow,
+            common_words_three_or_more,
+            common_words_more_than_half,
+            common_words_equals_candidate_bow,
+            two_first_words_equal,
+            title_is_one_word_and_candidate_contains_same_word,
+        ]
+    )
+
+    candidate, score = max(
         [((p, c), evaluate_functions(functions, (title, c))) for p, c in title_candidates],
         key=itemgetter(1),
         default=((None, None), [0]),
     )
-    return best_candidate[0] if sum(best_candidate[1]) > 0 else (None, None)
+    return candidate if sum(score) > 0 else (None, None)
 
 
 if __name__ == '__main__':
