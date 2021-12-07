@@ -71,10 +71,17 @@ def test_all_pages_extracted(method, path):
     [
         ('XML (extract_articles.py)', CONFIG.articles_dir / 'xml', 'xml'),
         ('TXT (extract_articles.py)', CONFIG.articles_dir / 'txt', 'txt'),
-        ('Export (elements.py)', CONFIG.articles_dir / 'exported', 'txt'),
     ],
 )
 def test_all_articles_extracted(method, path, extension):
     expected = len(CONFIG.article_index)
     extracted = len(get_filenames(path, extension))
     assert 7612 == extracted == expected, method
+
+
+@pytest.mark.slow
+def test_all_articles_exported():
+    path = max([x for x in CONFIG.articles_dir.iterdir() if x.is_dir() and x.stem.startswith('exported')])
+    expected = len(CONFIG.article_index)
+    extracted = len(get_filenames(path, 'txt'))
+    assert 7612 == extracted == expected
