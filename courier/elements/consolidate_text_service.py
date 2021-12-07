@@ -52,7 +52,6 @@ class ConsolidateTextService:
                     page.errors.append(ExtractionError(article, page.page_number, 2, page.get_pritty_titles()))
 
             # Case 3: Article 1 and Article 2 both start on current page
-            # TODO: #45 Handle case: `Two articles starting on same page`
             elif A1.min_page_number == A2.min_page_number == page.page_number:
                 position_A1 = self.find_matching_title_position(A1, page.titles)
                 position_A2 = self.find_matching_title_position(A2, page.titles)
