@@ -7,7 +7,7 @@ from courier.config import get_config
 from courier.elements import AssignPageService, ConsolidateTextService, CourierIssue, IssueStatistics
 from courier.elements.consolidate_text_service import (
     bow,
-    candidate_equals_title,
+    candidate_bow_equals_title_bow,
     common_words_equals_candidate_bow,
     common_words_more_than_half,
     common_words_three_or_more,
@@ -224,7 +224,7 @@ def test_fuzzywuzzy(courier_id, record_number, page):
     assert all(result), title
 
 
-def test_bow():
+def test_bow_removes_special_characters():
     title = 'ONE two 23b ?= abc%'
     assert bow(title) == {'23b', 'abc', 'one', 'two'}
 
@@ -246,10 +246,11 @@ def test_evaluate_functions(functions, args, expected):
     [
         ('These are equal', 'These are equal', 3),
         ('These are not', 'No', 0),
+        ('', '', 0),
     ],
 )
-def test_candidate_equals_title(title, candidate, expected):
-    result = candidate_equals_title(title, candidate)
+def test_candidate_bow_equals_title_bow(title, candidate, expected):
+    result = candidate_bow_equals_title_bow(title, candidate)
     assert result == expected
 
 
@@ -258,6 +259,7 @@ def test_candidate_equals_title(title, candidate, expected):
     [
         ('one two three', 'one two three', 2),
         ('one two three', 'one two', 0),
+        ('', '', 0),
     ],
 )
 def test_common_words_three_or_more(title, candidate, expected):
@@ -267,7 +269,12 @@ def test_common_words_three_or_more(title, candidate, expected):
 
 @pytest.mark.parametrize(
     'title, candidate, expected',
-    [('a b c d e', 'a b c', 1), ('a b c d e', 'a b', 0), ('a b c d', 'a b', 1)],
+    [
+        ('a b c d e', 'a b c', 1),
+        ('a b c d e', 'a b', 0),
+        ('a b c d', 'a b', 1),
+        ('a b', 'a', 1),  # FIXME: Should this be?
+    ],
 )
 def test_common_words_more_than_half(title, candidate, expected):
     result = common_words_more_than_half(title, candidate)
@@ -281,6 +288,7 @@ def test_common_words_more_than_half(title, candidate, expected):
         ('a b c d', 'a b', 1),
         ('a b c d', 'a b q', 0),
         ('a b c', 'd e f', 0),
+        ('', '', 0),
     ],
 )
 def test_common_words_equals_candidate_bow(title, candidate, expected):
@@ -294,6 +302,7 @@ def test_common_words_equals_candidate_bow(title, candidate, expected):
         ('one two', 'one two three', 1),
         ('one two three', 'one two', 1),
         ('one three', 'one two', 0),
+        ('', '', 0),
     ],
 )
 def test_two_first_words_equal(title, candidate, expected):
