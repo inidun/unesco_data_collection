@@ -1,5 +1,6 @@
 # pylint: disable=redefined-outer-name
 import csv
+import datetime
 import os
 import re
 from pathlib import Path
@@ -94,7 +95,7 @@ def display_extract_percentage(filename: Union[str, os.PathLike]) -> float:
 
 if __name__ == '__main__':
 
-    export_folder: Path = CONFIG.articles_dir / 'exported'
+    export_folder: Path = CONFIG.articles_dir / f'exported_{datetime.datetime.now().strftime("%Y-%m-%dT%H%M")}'
     article_index_to_csv(CONFIG.article_index, export_folder)
     stats: List[Dict[str, Any]] = []
 
