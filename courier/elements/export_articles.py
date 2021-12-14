@@ -1,8 +1,8 @@
 # pylint: disable=redefined-outer-name
 import csv
-from datetime import datetime
 import os
 import re
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
