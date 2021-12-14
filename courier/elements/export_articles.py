@@ -1,6 +1,6 @@
 # pylint: disable=redefined-outer-name
 import csv
-import datetime
+from datetime import datetime
 import os
 import re
 from pathlib import Path
@@ -80,6 +80,7 @@ def save_overlap(statistics: pd.DataFrame, filename: Optional[Union[str, os.Path
 
 
 def save_statistics(statistics: pd.DataFrame, filename: Union[str, os.PathLike]) -> None:
+    statistics['case'] = statistics.case.astype('str')
     stat_groups = statistics.groupby('case')
     with pd.ExcelWriter(filename) as writer:  # pylint: disable=abstract-class-instantiated
         for key, _ in stat_groups:
@@ -88,7 +89,7 @@ def save_statistics(statistics: pd.DataFrame, filename: Union[str, os.PathLike])
 
 def save_statistics_by_case(statistics: pd.DataFrame, folder: Union[str, os.PathLike]) -> None:
     for k, v in statistics.groupby('case'):
-        v.to_csv(Path(folder) / f'stats_case{k}.csv')
+        v.to_csv(Path(folder) / f'stats_case{k}.csv', sep=';', index=False, quoting=csv.QUOTE_NONNUMERIC)
 
 
 def display_extract_percentage(filename: Union[str, os.PathLike]) -> float:
@@ -100,7 +101,7 @@ def display_extract_percentage(filename: Union[str, os.PathLike]) -> float:
 
 if __name__ == '__main__':
 
-    export_folder: Path = CONFIG.articles_dir / f'exported_{datetime.datetime.now().strftime("%Y-%m-%dT%H%M")}'
+    export_folder: Path = CONFIG.articles_dir / f'exported_{datetime.now().strftime("%Y-%m-%dT%H%M")}'
     article_index_to_csv(CONFIG.article_index, export_folder)
     stats: List[Dict[str, Any]] = []
 
