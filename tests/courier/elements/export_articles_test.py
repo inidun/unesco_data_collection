@@ -9,7 +9,12 @@ import pytest
 
 from courier.config import get_config
 from courier.elements import CourierIssue, IssueStatistics, export_articles
-from courier.elements.export_articles import display_extract_percentage, save_overlap
+from courier.elements.export_articles import (
+    display_extract_percentage,
+    save_overlap,
+    save_statistics,
+    save_statistics_by_case,
+)
 
 CONFIG = get_config()
 
@@ -106,10 +111,26 @@ def overlap_with_cases():
     return pd.read_csv(overlap, sep=';')
 
 
-def test_save_overlap(statistics, overlap_with_cases):
+def test_save_overlap_returns_expected(statistics, overlap_with_cases):
     overlap = save_overlap(statistics)
     assert all(overlap.columns == ['courier_id', 'page', 'count', 'cases'])
     assert overlap.equals(overlap_with_cases)
+
+
+def test_save_overlap_successfully_saves_file(statistics, tmp_path):
+    save_overlap(statistics, tmp_path / 'overlap.csv')
+    assert (tmp_path / 'overlap.csv').exists()
+
+
+def test_save_statistics_successfully_saves_file(statistics, tmp_path):
+    save_statistics(statistics, Path(tmp_path / 'stats.xlsx'))
+    assert (tmp_path / 'stats.xlsx').exists()
+
+
+def test_save_statistics_by_case_successfully_saves_files(statistics, tmp_path):
+    save_statistics_by_case(statistics, tmp_path)
+    for case in statistics.case.unique():
+        assert (tmp_path / f'stats_case{case}.csv').exists()
 
 
 @pytest.fixture
