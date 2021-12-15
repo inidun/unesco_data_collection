@@ -44,19 +44,15 @@ def test_page_str_returns_expected():
 
 def test_create_article():
     courier_issue: CourierIssue = CourierIssue('012656')
-
     assert courier_issue.courier_id == '012656'
     assert courier_issue.num_articles == 5
     assert len(courier_issue) == 36
     assert courier_issue.double_pages == [18]
-
     article: Optional[Article] = courier_issue.get_article(61469)
     assert article is None
-
-    article: Article = courier_issue.articles[0]
-    assert article.courier_id == '012656'
-    assert article.record_number == 15043
-    assert 'Bronze miniatures from ancient Sardinia' in article.catalogue_title
+    article: Optional[Article] = courier_issue.get_article(15043)
+    assert article is not None
+    assert article.catalogue_title == 'Bronze miniatures from ancient Sardinia'
     assert article.year == 1966
 
 
