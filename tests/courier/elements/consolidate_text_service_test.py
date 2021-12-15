@@ -66,6 +66,9 @@ def test_ConsolidateArticleTexts(issue_number, page_number, record_number, artic
     assert result == expected, comment
 
 
+# TODO: Test for offset. Edit in pdfextract
+# print(A1.texts[0][1])
+# print(A2.texts[0][1])
 @pytest.mark.skip('Incomplete.')
 def test_assign_segments_to_articles_case_A1_and_A2_starts_on_page():
     issue = CourierIssue('068778')
