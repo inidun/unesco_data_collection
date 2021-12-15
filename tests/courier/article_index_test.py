@@ -1,3 +1,6 @@
+from typing import Union
+
+import pandas as pd
 import pytest
 
 from courier.article_index import (
@@ -147,3 +150,27 @@ def test_article_index_to_csv(tmp_path):
 def test_get_issue_index_from_file_has_no_empty_values():
     issue_index = get_issue_index_from_file(CONFIG.metadata_file)
     assert not issue_index.isnull().values.any()
+
+
+def diff_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> Union[pd.DataFrame, pd.Series]:
+    return pd.concat([df1, df2]).drop_duplicates(keep=False)
+
+
+def test_article_index_has_not_changed():
+    article_index = CONFIG.article_index.copy(deep=True)
+    original_article_index = get_article_index_from_file(
+        'tests/fixtures/courier/metadata/UNESCO_Courier_metadata.csv', CONFIG.correction_file
+    )
+    article_index.pages = article_index.pages.astype('str')
+    original_article_index.pages = original_article_index.pages.astype('str')
+    diff = diff_dataframes(article_index, original_article_index)
+    assert diff.empty, 'Article index has been changed'
+
+
+def test_diff_dataframes():
+    df = pd.util.testing.makeDataFrame()
+    df_t = df.transpose()
+
+    assert diff_dataframes(df, df).empty
+    assert diff_dataframes(df_t, df_t).empty
+    assert not diff_dataframes(df, df_t).empty
