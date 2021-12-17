@@ -27,13 +27,13 @@ def countinue_count(text: str) -> int:
     return len(m)
 
 
-def find_title_regex(text: str, title: str) -> bool:
+def match_regex(text: str, title: str) -> bool:
     expr = create_regexp(title)
     m = re.search(expr, text, re.IGNORECASE)
     return bool(m)
 
 
-def find_title_fuzzywuzzy(text: str, title: str, min_score: int = 90) -> bool:
+def match_fuzzywuzzy(text: str, title: str, min_score: int = 90) -> bool:
     if not 0 <= min_score <= 100:
         raise ValueError('min_score must be in the range [0, 100]')
     lines = text.splitlines()
@@ -55,7 +55,7 @@ def corrected_page_number(courier_id: str, page_number: int) -> int:
 
 
 def get_stats(
-    article_index: pd.DataFrame, overlap: pd.DataFrame, match_function: Callable[[str, str], bool] = find_title_regex
+    article_index: pd.DataFrame, overlap: pd.DataFrame, match_function: Callable[[str, str], bool] = match_regex
 ) -> pd.DataFrame:
 
     index = article_index[['courier_id', 'catalogue_title', 'pages']]
@@ -100,25 +100,47 @@ def get_stats(
     return stats
 
 
-# FIXME: add match_function argument
+def get_match_function(func_name: str) -> Callable[[str, str], bool]:
+    if func_name == 'regex':
+        return match_regex
+    if func_name == 'fuzzywuzzy':
+        return match_fuzzywuzzy
+    raise ValueError(func_name)
+
+
 def save_stats(
-    output_file: Union[str, os.PathLike] = CONFIG.metadata_dir / 'overlap_stats.csv',
+    article_index: pd.DataFrame,
+    output_folder: Union[str, os.PathLike],
+    match_function: Union[Callable[[str, str], bool], str],
     sep: str = '\t',
     save_index: bool = False,
 ) -> None:
 
-    output_folder = Path(output_file).parent
+    if isinstance(match_function, str):
+        match_function = get_match_function(match_function)
+
     Path(output_folder).mkdir(exist_ok=True, parents=True)
 
-    # TODO: get_match_function OR more columns in output
-
     stats = get_stats(
-        article_index=CONFIG.article_index,
-        overlap=get_overlapping_pages(CONFIG.article_index),
-        match_function=find_title_fuzzywuzzy,
+        article_index=article_index,
+        overlap=get_overlapping_pages(article_index),
+        match_function=match_function,
     )
-    stats.to_csv(Path(output_file), sep=sep, index=save_index)
+
+    stats.to_csv(
+        Path(output_folder) / f'overlap_stats_{match_function.__name__.replace("match_", "")}.csv',
+        sep=sep,
+        index=save_index,
+    )
+
+
+@argh.arg('--match-function', choices=['regex', 'fuzzywuzzy'])  # type: ignore
+def main(
+    output_folder: str = str(CONFIG.metadata_dir),
+    match_function: str = 'regex',
+) -> None:
+    save_stats(CONFIG.article_index, output_folder, match_function)
 
 
 if __name__ == '__main__':
-    argh.dispatch_command(save_stats)
+    argh.dispatch_command(main)
