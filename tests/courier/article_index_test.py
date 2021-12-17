@@ -94,14 +94,16 @@ def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_c
     assert not article_index.isnull().values.any()
 
     expected_columns = [
-        'record_number',
-        'catalogue_title',
         'courier_id',
         'year',
+        'record_number',
         'pages',
+        'catalogue_title',
     ]
 
     assert set(article_index.columns) == set(expected_columns)
+    assert article_index.columns.to_list() == expected_columns
+    assert article_index.dtypes.to_list() == ['O', 'uint16', 'uint32', 'O', 'O']
 
 
 @pytest.mark.parametrize(
