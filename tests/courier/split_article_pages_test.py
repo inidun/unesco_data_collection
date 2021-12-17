@@ -71,16 +71,16 @@ def test_get_stats_returns_dataframe_or_correct_size():
 @pytest.mark.parametrize(
     'courier_id, method, expected',
     [
-        (14255, find_title_regex, ['014255', 36, 36, 2, 0, 2, 1, 2]),
-        (14255, find_title_fuzzywuzzy, ['014255', 36, 36, 2, 0, 2, 1, 2]),
-        (59301, find_title_regex, ['059301', 30, 30, 2, 1, 1, 1, 1]),
-        (59301, find_title_fuzzywuzzy, ['059301', 30, 30, 2, 0, 2, 1, 1]),
+        ('014255', find_title_regex, ['014255', 36, 36, 2, 0, 2, 1, 2]),
+        ('014255', find_title_fuzzywuzzy, ['014255', 36, 36, 2, 0, 2, 1, 2]),
+        ('059301', find_title_regex, ['059301', 30, 30, 2, 1, 1, 1, 1]),
+        ('059301', find_title_fuzzywuzzy, ['059301', 30, 30, 2, 0, 2, 1, 1]),
     ],
 )
 def test_get_stats_returns_expected_values(courier_id, method, expected):
     stats = get_stats(
-        article_index=CONFIG.article_index.loc[courier_id],
-        overlap=get_overlapping_pages(CONFIG.article_index.loc[courier_id]),
+        article_index=CONFIG.article_index[CONFIG.article_index['courier_id'] == courier_id],
+        overlap=get_overlapping_pages(CONFIG.article_index[CONFIG.article_index['courier_id'] == courier_id]),
         match_function=method,
     )
     result = stats.values.tolist()[0]
@@ -89,7 +89,7 @@ def test_get_stats_returns_expected_values(courier_id, method, expected):
 
 def test_get_stats_logs_mismatches(caplog):
     get_stats(
-        article_index=CONFIG.article_index.loc[14255],
+        article_index=CONFIG.article_index[CONFIG.article_index['courier_id'] == '014255'],
         overlap=pd.DataFrame({'courier_id': {0: 14255}, 'page': {0: 36}, 'count': {0: 1}}),
     )
     assert 'Page count mismatch' in caplog.text
@@ -97,6 +97,6 @@ def test_get_stats_logs_mismatches(caplog):
 
 @pytest.mark.skip(reason='Update')
 def test_save_stats(monkeypatch, tmp_path):
-    monkeypatch.setattr(CONFIG, 'article_index', CONFIG.article_index.loc[14255])
+    monkeypatch.setattr(CONFIG, 'article_index', CONFIG.article_index[CONFIG.article_index['courier_id'] == '014255'])
     save_stats(tmp_path / 'overlap_stats.csv')
     assert (tmp_path / 'overlap_stats.csv').exists()
