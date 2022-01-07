@@ -169,8 +169,9 @@ def test_article_index_has_not_changed():
     assert diff.empty, 'Article index has been changed'
 
 
+@pytest.mark.skip('pandas.util.testing is deprecated')
 def test_diff_dataframes():
-    df = pd.util.testing.makeDataFrame()
+    df = pd._testing.makeDataFrame()  # pylint: disable=protected-access
     df_t = df.transpose()
 
     assert diff_dataframes(df, df).empty
