@@ -65,10 +65,6 @@ exclude = '''
 )
 '''
 
-[tool.dephell.main]
-from = {format = "poetry", path = "pyproject.toml"}
-to = {format = "setuppy", path = "setup.py"}
-
 [tool.isort]
 profile = "black"
 line_length = 120
