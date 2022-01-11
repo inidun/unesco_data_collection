@@ -1,5 +1,6 @@
 from typing import Union
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -169,9 +170,8 @@ def test_article_index_has_not_changed():
     assert diff.empty, 'Article index has been changed'
 
 
-@pytest.mark.skip('pandas.util.testing is deprecated')
 def test_diff_dataframes():
-    df = pd._testing.makeDataFrame()  # pylint: disable=protected-access
+    df = pd.DataFrame(np.random.randint(0, 1000, (100, 2)), columns=['col_1', 'col_2'])
     df_t = df.transpose()
 
     assert diff_dataframes(df, df).empty
