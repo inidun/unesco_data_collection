@@ -114,9 +114,21 @@ def common_words_three_or_more(title: str, candidate: str) -> int:
 
 
 # TODO: #57 Evaluate if overmatches
-# now:          |C| > 0 and |C∩T| >= |T|/2
-# alt:          C∩T >= 2 and C∩T >= |T|/2
-def common_words_more_than_half(title: str, candidate: str) -> int:
+# alt: C∩T >= 2 and C∩T >= |T|/2
+def common_words_half_or_more(title: str, candidate: str) -> int:
+    """Evaluates if candidate shares half or more words with title
+
+        |C| > 0 and |C∩T| >= |T|/2
+
+        Where T is the set of tokens in title t, C is the set of tokens in candidate c, and C∩T is the set of common tokens in C and T.
+
+    Args:
+        title (str): Title
+        candidate (str): Candidate title
+
+    Returns:
+        int: 1 if the number of common words in `title` and `candidate` are more than or equal to half the number of words in `title`, else 0
+    """
     common_words = bow(title).intersection(bow(candidate))
     return 1 if len(bow(candidate)) > 0 and len(common_words) >= len(bow(title)) / 2 else 0
     # return 1 if len(common_words) >= 2 and len(common_words) >= len(bow(title)) / 2 else 0
@@ -177,7 +189,7 @@ def get_best_candidate(
         else [
             candidate_bow_equals_title_bow,
             common_words_three_or_more,
-            common_words_more_than_half,
+            common_words_half_or_more,
             common_words_equals_candidate_bow,
             two_first_words_equal,
             title_is_one_word_and_candidate_contains_same_word,

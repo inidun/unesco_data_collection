@@ -9,7 +9,7 @@ from courier.elements.consolidate_text_service import (
     bow,
     candidate_bow_equals_title_bow,
     common_words_equals_candidate_bow,
-    common_words_more_than_half,
+    common_words_half_or_more,
     common_words_three_or_more,
     evaluate_functions,
     get_best_candidate,
@@ -279,11 +279,11 @@ def test_common_words_three_or_more(title, candidate, expected):
         ('a b c d e', 'a b c', 1),
         ('a b c d e', 'a b', 0),
         ('a b c d', 'a b', 1),
-        ('a b', 'a', 1),  # FIXME: Should this be?
+        ('a b', 'a', 1),
     ],
 )
 def test_common_words_more_than_half(title, candidate, expected):
-    result = common_words_more_than_half(title, candidate)
+    result = common_words_half_or_more(title, candidate)
     assert result == expected
 
 
