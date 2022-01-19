@@ -181,7 +181,6 @@ class CourierIssue:
     def __repr__(self) -> str:
         return self.courier_id
 
-    # FIXME: Rename get_page_index
     def to_pdf_page_number(self, page_number: int) -> int:
         _pdf_page_number = page_number - 1 - len([x for x in self.double_pages if x < page_number])
         return _pdf_page_number

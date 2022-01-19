@@ -100,7 +100,6 @@ def test_courier_issue_get_page_when_issue_has_double_pages_returns_expected():
     assert courier_issue.get_page(11).text == courier_issue.get_page(13).text == courier_issue.get_page(27).text == ''
 
 
-# FIXME: Rename get_page_index
 @pytest.mark.parametrize(
     'courier_id, page_number, expected',
     [
