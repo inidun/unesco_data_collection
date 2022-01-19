@@ -70,8 +70,8 @@ def test_extract_articles_logging(tmp_path, caplog):
     duplicate = tmp_path / '012656engo.xml'
     duplicate.touch()
 
-    # FIXME: 667? not 671
     total_files = len(CONFIG.article_index['courier_id'].unique())
+    assert total_files == 667
 
     extract_articles(input_folder=tmp_path, output_folder=tmp_path)
     assert 'Duplicate matches for: 012656' in caplog.text
