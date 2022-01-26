@@ -7,8 +7,9 @@ from typing import Any, Callable, List, Optional, Set, Tuple
 from .elements import Article, CourierIssue, ExtractionError, Page
 
 
-# FIXME: Rename 'AddTextToArticles'?
 class ConsolidateTextService:
+    """Assigns and adds text segments to Articles in CourierIssue"""
+
     def consolidate(self, issue: CourierIssue, min_second_article_position: int = 80) -> None:
         for article in issue.articles:
             for page in article.pages:
