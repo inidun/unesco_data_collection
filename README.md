@@ -1,19 +1,6 @@
 # unesco_data_collection
 Script and code related to collecting and curating UNESCO data.
 
-
-### Changelog
-
-- Updated Python from 3.7 to 3.8
-- Using `poetry` instead of `pipenv`
-- Restructured project to reflect `poetry`'s standard structure
-- Updated `legal_instruments` code to reflect new project structure
-- Removed unused dependencies
-- Removed deprecated data files (Have been moved to other repo)
-- Added `courier` module
-- Added `courier` data folder
-
-
 ## Courier
 
 Code related to extracting and curating data for the Courier corpus.
