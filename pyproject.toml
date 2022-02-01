@@ -29,7 +29,7 @@ tqdm = "^4.61.1"
 untangle = "^1.1.1"
 
 [tool.poetry.dev-dependencies]
-black = "^21.6b0"
+black = "^22.1.0"
 flake8 = "^4.0.1"
 flake8-black = "^0.2.1"
 flake8-pytest-style = "^1.4.2"
