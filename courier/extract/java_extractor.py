@@ -10,9 +10,11 @@ from typing import List, Tuple, Union
 import jpype
 import jpype.imports
 from appdirs import AppDirs
+from loguru import logger
 from pkg_resources import parse_version
 
 from courier.config import get_config
+from courier.extract.interface import ITextExtractor
 
 CONFIG = get_config()
 
@@ -62,7 +64,7 @@ class ExtractedIssue:
 
 
 # TODO: Add java args as option to JavaExtractor class
-class JavaExtractor:
+class JavaExtractor(ITextExtractor):
     def __init__(
         self,
         title_font_size: float = 5.5,
@@ -85,7 +87,6 @@ class JavaExtractor:
 
         self.extractor = pdfextract.PDFCourier2Text(self.title_font_size, self.min_title_length)
 
-    # FIXME: #48 Title position offset error
     def extract_issue(self, filename: Union[str, os.PathLike]) -> ExtractedIssue:
         filename = str(filename)
         pages = []
@@ -102,3 +103,21 @@ class JavaExtractor:
 
         issue: ExtractedIssue = ExtractedIssue(pages=pages)
         return issue
+
+    def pdf_to_txt(
+        self,
+        filename: Union[str, os.PathLike],
+        output_folder: Union[str, os.PathLike],
+        first_page: int = 1,
+        last_page: int = None,
+    ) -> None:
+        basename = Path(filename).stem
+        issue: ExtractedIssue = self.extract_issue(filename)
+        last_page: int = last_page or len(issue)
+
+        for page in issue.pages[first_page - 1 : int(last_page)]:
+            with open(
+                Path(output_folder) / f'{basename}_{page.pdf_page_number:04}.txt', 'w', encoding='utf-8'
+            ) as fp_out:
+                fp_out.write(str(page.content) + '\n')
+        logger.success(f'Extracted: {basename}, pages: {last_page - first_page + 1}')
