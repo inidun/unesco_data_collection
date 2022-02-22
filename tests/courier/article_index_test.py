@@ -6,6 +6,7 @@ import pytest
 
 from courier.article_index import (
     article_index_to_csv,
+    extract_page_ref,
     get_article_index_from_file,
     get_courier_id,
     get_english_host_item,
@@ -177,3 +178,88 @@ def test_diff_dataframes():
     assert diff_dataframes(df, df).empty
     assert diff_dataframes(df_t, df_t).empty
     assert not diff_dataframes(df, df_t).empty
+
+
+# TODO: parametrize
+def test_expand_page_ref_returns_expected():
+    host_item = "The UNESCO Courier: a window open on the world XXVII, 5 p. 4-5, illus 74873 eng|(UNESCO courier (Arabic)) XXVII, 5 p. 4-5, illus 74873 ara|Le Courrier de l'UNESCO: une fenêtre ouverte sur le monde XXVII, 5 p. 4-5, illus. 74873 fre|Kur'er Yunesko XXVII, 5 p. 4-5, illus 74873 rus|El Correo de la UNESCO: una ventana abierta sobre el mundo XXVII, 5 p. 4-5, illus 74873 spa"
+
+    page_ref = extract_page_ref(host_item)
+
+    assert page_ref == 'p. 4-5'
+
+
+# TODO: Replace index
+def test_new_article_index():
+
+    columns = [
+        'Record number',
+        'Catalogue - Title',
+        'Catalogue - Authors',
+        'Languages',
+        'Catalogue - Subjects',
+        'Document type',
+        'Host item',
+        'Catalogue - Publication date',
+    ]
+
+    dtypes = {
+        'Record number': 'uint32',
+        'Document type': 'category',
+    }
+
+    idx: pd.DataFrame = pd.read_csv(
+        'tests/fixtures/courier/metadata/UNESCO_Courier_metadata.csv',
+        usecols=columns,
+        sep=';',
+        dtype=dtypes,
+        memory_map=True,
+    )
+
+    idx.columns = [
+        'record_number',
+        'catalogue_title',
+        'authors',
+        'languages',
+        'subjects',
+        'document_type',
+        'host_item',
+        'publication_date',
+    ]
+
+    idx = idx.set_index('record_number').sort_index()
+
+    idx = idx[idx['document_type'] == 'article']
+    idx = idx[idx.languages.str.contains('eng')]
+    # index.reset_index()
+
+    idx['eng_host_item'] = idx['host_item'].apply(get_english_host_item)
+    idx.drop(columns=['document_type', 'languages', 'host_item'], axis=1, inplace=True)
+
+    idx['page_ref'] = idx['eng_host_item'].apply(extract_page_ref)
+    idx['pages'] = idx.page_ref.apply(get_expanded_article_pages)
+
+    # FIXME: Add this
+    # if correction_file is not None:
+    #     service = PageRefCorrectionService(correction_file)
+    #     article_index['pages'] = article_index.apply(lambda x: service.correct(x['record_number'], x['pages']), axis=1)
+
+    idx.drop(columns=['page_ref'], axis=1, inplace=True)
+
+    idx['courier_id'] = idx.eng_host_item.apply(get_courier_id)
+
+    # idx['year'] = idx.publication_date.apply(lambda x: int(x[:4])).astype('uint16')
+    idx[['year', 'date']] = idx['publication_date'].str.split('|', n=1, expand=True)
+    idx.year = idx.year.astype('uint16')
+
+    # index = index.set_index(index['courier_id'].astype('uint32'))
+    # index.index.rename('id', inplace=True)
+
+    idx.authors = idx.authors.str.split('|')
+    idx.subjects = idx.subjects.str.split('|')
+
+    # return article_index[['courier_id', 'year', 'record_number', 'pages','catalogue_title']]
+    # idx = idx[['record_number', 'courier_id', 'year', 'pages', 'catalogue_title', 'authors', 'subjects', 'date']]
+    idx = idx[['courier_id', 'year', 'pages', 'catalogue_title', 'authors', 'subjects', 'date']]
+
+    assert idx is not None
