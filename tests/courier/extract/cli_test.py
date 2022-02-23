@@ -5,6 +5,7 @@ import pytest
 
 from courier.config import get_config
 from courier.extract.cli import extract, get_extractor
+from courier.extract.java_extractor import JavaExtractor
 from courier.extract.pdfbox_extractor import PDFBoxExtractor
 from courier.extract.pdfminer_extractor import PDFMinerExtractor
 from courier.extract.pdfplumber_extractor import PDFPlumberExtractor
@@ -17,6 +18,7 @@ CONFIG = get_config()
 @pytest.mark.parametrize(
     'method, instance',
     [
+        ('JavaExtractor', JavaExtractor),
         ('PDFBox', PDFBoxExtractor),
         ('PDFMiner', PDFMinerExtractor),
         ('PDFPlumber', PDFPlumberExtractor),
@@ -37,6 +39,9 @@ def test_get_extractor_with_unknown_method_raises_value_error():
 @pytest.mark.parametrize(
     'extractor, first_page, last_page, expected',
     [
+        ('JavaExtractor', 1, None, 5),
+        ('JavaExtractor', 2, 100, 3),
+        ('JavaExtractor', 100, None, 0),
         ('PDFBox', 1, None, 5),
         ('PDFBox', 2, 100, 3),
         ('PDFBox', 100, None, 0),
@@ -72,6 +77,7 @@ def test_extract(extractor, first_page, last_page, expected):
 @pytest.mark.parametrize(
     'extractor, first_page, last_page, expected',
     [
+        ('JavaExtractor', 1, None, 2),
         ('PDFBox', 1, None, 2),
         ('PDFBoxHTML', 1, None, 2),
         ('PDFMiner', 1, None, 2),
@@ -99,6 +105,7 @@ def test_extract_with_logfile_partially_completed_jobs(extractor, first_page, la
 @pytest.mark.parametrize(
     'extractor, first_page, last_page, expected',
     [
+        ('JavaExtractor', 1, None, 0),
         ('PDFBox', 1, None, 0),
         ('PDFBoxHTML', 1, None, 0),
         ('PDFMiner', 1, None, 0),

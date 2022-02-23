@@ -6,6 +6,7 @@ import argh
 from argh import arg
 
 from courier.extract.interface import ITextExtractor
+from courier.extract.java_extractor import JavaExtractor
 from courier.extract.pdfbox_extractor import PDFBoxExtractor
 from courier.extract.pdfminer_extractor import PDFMinerExtractor
 from courier.extract.pdfplumber_extractor import PDFPlumberExtractor
@@ -14,6 +15,8 @@ from courier.extract.utils import get_filenames
 
 
 def get_extractor(extractor: str) -> ITextExtractor:
+    if extractor == 'JavaExtractor':
+        return JavaExtractor()
     if extractor == 'PDFBox':
         return PDFBoxExtractor()
     if extractor == 'PDFBoxHTML':
@@ -27,7 +30,7 @@ def get_extractor(extractor: str) -> ITextExtractor:
     raise ValueError(extractor)
 
 
-@arg('--extractor', choices=['PDFBox', 'PDFBoxHTML', 'PDFMiner', 'PDFPlumber', 'Tesseract'])  # type: ignore
+@arg('--extractor', choices=['JavaExtractor', 'PDFBox', 'PDFBoxHTML', 'PDFMiner', 'PDFPlumber', 'Tesseract'])  # type: ignore
 def extract(
     input_path: Union[str, os.PathLike],
     output_folder: Union[str, os.PathLike],

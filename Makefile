@@ -113,6 +113,9 @@ XML = ~/data/courier/xml
 extract_pages_pdfbox:
 	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfbox --extractor PDFBox 2>/dev/null
 
+extract_pages_java_extractor:
+	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/java_extractor --extractor JavaExtractor 2>/dev/null
+
 extract_pages_pdfminer:
 	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfminer --extractor PDFMiner
 
@@ -122,7 +125,7 @@ extract_pages_pdfplumber:
 extract_pages_tesseract:
 	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/tesseract --extractor Tesseract
 
-.PHONY: extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber extract_pages_tesseract
+.PHONY: extract_pages_pdfbox extract_pages_java_extractor extract_pages_pdfminer extract_pages_pdfplumber extract_pages_tesseract
 
 compile_issues_pdfbox:
 	@poetry run python courier/compile_issues.py $(PAGES)/pdfbox $(XML)/pdfbox
