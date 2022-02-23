@@ -119,5 +119,5 @@ class JavaExtractor(ITextExtractor):
             with open(
                 Path(output_folder) / f'{basename}_{page.pdf_page_number:04}.txt', 'w', encoding='utf-8'
             ) as fp_out:
-                fp_out.write(str(page.content) + '\n')
+                fp_out.write(str(page.content) + '\n')  # NOTE: Added newline to mimic pdfextract
         logger.success(f'Extracted: {basename}, pages: {last_page - first_page + 1}')
