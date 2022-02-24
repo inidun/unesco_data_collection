@@ -1,7 +1,8 @@
+# type: ignore
 import pytest
 from jinja2 import Template
 
-from courier.compile_issues import IssueCompiler, jinja_env, join_pages, read
+from purgatory.compile_issues import IssueCompiler, jinja_env, join_pages, read
 
 
 def test_read_returns_text(tmp_path):

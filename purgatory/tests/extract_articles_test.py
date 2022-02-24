@@ -1,3 +1,4 @@
+# type: ignore
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -5,7 +6,7 @@ import pytest
 
 from courier.config import get_config
 from courier.elements import CourierIssue
-from courier.extract_articles import extract_articles, extract_articles_from_issue
+from purgatory.extract_articles import extract_articles, extract_articles_from_issue
 
 CONFIG = get_config()
 
