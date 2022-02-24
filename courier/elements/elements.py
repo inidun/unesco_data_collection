@@ -1,13 +1,12 @@
+import re
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import ftfy
 
 from courier.config import get_config
-from courier.extract.java_extractor import ExtractedIssue
-from courier.utils import flatten, split_by_idx
-
-from .utils import get_pdf_issue_content
+from courier.extract.java_extractor import ExtractedPages, JavaExtractor
+from courier.utils import flatten
 
 CONFIG = get_config()
 
@@ -74,6 +73,7 @@ class Page:
     def __repr__(self) -> str:
         return str(self)
 
+    # FIXME: Remove
     @property
     def number_of_articles(self) -> int:
         return len(self.articles)
@@ -87,14 +87,6 @@ class Page:
 
     def get_pritty_titles(self) -> str:
         return '\n'.join([f'\t{position}:\t"{title}"' for position, title in self.titles])
-
-    def segments(self) -> List[str]:
-        if not self.titles:
-            assert len(self.articles) == 1
-            return [self.text]
-        segments: List[str] = list(split_by_idx(self.text, [position - len(title) for position, title in self.titles]))
-        # titled_text = ''.join(list(roundrobin(parts, [f'\n[___{title[0]}___]\n' for title in titles])))
-        return segments
 
 
 @dataclass
@@ -158,6 +150,16 @@ class Article:
     def get_not_found_pages(self) -> Set[int]:
         return {x for x in self.page_numbers if x not in self.get_assigned_pages()}
 
+    @property
+    def filename(self) -> str:
+        safe_title = re.sub(r'[^\w]+', '_', str(self.catalogue_title).lower())
+        return f'{self.year or "0000"}_{self.courier_id}_{self.record_number}_{safe_title[:60]}.txt'
+
+    # FIXME: Use repr
+    @property
+    def record(self) -> str:
+        return f'{self.courier_id};{self.year};{self.record_number};{len(self.get_assigned_pages())};{len(self.get_not_found_pages())};{len(self.page_numbers)}'
+
 
 class CourierIssue:
     def __init__(self, courier_id: str):
@@ -171,12 +173,12 @@ class CourierIssue:
             raise ValueError(f'{courier_id} not in article index')
 
         self.articles: List[Article] = self._get_articles()
-        self.content: ExtractedIssue = get_pdf_issue_content(courier_id)
 
         self._pdf_double_page_numbers: List[int] = CONFIG.double_pages.get(courier_id, [])
 
         self.double_pages: List[int] = [x + i for i, x in enumerate(self._pdf_double_page_numbers)]
-        self.pages: List[Page] = PagesFactory().create(self)
+
+        self.pages: List[Page] = PagesExtractor().extract(self)
 
     def __repr__(self) -> str:
         return self.courier_id
@@ -213,7 +215,6 @@ class CourierIssue:
     def get_assigned_pages(self) -> Set[int]:
         return {p.page_number for p in self.pages if len(p.articles) != 0}
 
-    # TODO: Check
     def get_consolidated_pages(self) -> Set[int]:
         return set.union(*[p.get_assigned_pages() for p in self.articles])
 
@@ -221,18 +222,22 @@ class CourierIssue:
         return set(flatten([a.page_numbers for a in self.articles]))
 
 
-class PagesFactory:
-    def create(self, issue: CourierIssue) -> List[Page]:
+class PagesExtractor:
+    def extract(self, issue: CourierIssue) -> List[Page]:
         """Returns extracted page content"""
-        num_pages = len(issue.content.pages) + len(issue.double_pages)
+
+        filename: str = CONFIG.get_issue_filename(issue.courier_id)
+        content: ExtractedPages = JavaExtractor().extract_pages(filename)
+
+        num_pages = len(content.pages) + len(issue.double_pages)
 
         pages = [
             DoubleSpreadRightPage(page_number)
             if page_number - 1 in issue.double_pages
             else Page(
                 page_number=page_number,
-                text=issue.content.pages[issue.to_pdf_page_number(page_number)].content,
-                titles=issue.content.pages[issue.to_pdf_page_number(page_number)].titles,
+                text=content.pages[issue.to_pdf_page_number(page_number)].content,
+                titles=content.pages[issue.to_pdf_page_number(page_number)].titles,
             )
             for page_number in range(1, num_pages + 1)
         ]
