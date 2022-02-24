@@ -80,6 +80,9 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
         issues = sorted(list(Path(self.pdf_dir).glob('*.pdf')))
         return [x.stem for x in issues]
 
+    def get_issue_filename(self, courier_id: str) -> str:
+        return str(list(self.pdf_dir.glob(f'{courier_id}*.pdf'))[0])
+
 
 def get_config() -> CourierConfig:
     global _config
