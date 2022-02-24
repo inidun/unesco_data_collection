@@ -1,7 +1,6 @@
 # pylint: disable=redefined-outer-name
 import csv
 import os
-import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -21,45 +20,32 @@ from courier.utils.logging import file_logger
 CONFIG = get_config()
 
 
-class ExtractArticles:
-    @staticmethod
-    def extract(issue: CourierIssue) -> CourierIssue:
-        AssignPageService().assign(issue)
-        ConsolidateTextService().consolidate(issue)
-        return issue
-
-    @staticmethod
-    def statistics(issue: CourierIssue) -> IssueStatistics:
-        return IssueStatistics(issue)
-
-
 def export_articles(
     courier_id: str,
     export_folder: Union[str, os.PathLike] = CONFIG.articles_dir / 'exported',
 ) -> List[Dict[str, Any]]:
-
     issue: CourierIssue = CourierIssue(courier_id)
-    ExtractArticles.extract(issue)
+
+    AssignPageService().assign(issue)
+    ConsolidateTextService().consolidate(issue)
+    dipatch_articles(export_folder, issue)
+
+    return IssueStatistics(issue).errors
+
+
+def dipatch_articles(export_folder: Union[str, os.PathLike], issue: CourierIssue) -> None:
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
 
     for article in issue.articles:
         if article.catalogue_title is None:
             continue
-        safe_title = re.sub(r'[^\w]+', '_', str(article.catalogue_title).lower())
-        file = (
-            Path(export_folder)
-            / f'{article.year or "0000"}_{article.courier_id}_{article.record_number}_{safe_title[:60]}.txt'
-        )
 
-        logger.trace(
-            f'{courier_id};{article.year};{article.record_number};{len(article.get_assigned_pages())};{len(article.get_not_found_pages())};{len(article.page_numbers)}'
-        )
+        filename: Path = Path(export_folder) / article.filename
+        logger.trace(article.record)
 
-        with open(file, 'w', encoding='utf-8') as fp:
+        with open(filename, 'w', encoding='utf-8') as fp:
             fp.write(article.get_text())
-
-    return IssueStatistics(issue).errors
 
 
 def save_overlap(statistics: pd.DataFrame, filename: Optional[Union[str, os.PathLike]] = None) -> pd.DataFrame:
@@ -99,8 +85,7 @@ def display_extract_percentage(filename: Union[str, os.PathLike]) -> float:
     return complete_ratio
 
 
-if __name__ == '__main__':
-
+def main() -> None:
     export_folder: Path = CONFIG.articles_dir / f'exported_{datetime.now().strftime("%Y-%m-%dT%H%M")}'
     article_index_to_csv(CONFIG.article_index, export_folder)
     stats: List[Dict[str, Any]] = []
@@ -131,3 +116,7 @@ if __name__ == '__main__':
 
     with file_logger(Path(export_folder) / 'extract_percentage.log', format='{message}', level='INFO') as logger:
         display_extract_percentage(Path(export_folder) / 'extract_log.csv')
+
+
+if __name__ == '__main__':
+    main()
