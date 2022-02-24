@@ -24,28 +24,24 @@ def export_articles(
     courier_id: str,
     export_folder: Union[str, os.PathLike] = CONFIG.articles_dir / 'exported',
 ) -> List[Dict[str, Any]]:
-    issue: CourierIssue = CourierIssue(courier_id)
 
+    def dipatch_articles(export_folder: Union[str, os.PathLike], issue: CourierIssue) -> None:
+        Path(export_folder).mkdir(parents=True, exist_ok=True)
+        for article in issue.articles:
+            if article.catalogue_title is None:
+                continue
+            filename: Path = Path(export_folder) / article.filename
+            with file_logger(Path(export_folder) / 'extract_log.csv', format='{message}', level='TRACE') as logfile:
+                logfile.trace(article.record)
+            with open(filename, 'w', encoding='utf-8') as fp:
+                fp.write(article.get_text())
+
+    issue: CourierIssue = CourierIssue(courier_id)
     AssignPageService().assign(issue)
     ConsolidateTextService().consolidate(issue)
     dipatch_articles(export_folder, issue)
 
     return IssueStatistics(issue).errors
-
-
-def dipatch_articles(export_folder: Union[str, os.PathLike], issue: CourierIssue) -> None:
-
-    Path(export_folder).mkdir(parents=True, exist_ok=True)
-
-    for article in issue.articles:
-        if article.catalogue_title is None:
-            continue
-
-        filename: Path = Path(export_folder) / article.filename
-        logger.trace(article.record)
-
-        with open(filename, 'w', encoding='utf-8') as fp:
-            fp.write(article.get_text())
 
 
 def save_overlap(statistics: pd.DataFrame, filename: Optional[Union[str, os.PathLike]] = None) -> pd.DataFrame:
@@ -78,10 +74,9 @@ def save_statistics_by_case(statistics: pd.DataFrame, folder: Union[str, os.Path
         v.to_csv(Path(folder) / f'stats_case{k}.csv', sep=';', index=False, quoting=csv.QUOTE_NONNUMERIC)
 
 
-def display_extract_percentage(filename: Union[str, os.PathLike]) -> float:
+def extract_percentage(filename: Union[str, os.PathLike]) -> float:
     df = pd.read_csv(filename, sep=';')
     complete_ratio = np.count_nonzero(df.assigned == df.total) / len(df)  # pylint: disable=no-member
-    logger.info(f'Articles completely extracted: {complete_ratio*100:.2f}%')
     return complete_ratio
 
 
@@ -90,18 +85,15 @@ def main() -> None:
     article_index_to_csv(CONFIG.article_index, export_folder)
     stats: List[Dict[str, Any]] = []
 
-    with file_logger(
-        Path(export_folder) / 'extract_log.csv', format='{message}', level='TRACE'
-    ) as logger:  # noqa: F811
-        logger.trace('courier_id;year;record_number;assigned;not_found;total')
+    with open(Path(export_folder) / 'extract_log.csv', 'w', encoding='utf8') as fp:
+        fp.write('courier_id;year;record_number;assigned;not_found;total\n')
 
-        courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
-        for courier_id in courier_ids:
-            if courier_id not in CONFIG.article_index.courier_id.values:
-                if len(CONFIG.get_issue_article_index(courier_id)) != 0:
-                    raise Exception(f'{courier_id} not in article index but has articles')
-                continue
+    courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
+    for courier_id in courier_ids:
+        try:
             stats += export_articles(courier_id, export_folder)
+        except ValueError as e:
+            logger.info(e)
 
     statistics = (
         pd.DataFrame(stats)
@@ -114,8 +106,9 @@ def main() -> None:
     save_statistics(statistics, Path(export_folder) / 'stats.xlsx')
     save_statistics_by_case(statistics, Path(export_folder))
 
-    with file_logger(Path(export_folder) / 'extract_percentage.log', format='{message}', level='INFO') as logger:
-        display_extract_percentage(Path(export_folder) / 'extract_log.csv')
+    with file_logger(Path(export_folder) / 'extract_percentage.log', format='{message}', level='INFO') as logfile:
+        percentage = extract_percentage(Path(export_folder) / 'extract_log.csv')
+        logfile.info(f'Articles completely extracted: {percentage*100:.2f}%')
 
 
 if __name__ == '__main__':
