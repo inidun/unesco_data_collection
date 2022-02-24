@@ -51,6 +51,7 @@ class PDFBoxExtractor(ITextExtractor):
                 end_page=page,
                 console=self.console,
             )
+        # FIXME: Report correct number of pages. Should be `last_page - first_page + 1`
         logger.success(f'Extracted: {basename}, pages: {num_pages}')
 
     def batch_extract(
