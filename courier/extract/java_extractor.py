@@ -41,7 +41,7 @@ class ExtractedPage:
 
 
 @dataclass
-class ExtractedIssue:
+class ExtractedPages:
     """Container for extracted raw text, and titles (text and positiopn) for a single issue.
 
     Note:
@@ -87,7 +87,7 @@ class JavaExtractor(ITextExtractor):
 
         self.extractor = pdfextract.PDFCourier2Text(self.title_font_size, self.min_title_length)
 
-    def extract_issue(self, filename: Union[str, os.PathLike]) -> ExtractedIssue:
+    def extract_pages(self, filename: Union[str, os.PathLike]) -> ExtractedPages:
         filename = str(filename)
         pages = []
         for pdf_page_number, content in enumerate(self.extractor.extractText(filename), start=1):
@@ -101,7 +101,7 @@ class JavaExtractor(ITextExtractor):
             )
             pages.append(page)
 
-        issue: ExtractedIssue = ExtractedIssue(pages=pages)
+        issue: ExtractedPages = ExtractedPages(pages=pages)
         return issue
 
     def pdf_to_txt(
@@ -112,7 +112,7 @@ class JavaExtractor(ITextExtractor):
         last_page: int = None,
     ) -> None:
         basename = Path(filename).stem
-        issue: ExtractedIssue = self.extract_issue(filename)
+        issue: ExtractedPages = self.extract_pages(filename)
         last_page: int = last_page or len(issue)
 
         for page in issue.pages[first_page - 1 : int(last_page)]:

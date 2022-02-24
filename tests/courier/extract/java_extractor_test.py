@@ -9,7 +9,7 @@ import pytest
 from courier.config import get_config
 from courier.elements import get_best_candidate
 from courier.extract.interface import ITextExtractor
-from courier.extract.java_extractor import ExtractedIssue, JavaExtractor, get_pdfbox_path
+from courier.extract.java_extractor import ExtractedPages, JavaExtractor, get_pdfbox_path
 from courier.extract.utils import get_filenames
 
 CONFIG = get_config()
@@ -26,7 +26,7 @@ def test_get_pdfbox_path_returns_valid_path_and_emits_no_warning():
 def test_java_extractor():
     extractor: JavaExtractor = JavaExtractor()
     filename = CONFIG.pdf_dir / '012656engo.pdf'
-    issue: ExtractedIssue = extractor.extract_issue(filename)
+    issue: ExtractedPages = extractor.extract_pages(filename)
 
     assert len(issue) == 35
     assert issue.pages[1].pdf_page_number == 2
@@ -40,12 +40,12 @@ def test_java_extractor():
 def test_titles_on_correct_pages():
     extractor: JavaExtractor = JavaExtractor()
     filename = CONFIG.pdf_dir / '012656engo.pdf'
-    issue: ExtractedIssue = extractor.extract_issue(filename)
+    issue: ExtractedPages = extractor.extract_pages(filename)
 
     assert titles_in_content(issue)
 
 
-def titles_in_content(issue: ExtractedIssue) -> bool:
+def titles_in_content(issue: ExtractedPages) -> bool:
     """Returns true iff for each page in `issue` all of the page's titles are contained within the page's content"""
     # pylint: disable=use-a-generator
     return all(
@@ -61,7 +61,7 @@ def titles_in_content(issue: ExtractedIssue) -> bool:
 def test_extract_issue_returns_expected_content():
     extractor: JavaExtractor = JavaExtractor()
     filename = CONFIG.pdf_dir / '012656engo.pdf'
-    issue: ExtractedIssue = extractor.extract_issue(filename)
+    issue: ExtractedPages = extractor.extract_pages(filename)
 
     p = issue.pages[2].content
     with open(CONFIG.pages_dir / 'pdfbox/012656engo_0003.txt', 'r', encoding='utf-8') as fp:
@@ -82,7 +82,7 @@ def test_extract_issue_returns_expected_content():
 def test_title_position(filename, title, page_number):
 
     extractor: JavaExtractor = JavaExtractor()
-    issue: ExtractedIssue = extractor.extract_issue(filename)
+    issue: ExtractedPages = extractor.extract_pages(filename)
 
     page_text = ' '.join(str(issue.get_page(page_number).content).lower().split())
     expected_title_position = page_text.index(

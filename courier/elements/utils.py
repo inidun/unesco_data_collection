@@ -5,16 +5,16 @@ from typing import Union
 import untangle
 
 from courier.config import get_config
-from courier.extract.java_extractor import ExtractedIssue, ExtractedPage, JavaExtractor
+from courier.extract.java_extractor import ExtractedPage, ExtractedPages, JavaExtractor
 from courier.utils import valid_xml
 
 CONFIG = get_config()
 
 
-def get_pdf_issue_content(courier_id: str) -> ExtractedIssue:
+def get_pdf_issue_content(courier_id: str) -> ExtractedPages:
     extractor: JavaExtractor = JavaExtractor()
     filename: str = str(list(CONFIG.pdf_dir.glob(f'{courier_id}*.pdf'))[0])
-    issue: ExtractedIssue = extractor.extract_issue(filename)
+    issue: ExtractedPages = extractor.extract_pages(filename)
     return issue
 
 
@@ -28,7 +28,7 @@ def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
 
 
 # NOTE: Needed for test discovery (WIP). Remove later if deemed deprecated.
-def get_xml_issue_content(courier_id: str) -> ExtractedIssue:
+def get_xml_issue_content(courier_id: str) -> ExtractedPages:
 
     if len(courier_id) != 6:
         raise ValueError(f'Not a valid courier id "{courier_id}')
@@ -41,7 +41,7 @@ def get_xml_issue_content(courier_id: str) -> ExtractedIssue:
         page: ExtractedPage = ExtractedPage(pdf_page_number=pdf_page_number, content=content, titles=[])
         pages.append(page)
 
-    issue: ExtractedIssue = ExtractedIssue(pages=pages)
+    issue: ExtractedPages = ExtractedPages(pages=pages)
     return issue
 
 

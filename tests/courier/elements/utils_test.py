@@ -4,12 +4,12 @@ import pytest
 import untangle
 
 from courier.elements import get_pdf_issue_content, get_xml_issue_content, read_xml
-from courier.extract.java_extractor import ExtractedIssue
+from courier.extract.java_extractor import ExtractedPages
 
 
 def test_get_pdf_issue_content_return_expected_values():
-    content: ExtractedIssue = get_pdf_issue_content(courier_id='012656')
-    assert isinstance(content, ExtractedIssue)
+    content: ExtractedPages = get_pdf_issue_content(courier_id='012656')
+    assert isinstance(content, ExtractedPages)
     assert 'SEPTEMBER 1966' in str(content.pages[2])
 
 
@@ -22,8 +22,8 @@ def test_read_xml_removes_control_chars():
 
 
 def test_get_xml_issue_content_return_expected_values():
-    content: ExtractedIssue = get_xml_issue_content(courier_id='012656')
-    assert isinstance(content, ExtractedIssue)
+    content: ExtractedPages = get_xml_issue_content(courier_id='012656')
+    assert isinstance(content, ExtractedPages)
     assert 'SEPTEMBER 1966' in str(content.pages[2])
 
 

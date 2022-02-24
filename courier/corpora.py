@@ -7,7 +7,7 @@ from typing import Iterable, List, Literal, Tuple, Union
 from tqdm import tqdm
 
 from courier.config import get_config
-from courier.extract.java_extractor import ExtractedIssue, JavaExtractor
+from courier.extract.java_extractor import ExtractedPages, JavaExtractor
 from courier.extract.utils import get_filenames
 from courier.utils import flatten
 
@@ -33,7 +33,7 @@ class PDFCorporaExtractor:
             print(f'{filename} not found in index')
             return
 
-        issue: ExtractedIssue = self.extractor.extract_issue(filename)
+        issue: ExtractedPages = self.extractor.extract_pages(filename)
         article_pages = set(flatten([x['pages'] for x in issue_article_index]))
         year = issue_article_index[0]['year']
 
