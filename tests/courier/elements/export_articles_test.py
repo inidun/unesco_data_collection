@@ -9,12 +9,7 @@ import pytest
 
 from courier.config import get_config
 from courier.elements import CourierIssue, IssueStatistics, export_articles
-from courier.elements.export_articles import (
-    display_extract_percentage,
-    save_overlap,
-    save_statistics,
-    save_statistics_by_case,
-)
+from courier.elements.export_articles import extract_percentage, save_overlap, save_statistics, save_statistics_by_case
 
 CONFIG = get_config()
 
@@ -72,9 +67,9 @@ def extract_log():
 
 
 def test_display_extract_percentage(extract_log):
-    success_ratio = display_extract_percentage(extract_log)
-    assert isinstance(success_ratio, float)
-    assert success_ratio == 0.5
+    percentage = extract_percentage(extract_log)
+    assert isinstance(percentage, float)
+    assert percentage == 0.5
 
 
 @pytest.fixture
