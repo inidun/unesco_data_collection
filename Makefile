@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-SOURCE_FOLDERS=courier tests tmp
+SOURCE_FOLDERS=courier tests
 PACKAGE_FOLDER=courier
 BLACK_ARGS=--line-length 120 --target-version py38 --skip-string-normalization -q
 FLAKE8_ARGS=--extend-ignore=BLK100,E302,E303
