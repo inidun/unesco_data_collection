@@ -1,3 +1,4 @@
+# type: ignore
 import bs4
 import re
 import types

@@ -1,3 +1,4 @@
+# type: ignore
 import requests
 import legal_instruments.extract as parser
 import zipfile

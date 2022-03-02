@@ -1,4 +1,4 @@
-
+# type: ignore
 class Pipeline():
 
     def __init__(self, args=None):
