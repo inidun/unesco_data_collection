@@ -5,8 +5,8 @@ from typing import Callable, List, Union
 
 import argh
 import pandas as pd
-from fuzzywuzzy import process
 from loguru import logger
+from thefuzz import process
 
 from courier.config import get_config
 from courier.elements import CourierIssue

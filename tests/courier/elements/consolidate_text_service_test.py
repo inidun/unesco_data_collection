@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 import pytest
-from fuzzywuzzy import process
+from thefuzz import process
 
 from courier.config import get_config
 from courier.elements import AssignPageService, ConsolidateTextService, CourierIssue, IssueStatistics
