@@ -67,7 +67,7 @@ def extraxt_raw_corpora(
 ) -> None:
     filenames = get_filenames(folder)
 
-    Path(target_filename).parents[0].mkdir(exist_ok=True, parents=True)
+    Path(target_filename).parent.mkdir(exist_ok=True, parents=True)
 
     with zipfile.ZipFile(target_filename, 'w', compression=zipfile.ZIP_DEFLATED) as fp:
         for name, content in PDFCorporaExtractor().extracts(filenames, level):
