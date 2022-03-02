@@ -24,7 +24,6 @@ def export_articles(
     courier_id: str,
     export_folder: Union[str, os.PathLike] = CONFIG.articles_dir / 'exported',
 ) -> List[Dict[str, Any]]:
-
     def dipatch_articles(export_folder: Union[str, os.PathLike], issue: CourierIssue) -> None:
         Path(export_folder).mkdir(parents=True, exist_ok=True)
         for article in issue.articles:
