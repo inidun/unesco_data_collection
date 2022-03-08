@@ -2,6 +2,7 @@
 import os
 from datetime import datetime
 from html import escape
+from itertools import zip_longest
 from pathlib import Path
 from typing import List, Union
 
@@ -11,6 +12,7 @@ from courier.config import get_config
 from courier.elements.assign_page_service import AssignPageService
 from courier.elements.consolidate_text_service import get_best_candidate
 from courier.elements.elements import CourierIssue
+from courier.utils import flatten, split_by_idx
 
 CONFIG = get_config()
 
@@ -19,58 +21,38 @@ def export_tagged_issue(
     courier_id: str,
     export_folder: Union[str, os.PathLike] = CONFIG.articles_dir / 'exported',
 ) -> None:
-
     issue: CourierIssue = CourierIssue(courier_id)
     issue_article_index = CONFIG.get_issue_article_index(courier_id)
     year = issue_article_index[0]['year']
     AssignPageService().assign(issue)
 
     texts: List[str] = []
-    texts.append('<?xml version="1.0" encoding="UTF-8"?>')
-    texts.append(f'<document id="{courier_id}">')
+    texts.append(f'# {courier_id}')
 
     for page in issue.pages:
-        texts.append(f'<page i="{page.page_number}">')
-
+        texts.append(f'## Page {page.page_number}')
         if len(page.articles) == 0:
+            texts.append('### Non-article text')
             texts.append(escape(page.text, quote=False))
-
-        elif len(page.articles) == 1:
-            article = page.articles[0]
-            pos, _ = get_best_candidate(article.catalogue_title, page.titles)
-
-            if pos is None:
-                texts.append(
-                    f'<article record_number="{article.record_number}" title="{article.catalogue_title}" i="{page.page_number}">'
-                )
-                texts.append(escape(page.text, quote=False))
-
-            else:
-                texts.append(escape(page.text[:pos], quote=False))
-                texts.append(
-                    f'<article record_number="{article.record_number}" title="{article.catalogue_title}" i="{page.page_number}">'
-                )
-                texts.append(escape(page.text[pos:], quote=False))
-
-            texts.append('</article>')
-
         else:
+            # fmt: off
+            positions, titles = map(list, zip(*sorted([(get_best_candidate(a.catalogue_title, page.titles)[0] or 0, a.catalogue_title) for a in page.articles], key=lambda x: x[0])))
+            # fmt: on
 
-            for article in page.articles:
+            if min(positions) > 0:  # type-ignore
+                texts.append('### Non-article text')
 
-                texts.append(
-                    f'<article record_number="{article.record_number}" title="{article.catalogue_title}" i="{page.page_number}">'
-                )
-            texts.append(escape(page.text, quote=False))
+            # FIXME: return article instead and add more info to titles
+            titles = [f'### {title}' for title in titles]
 
-        texts.append('</page>')
-    texts.append('</document>')
+            # FIXME: typing of positions
+            texts += flatten(zip_longest(split_by_idx(escape(page.text, quote=False), positions), titles, fillvalue=None))  # type: ignore
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
-    filename: Path = Path(export_folder) / f'tagged_{year}_{courier_id}.xml'
+    filename: Path = Path(export_folder) / f'tagged_{year}_{courier_id}.md'
 
     with open(filename, 'w', encoding='utf-8') as fp:
-        fp.write('\n'.join(texts))
+        fp.write('\n'.join(filter(None, texts)))
 
 
 def main() -> None:
