@@ -1,5 +1,4 @@
 # pylint: disable=redefined-outer-name
-from ast import Tuple
 import os
 from datetime import datetime
 from html import escape
@@ -12,7 +11,7 @@ from loguru import logger
 from courier.config import get_config
 from courier.elements.assign_page_service import AssignPageService
 from courier.elements.consolidate_text_service import get_best_candidate
-from courier.elements.elements import CourierIssue
+from courier.elements.elements import Article, CourierIssue
 from courier.utils import flatten, split_by_idx
 
 CONFIG = get_config()
@@ -27,30 +26,33 @@ def export_tagged_issue(
     year = issue_article_index[0]['year']
     AssignPageService().assign(issue)
 
+    url = f'{os.environ.get("pdf_url_base")}{os.path.basename(CONFIG.get_issue_filename(courier_id))}'
+
     texts: List[str] = []
-    texts.append(f'# {courier_id}')
+    texts.append(f'# [{courier_id}]({url})')
 
     for page in issue.pages:
-        texts.append(f'## Page {page.page_number}')
+        texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number})')
         if len(page.articles) == 0:
             texts.append('### Non-article text')
             texts.append(escape(page.text, quote=False))
         else:
 
-            sorted_positioned_titles: list[tuple[int, str]] = sorted([
-                (get_best_candidate(a.catalogue_title, page.titles)[0] or 0, a.catalogue_title) for a in page.articles
-            ], key=lambda x: x[0])
+            sorted_positioned_articles: list[tuple[int, Article]] = sorted(
+                [(get_best_candidate(a.catalogue_title, page.titles)[0] or 0, a) for a in page.articles],
+                key=lambda x: x[0],
+            )
 
-            positions, titles = zip(*sorted_positioned_titles)
+            positions, articles = zip(*sorted_positioned_articles)
 
             if min(positions) > 0:
                 texts.append('### Non-article text')
 
-            # FIXME: return article instead and add more info to titles
-            titles = [f'### {title}' for title in titles]
+            titles = [f'### {article.catalogue_title}' for article in articles]
 
-            # FIXME: typing of positions
-            texts += flatten(zip_longest(split_by_idx(escape(page.text, quote=False), positions), titles, fillvalue=None))
+            texts += flatten(
+                zip_longest(split_by_idx(escape(page.text, quote=False), positions), titles, fillvalue=None)
+            )
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
     filename: Path = Path(export_folder) / f'tagged_{year}_{courier_id}.md'
