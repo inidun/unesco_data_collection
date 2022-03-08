@@ -36,7 +36,6 @@ def export_tagged_issue(
             texts.append(escape(page.text, quote=False))
 
         elif len(page.articles) == 1:
-
             article = page.articles[0]
             pos, _ = get_best_candidate(article.catalogue_title, page.titles)
 
@@ -47,7 +46,6 @@ def export_tagged_issue(
                 texts.append(escape(page.text, quote=False))
 
             else:
-                logger.info(f'{courier_id} {page.page_number} {pos} {article.catalogue_title}')
                 texts.append(escape(page.text[:pos], quote=False))
                 texts.append(
                     f'<article record_number="{article.record_number}" title="{article.catalogue_title}" i="{page.page_number}">'
@@ -55,6 +53,16 @@ def export_tagged_issue(
                 texts.append(escape(page.text[pos:], quote=False))
 
             texts.append('</article>')
+
+        else:
+
+            for article in page.articles:
+
+                texts.append(
+                    f'<article record_number="{article.record_number}" title="{article.catalogue_title}" i="{page.page_number}">'
+                )
+            texts.append(escape(page.text, quote=False))
+
         texts.append('</page>')
     texts.append('</document>')
 
@@ -70,7 +78,6 @@ def main() -> None:
     logger.info('courier_id;year;record_number;assigned;not_found;total')
 
     courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
-    # courier_ids = ['049631', '074686', '066148', '067651', '070186', '070464', '068057']
 
     for courier_id in courier_ids:
         try:
