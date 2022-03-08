@@ -1,4 +1,5 @@
 # pylint: disable=redefined-outer-name
+from ast import Tuple
 import os
 from datetime import datetime
 from html import escape
@@ -35,18 +36,21 @@ def export_tagged_issue(
             texts.append('### Non-article text')
             texts.append(escape(page.text, quote=False))
         else:
-            # fmt: off
-            positions, titles = map(list, zip(*sorted([(get_best_candidate(a.catalogue_title, page.titles)[0] or 0, a.catalogue_title) for a in page.articles], key=lambda x: x[0])))
-            # fmt: on
 
-            if min(positions) > 0:  # type-ignore
+            sorted_positioned_titles: list[tuple[int, str]] = sorted([
+                (get_best_candidate(a.catalogue_title, page.titles)[0] or 0, a.catalogue_title) for a in page.articles
+            ], key=lambda x: x[0])
+
+            positions, titles = zip(*sorted_positioned_titles)
+
+            if min(positions) > 0:
                 texts.append('### Non-article text')
 
             # FIXME: return article instead and add more info to titles
             titles = [f'### {title}' for title in titles]
 
             # FIXME: typing of positions
-            texts += flatten(zip_longest(split_by_idx(escape(page.text, quote=False), positions), titles, fillvalue=None))  # type: ignore
+            texts += flatten(zip_longest(split_by_idx(escape(page.text, quote=False), positions), titles, fillvalue=None))
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
     filename: Path = Path(export_folder) / f'tagged_{year}_{courier_id}.md'
