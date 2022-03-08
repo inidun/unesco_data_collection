@@ -2,7 +2,7 @@ import functools
 import operator
 import re
 import sys
-from typing import Any, Iterable, Iterator, List
+from typing import Any, Iterable, Iterator, List, Sequence
 
 
 def flatten(list_of_list: Iterable[Iterable[Any]]) -> List[Any]:
@@ -60,7 +60,7 @@ def cdata(value: str) -> str:
     return f'<![CDATA[\n{value}\n]]>'
 
 
-def split_by_idx(S: str, list_of_indices: List[int]) -> Iterator[str]:
+def split_by_idx(S: str, list_of_indices: Sequence[int]) -> Iterator[str]:
     """See: https://stackoverflow.com/a/57342460"""
     left, right = 0, list_of_indices[0]
     yield S[left:right]
