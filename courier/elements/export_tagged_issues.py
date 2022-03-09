@@ -1,7 +1,6 @@
 # pylint: disable=redefined-outer-name
 import os
 from datetime import datetime
-from html import escape
 from itertools import zip_longest
 from pathlib import Path
 from typing import List, Union
@@ -10,7 +9,7 @@ from loguru import logger
 
 from courier.config import get_config
 from courier.elements.assign_page_service import AssignPageService
-from courier.elements.consolidate_text_service import get_best_candidate
+from courier.elements.consolidate_text_service import ConsolidateTextService, get_best_candidate
 from courier.elements.elements import Article, CourierIssue
 from courier.utils import flatten, split_by_idx
 
@@ -25,6 +24,7 @@ def export_tagged_issue(
     issue_article_index = CONFIG.get_issue_article_index(courier_id)
     year = issue_article_index[0]['year']
     AssignPageService().assign(issue)
+    ConsolidateTextService().consolidate(issue)
 
     url = f'{os.environ.get("pdf_url_base")}{os.path.basename(CONFIG.get_issue_filename(courier_id))}'
 
@@ -32,10 +32,13 @@ def export_tagged_issue(
     texts.append(f'# [{courier_id}]({url})')
 
     for page in issue.pages:
-        texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number})')
+
+        ok: str = ' 🆗' if len(page.errors) == 0 else f' {str(len(page.errors))}'
+        texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number}){ok}')
+
         if len(page.articles) == 0:
             texts.append('### Non-article text')
-            texts.append(escape(page.text, quote=False))
+            texts.append(page.text)
         else:
 
             sorted_positioned_articles: list[tuple[int, Article]] = sorted(
@@ -50,9 +53,7 @@ def export_tagged_issue(
 
             titles = [f'### {article.catalogue_title}' for article in articles]
 
-            texts += flatten(
-                zip_longest(split_by_idx(escape(page.text, quote=False), positions), titles, fillvalue=None)
-            )
+            texts += flatten(zip_longest(split_by_idx(page.text, positions), titles, fillvalue=None))
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
     filename: Path = Path(export_folder) / f'tagged_{year}_{courier_id}.md'
@@ -65,7 +66,8 @@ def main() -> None:
     export_folder: Path = CONFIG.articles_dir / f'tagged_issues_{datetime.now().strftime("%Y-%m-%dT%H%M")}'
     logger.info('courier_id;year;record_number;assigned;not_found;total')
 
-    courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
+    # courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
+    courier_ids = ['049631', '074686', '066148', '067651', '070186', '070464', '068057', '081286']
 
     for courier_id in courier_ids:
         try:
