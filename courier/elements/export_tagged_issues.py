@@ -66,8 +66,7 @@ def main() -> None:
     export_folder: Path = CONFIG.articles_dir / f'tagged_issues_{datetime.now().strftime("%Y-%m-%dT%H%M")}'
     logger.info('courier_id;year;record_number;assigned;not_found;total')
 
-    # courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
-    courier_ids = ['049631', '074686', '066148', '067651', '070186', '070464', '068057', '081286']
+    courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
 
     for courier_id in courier_ids:
         try:
