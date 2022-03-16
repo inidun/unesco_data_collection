@@ -23,7 +23,11 @@ clean:
 	@rm -rf tests/output
 
 test: output-dir
-	@poetry run pytest -m "not slow" --durations=0 tests/courier
+	@poetry run pytest -m "not slow" --durations=0 tests/
+	@rm -rf ./tests/output/*
+
+test-coverage: output-dir
+	@poetry run pytest -m "not slow" --durations=0 --cov=legal_instruments --cov=courier --cov-report=xml --cov-report=html --cov-branch tests/
 	@rm -rf ./tests/output/*
 
 test-courier: output-dir
@@ -57,7 +61,7 @@ retest: output-dir
 output-dir:
 	@mkdir -p ./tests/output
 
-.PHONY: retest test-courier test-legal-instruments test-no-java test-java test-slow test-all lint-typing
+.PHONY: retest test-coverage test-courier test-legal-instruments test-no-java test-java test-slow test-all lint-typing
 
 pylint:
 	@poetry run pylint --version | grep pylint
