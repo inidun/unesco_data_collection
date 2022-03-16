@@ -30,10 +30,11 @@ def export_tagged_issue(
     non_article_header = '### NON-ARTICLE-TEXT'
 
     texts: List[str] = []
-    texts.append(f'# [{courier_id}]({url})')
+    num_issue_errors = 0
 
     for page in issue.pages:
 
+        num_issue_errors += len(page.errors)
         texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number}) {str(len(page.errors))}')
 
         if len(page.articles) == 0:
@@ -59,6 +60,7 @@ def export_tagged_issue(
     filename: Path = Path(export_folder) / f'tagged_{year}_{courier_id}.md'
 
     with open(filename, 'w', encoding='utf-8') as fp:
+        fp.write(f'# [{courier_id}]({url}) {str(num_issue_errors)}\n')
         fp.write('\n'.join(filter(None, texts)))
 
 
