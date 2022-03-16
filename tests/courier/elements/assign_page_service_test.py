@@ -1,3 +1,5 @@
+import warnings
+
 from courier.elements import AssignPageService, CourierIssue, IssueStatistics
 
 
@@ -19,3 +21,19 @@ def test_AssignArticlesToPages_assignes_expected_pages_to_issue():
     )  # fmt: skip
     assert IssueStatistics(issue).assigned_pages == 24
     assert IssueStatistics(issue).consolidated_pages == 0
+
+
+def test_AssignArticlesToPages_if_already_assigned_raises_expected_warning():
+    courier_id = '012656'
+    msg = f'Pages already assigned to {courier_id}'
+    issue = CourierIssue(courier_id)
+
+    with warnings.catch_warnings(record=True) as record:
+        warnings.simplefilter('always')
+
+        AssignPageService().assign(issue)
+        assert len(record) == 0
+
+        AssignPageService().assign(issue)
+        assert len(record) == 1
+        assert str(record[0].message) == msg
