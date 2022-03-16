@@ -34,8 +34,7 @@ def export_tagged_issue(
 
     for page in issue.pages:
 
-        ok: str = ' 🆗' if len(page.errors) == 0 else f' {str(len(page.errors))}'
-        texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number}){ok}')
+        texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number}) {str(len(page.errors))}')
 
         if len(page.articles) == 0:
             texts.append(non_article_header)
