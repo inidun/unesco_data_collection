@@ -27,7 +27,7 @@ def export_tagged_issue(
     ConsolidateTextService().consolidate(issue)
 
     url = f'{os.environ.get("pdf_url_base")}{os.path.basename(CONFIG.get_issue_filename(courier_id))}'
-    non_article_header = '### NON-ARTICLE-TEXT'
+    non_article_heading = '### NON-ARTICLE-TEXT'
 
     texts: List[str] = []
     num_issue_errors = 0
@@ -38,7 +38,7 @@ def export_tagged_issue(
         texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number}) {str(len(page.errors))}')
 
         if len(page.articles) == 0:
-            texts.append(non_article_header)
+            texts.append(non_article_heading)
             texts.append(page.text)
         else:
 
@@ -50,18 +50,18 @@ def export_tagged_issue(
             positions, articles = zip(*sorted_positioned_articles)
 
             if min(positions) > 0:
-                texts.append(non_article_header)
+                texts.append(non_article_heading)
 
-            title_headers = [f'### {article.record_number}: {article.catalogue_title}' for article in articles]
+            title_headings = [f'### {article.record_number}: {article.catalogue_title}' for article in articles]
 
-            texts += flatten(zip_longest(split_by_idx(page.text, positions), title_headers, fillvalue=None))
+            texts += flatten(zip_longest(split_by_idx(page.text, positions), title_headings, fillvalue=None))
 
     Path(export_folder).mkdir(parents=True, exist_ok=True)
     filename: Path = Path(export_folder) / f'tagged_{year}_{courier_id}.md'
 
     with open(filename, 'w', encoding='utf-8') as fp:
-        fp.write(f'# [{courier_id}]({url}) {str(num_issue_errors)}\n')
-        fp.write('\n'.join(filter(None, texts)))
+        fp.write(f'# [{courier_id}]({url}) {str(num_issue_errors)}\n\n')
+        fp.write('\n\n'.join(filter(None, texts)))
 
 
 def main() -> None:
