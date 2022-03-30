@@ -1243,7 +1243,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "a3d3d3d2623c4146d327f82bd247df7ffd07992a6668e7c61b8948848dd722d0"
+content-hash = "8af8a496580b6b751702b6b6da8382a02216e114b6fd510c22aaeeb4d0d99909"
 
 [metadata.files]
 appdirs = [
