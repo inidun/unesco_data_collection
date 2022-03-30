@@ -1,17 +1,14 @@
 SHELL := /bin/bash
 SOURCE_FOLDERS=courier tests
 PACKAGE_FOLDER=courier
-BLACK_ARGS=--line-length 120 --target-version py38 --skip-string-normalization -q
+BLACK_ARGS=--line-length 120 --target-version py310 --skip-string-normalization -q
 FLAKE8_ARGS=--extend-ignore=BLK100,E302,E303
 MYPY_ARGS=--show-column-numbers --no-error-summary
-ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 38
-# PYTEST_ARGS=--durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html tests
-# PYTEST_ARGS=--cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html
-# PYTEST_ARGS=--cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html --cov-branch
+ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 310
 
 tidy: isort black
 
-lint: tidy pylint flake8 # mypy
+lint: tidy pylint flake8
 
 lint-typing: lint mypy
 
@@ -146,14 +143,6 @@ compile_issues_tesseract:
 compile_issues: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract
 
 .PHONY: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract compile_issues
-
-# tools:
-# 	@pip install --upgrade pip -q
-# 	@pip install poetry --upgrade -q
-# 	@poetry run pip install --upgrade pip -q
-
-# NOTE: tools should not be run while in poetry shell
-# .PHONY: tools
 
 .PHONY: help
 .PHONY: clean
