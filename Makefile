@@ -3,7 +3,7 @@ SOURCE_FOLDERS=courier tests
 PACKAGE_FOLDER=courier
 BLACK_ARGS=--line-length 120 --target-version py310 --skip-string-normalization -q
 FLAKE8_ARGS=--extend-ignore=BLK100,E302,E303
-MYPY_ARGS=--show-column-numbers --no-error-summary
+MYPY_ARGS=--show-column-numbers --no-error-summary --python-version 3.10
 ISORT_ARGS=--profile black --float-to-top --line-length 120 --py 310
 
 tidy: isort black
