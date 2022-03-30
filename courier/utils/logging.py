@@ -15,7 +15,7 @@ def file_logger(logfile: Union[str, os.PathLike], **kwargs) -> Generator:  # typ
         handler = logger.add(Path(logfile), filter=lambda record: record['extra']['task'] == name, **kwargs)
         yield logger.bind(task=name)
     finally:
-        logger.remove(handler)
+        logger.remove(handler)  # pylint: disable=used-before-assignment
 
 
 if __name__ == '__main__':
