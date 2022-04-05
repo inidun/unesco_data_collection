@@ -27,7 +27,7 @@ def export_tagged_issue(
     ConsolidateTextService().consolidate(issue)
 
     url = f'{os.environ.get("pdf_url_base")}{os.path.basename(CONFIG.get_issue_filename(courier_id))}'
-    non_article_heading = '### NON-ARTICLE-TEXT'
+    non_article_heading = '### IGNORE'
 
     texts: List[str] = []
     num_issue_errors = 0
