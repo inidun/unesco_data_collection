@@ -42,7 +42,7 @@ class ExtractedPage:
 
 @dataclass
 class ExtractedPages:
-    """Container for extracted raw text, and titles (text and positiopn) for a single issue.
+    """Container for extracted raw text, and titles (text and position) for a single issue.
 
     Note:
       - Page numbers are not corrected for double-pages (represented as a single image in PDF).
