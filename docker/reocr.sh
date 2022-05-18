@@ -105,9 +105,13 @@ else
     for file in $input_folder/*.pdf; do
 
         basename=$(basename "$file" .pdf)
+        if [ -e $txt_dir/${basename}.txt ]; then
+            echo "[$(date +%FT%T)] Skipped ${basename}.pdf exists" >> $log_dir/time.log ;
+            mv -f $file $org_dir/${basename}.pdf ;
+            continue;
+        fi
 
-        /usr/bin/time -ao $log_dir/time.log -f "[$(date +%FT%T)] Processed ${basename}.pdf in:\t%E" $ocrmypdf $ocr_args --sidecar $txt_dir/${basename}.txt $file $pdf_dir/${basename}.pdf | tee $log_dir/${basename}_${uuid}.log
-        mv --backup=numbered $file $org_dir/${basename}.pdf
+        /usr/bin/time -ao $log_dir/time.log -f "[$(date +%FT%T)] Processed ${basename}.pdf in:\t%E" $ocrmypdf $ocr_args --sidecar $txt_dir/${basename}.txt $file $pdf_dir/${basename}.pdf &> $log_dir/${basename}_${uuid}.log && mv --backup=numbered $file $org_dir/${basename}.pdf
 
     done
 
