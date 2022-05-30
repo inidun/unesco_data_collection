@@ -145,14 +145,6 @@ python-versions = "*"
 pycparser = "*"
 
 [[package]]
-name = "chardet"
-version = "4.0.0"
-description = "Universal encoding detector for Python 2 and 3"
-category = "main"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-
-[[package]]
 name = "charset-normalizer"
 version = "2.0.12"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -718,15 +710,15 @@ pillow = "*"
 
 [[package]]
 name = "pdfminer.six"
-version = "20220319"
+version = "20220524"
 description = "PDF parser and analyzer"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-chardet = {version = "*", markers = "python_version > \"3.0\""}
-cryptography = "*"
+charset-normalizer = ">=2.0.0"
+cryptography = ">=36.0.0"
 
 [package.extras]
 dev = ["black", "mypy (==0.931)", "nox", "pytest"]
@@ -735,14 +727,14 @@ image = ["pillow"]
 
 [[package]]
 name = "pdfplumber"
-version = "0.6.2"
+version = "0.7.0"
 description = "Plumb a PDF for detailed information about each char, rectangle, and line."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
-"pdfminer.six" = "20220319"
+"pdfminer.six" = "20220524"
 Pillow = ">=9.1"
 Wand = ">=0.6.7"
 
@@ -1253,7 +1245,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "d1828e7fb98a09a600e5e9a9572cb0b7de0ddf08bf9ebb28945967731b5490c2"
+content-hash = "255c2b527e2b6db4f4a6f7c831bfef92fbbbea3e479d4c1a90ecd4fb6b144acb"
 
 [metadata.files]
 appdirs = [
@@ -1375,10 +1367,6 @@ cffi = [
     {file = "cffi-1.15.0-cp39-cp39-win32.whl", hash = "sha256:2a23af14f408d53d5e6cd4e3d9a24ff9e05906ad574822a10563efcef137979a"},
     {file = "cffi-1.15.0-cp39-cp39-win_amd64.whl", hash = "sha256:3773c4d81e6e818df2efbc7dd77325ca0dcb688116050fb2b3011218eda36139"},
     {file = "cffi-1.15.0.tar.gz", hash = "sha256:920f0d66a896c2d99f0adbb391f990a84091179542c205fa53ce5787aff87954"},
-]
-chardet = [
-    {file = "chardet-4.0.0-py2.py3-none-any.whl", hash = "sha256:f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5"},
-    {file = "chardet-4.0.0.tar.gz", hash = "sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa"},
 ]
 charset-normalizer = [
     {file = "charset-normalizer-2.0.12.tar.gz", hash = "sha256:2857e29ff0d34db842cd7ca3230549d1a697f96ee6d3fb071cfa6c7393832597"},
@@ -1803,12 +1791,12 @@ pdf2image = [
     {file = "pdf2image-1.16.0-py3-none-any.whl", hash = "sha256:84f79f2b8fad943e36323ea4e937fcb05f26ded0caa0a01181df66049e42fb65"},
 ]
 "pdfminer.six" = [
-    {file = "pdfminer.six-20220319-py3-none-any.whl", hash = "sha256:af0630f98a292bad4170f54e80f82ca81b916dd0b2c996437ec45c02f11d8762"},
-    {file = "pdfminer.six-20220319.tar.gz", hash = "sha256:eff2ce0abeaa4df94dc3461f70eab104487c7b4a2b3c7e9fd0aeec6c5f44d6a6"},
+    {file = "pdfminer.six-20220524-py3-none-any.whl", hash = "sha256:7e19b857ec76bcbd35665909ad8965a481ad48d9bdff6c45f8522ee66f8a7aab"},
+    {file = "pdfminer.six-20220524.tar.gz", hash = "sha256:5a64c924410ac48501d6060b21638bf401db69f5b1bd57207df7fbc070ac8ae2"},
 ]
 pdfplumber = [
-    {file = "pdfplumber-0.6.2-py3-none-any.whl", hash = "sha256:db174b8d04cfa280e99379c1f3ec1da8ec195b00cb01ad776228804177685eac"},
-    {file = "pdfplumber-0.6.2.tar.gz", hash = "sha256:696ad9d724ad3730c8bc46ed8977528bad63035a21fd42460f9ef9123e3c1675"},
+    {file = "pdfplumber-0.7.0-py3-none-any.whl", hash = "sha256:bf5037fe2d553e85aa072fb18ddc97cb02294f54bfa8bf824290ab8dd9967f58"},
+    {file = "pdfplumber-0.7.0.tar.gz", hash = "sha256:152a8a989080e4be6b442c9650145040864eb5baf8a148d2a268095255559be8"},
 ]
 pexpect = [
     {file = "pexpect-4.8.0-py2.py3-none-any.whl", hash = "sha256:0b48a55dcb3c05f3329815901ea4fc1537514d6ba867a152b581d69ae3710937"},
