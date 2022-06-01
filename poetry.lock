@@ -727,7 +727,7 @@ image = ["pillow"]
 
 [[package]]
 name = "pdfplumber"
-version = "0.7.0"
+version = "0.7.1"
 description = "Plumb a PDF for detailed information about each char, rectangle, and line."
 category = "main"
 optional = false
@@ -1130,7 +1130,7 @@ telegram = ["requests"]
 
 [[package]]
 name = "traitlets"
-version = "5.2.1.post0"
+version = "5.2.2.post1"
 description = ""
 category = "dev"
 optional = false
@@ -1795,8 +1795,8 @@ pdf2image = [
     {file = "pdfminer.six-20220524.tar.gz", hash = "sha256:5a64c924410ac48501d6060b21638bf401db69f5b1bd57207df7fbc070ac8ae2"},
 ]
 pdfplumber = [
-    {file = "pdfplumber-0.7.0-py3-none-any.whl", hash = "sha256:bf5037fe2d553e85aa072fb18ddc97cb02294f54bfa8bf824290ab8dd9967f58"},
-    {file = "pdfplumber-0.7.0.tar.gz", hash = "sha256:152a8a989080e4be6b442c9650145040864eb5baf8a148d2a268095255559be8"},
+    {file = "pdfplumber-0.7.1-py3-none-any.whl", hash = "sha256:75d4b5d1fa6d7893fe36830dd85c32f9869bb03dcc64ef70bce24260cfbe9fa3"},
+    {file = "pdfplumber-0.7.1.tar.gz", hash = "sha256:eef1a22c0df779777990018a566f002fae1ffff9be80660175ffb0677272c057"},
 ]
 pexpect = [
     {file = "pexpect-4.8.0-py2.py3-none-any.whl", hash = "sha256:0b48a55dcb3c05f3329815901ea4fc1537514d6ba867a152b581d69ae3710937"},
@@ -2208,8 +2208,8 @@ tqdm = [
     {file = "tqdm-4.64.0.tar.gz", hash = "sha256:40be55d30e200777a307a7585aee69e4eabb46b4ec6a4b4a5f2d9f11e7d5408d"},
 ]
 traitlets = [
-    {file = "traitlets-5.2.1.post0-py3-none-any.whl", hash = "sha256:f44b708d33d98b0addb40c29d148a761f44af740603a8fd0e2f8b5b27cf0f087"},
-    {file = "traitlets-5.2.1.post0.tar.gz", hash = "sha256:70815ecb20ec619d1af28910ade523383be13754283aef90528eb3d47b77c5db"},
+    {file = "traitlets-5.2.2.post1-py3-none-any.whl", hash = "sha256:1530d04badddc6a73d50b7ee34667d4b96914da352109117b4280cb56523a51b"},
+    {file = "traitlets-5.2.2.post1.tar.gz", hash = "sha256:74803a1baa59af70f023671d86d5c7a834c931186df26d50d362ee6a1ff021fd"},
 ]
 types-requests = [
     {file = "types-requests-2.27.29.tar.gz", hash = "sha256:fb453b3a76a48eca66381cea8004feaaea12835e838196f5c7ac87c75c5c19ef"},
