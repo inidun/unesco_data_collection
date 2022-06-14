@@ -24,7 +24,7 @@ python-versions = "*"
 
 [[package]]
 name = "astroid"
-version = "2.11.5"
+version = "2.11.6"
 description = "An abstract syntax tree for Python with inference support."
 category = "dev"
 optional = false
@@ -362,7 +362,7 @@ python-versions = "*"
 
 [[package]]
 name = "ipykernel"
-version = "6.13.1"
+version = "6.14.0"
 description = "IPython Kernel for Jupyter"
 category = "dev"
 optional = false
@@ -483,7 +483,7 @@ tests = ["pytest"]
 
 [[package]]
 name = "jupyter-client"
-version = "7.3.3"
+version = "7.3.4"
 description = "Jupyter protocol implementation and client libraries"
 category = "dev"
 optional = false
@@ -1035,20 +1035,20 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "requests"
-version = "2.27.1"
+version = "2.28.0"
 description = "Python HTTP for Humans."
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+python-versions = ">=3.7, <4"
 
 [package.dependencies]
 certifi = ">=2017.4.17"
-charset-normalizer = {version = ">=2.0.0,<2.1.0", markers = "python_version >= \"3\""}
-idna = {version = ">=2.5,<4", markers = "python_version >= \"3\""}
+charset-normalizer = ">=2.0.0,<2.1.0"
+idna = ">=2.5,<4"
 urllib3 = ">=1.21.1,<1.27"
 
 [package.extras]
-socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
+socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
@@ -1271,8 +1271,8 @@ argh = [
     {file = "argh-0.26.2.tar.gz", hash = "sha256:e9535b8c84dc9571a48999094fda7f33e63c3f1b74f3e5f3ac0105a58405bb65"},
 ]
 astroid = [
-    {file = "astroid-2.11.5-py3-none-any.whl", hash = "sha256:14ffbb4f6aa2cf474a0834014005487f7ecd8924996083ab411e7fa0b508ce0b"},
-    {file = "astroid-2.11.5.tar.gz", hash = "sha256:f4e4ec5294c4b07ac38bab9ca5ddd3914d4bf46f9006eb5c0ae755755061044e"},
+    {file = "astroid-2.11.6-py3-none-any.whl", hash = "sha256:ba33a82a9a9c06a5ceed98180c5aab16e29c285b828d94696bf32d6015ea82a9"},
+    {file = "astroid-2.11.6.tar.gz", hash = "sha256:4f933d0bf5e408b03a6feb5d23793740c27e07340605f236496cd6ce552043d6"},
 ]
 asttokens = [
     {file = "asttokens-2.0.5-py2.py3-none-any.whl", hash = "sha256:0844691e88552595a6f4a4281a9f7f79b8dd45ca4ccea82e5e05b4bbdb76705c"},
@@ -1550,8 +1550,8 @@ iniconfig = [
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 ipykernel = [
-    {file = "ipykernel-6.13.1-py3-none-any.whl", hash = "sha256:fedc79bebd8a438162d056e0c7662d5ac8a47d1f6ef33a702e8460248dc4517f"},
-    {file = "ipykernel-6.13.1.tar.gz", hash = "sha256:6f42070a5d87ecbf4a2fc27a7faae8d690fd3794825a090ddf6b00b9678a5b69"},
+    {file = "ipykernel-6.14.0-py3-none-any.whl", hash = "sha256:cbf50ed3dc9998d4077d8cd263275f232cbe67dbd2e79cd6d2644f3a4418148b"},
+    {file = "ipykernel-6.14.0.tar.gz", hash = "sha256:720f2a07aadf70ca05b034f2cdd0590a8bd56581ddf3b7ec4a37075366270e89"},
 ]
 ipython = [
     {file = "ipython-8.4.0-py3-none-any.whl", hash = "sha256:7ca74052a38fa25fe9bedf52da0be7d3fdd2fb027c3b778ea78dfe8c212937d1"},
@@ -1593,8 +1593,8 @@ jpype1 = [
     {file = "JPype1-1.4.0.tar.gz", hash = "sha256:0c5f665ee3e6e31c27e9d2d48dd12bf4eb4fe6858823e6a11201a035274ccfe1"},
 ]
 jupyter-client = [
-    {file = "jupyter_client-7.3.3-py3-none-any.whl", hash = "sha256:5b4f5bb9f9c3b5466ba84761312ed75f487bf3b8b0e1eeeec4bb2d0f9d855c70"},
-    {file = "jupyter_client-7.3.3.tar.gz", hash = "sha256:9e80defc0058712bf2b30327bad582f9734668aa85e90256dcba116325ce3060"},
+    {file = "jupyter_client-7.3.4-py3-none-any.whl", hash = "sha256:17d74b0d0a7b24f1c8c527b24fcf4607c56bee542ffe8e3418e50b21e514b621"},
+    {file = "jupyter_client-7.3.4.tar.gz", hash = "sha256:aa9a6c32054b290374f95f73bb0cae91455c58dfb84f65c8591912b8f65e6d56"},
 ]
 jupyter-core = [
     {file = "jupyter_core-4.10.0-py3-none-any.whl", hash = "sha256:e7f5212177af7ab34179690140f188aa9bf3d322d8155ed972cbded19f55b6f3"},
@@ -2147,8 +2147,8 @@ regex = [
     {file = "regex-2022.6.2.tar.gz", hash = "sha256:f7b43acb2c46fb2cd506965b2d9cf4c5e64c9c612bac26c1187933c7296bf08c"},
 ]
 requests = [
-    {file = "requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d"},
-    {file = "requests-2.27.1.tar.gz", hash = "sha256:68d7c56fd5a8999887728ef304a6d12edc7be74f1cfa47714fc8b414525c9a61"},
+    {file = "requests-2.28.0-py3-none-any.whl", hash = "sha256:bc7861137fbce630f17b03d3ad02ad0bf978c844f3536d0edda6499dafce2b6f"},
+    {file = "requests-2.28.0.tar.gz", hash = "sha256:d568723a7ebd25875d8d1eaf5dfa068cd2fc8194b2e483d7b1f7c81918dbec6b"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
