@@ -14,6 +14,8 @@ from courier.elements.elements import Article, CourierIssue
 from courier.utils import flatten, split_by_idx
 
 CONFIG = get_config()
+# CONFIG.pdf_dir = CONFIG.base_data_dir / 'pdf_reocr/all'
+# CONFIG.articles_dir = CONFIG.base_data_dir / 'pdf_reocr/all_out'
 
 
 def export_tagged_issue(
@@ -78,4 +80,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
+
     main()
