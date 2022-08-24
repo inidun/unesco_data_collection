@@ -6,12 +6,12 @@ py-version=3.10
 [MESSAGES CONTROL]
 
 disable=duplicate-code,  # FIXME: temporary
+        consider-using-generator,  # FIXME: temporary
         invalid-name,
         missing-module-docstring,
         missing-class-docstring,
         missing-function-docstring,
         line-too-long,
-        no-self-use,
         pointless-string-statement,
         global-statement,
         c-extension-no-member,
@@ -20,7 +20,6 @@ disable=duplicate-code,  # FIXME: temporary
         logging-fstring-interpolation,
         consider-using-enumerate,
         unnecessary-comprehension,
-        misplaced-comparison-constant,
         too-many-branches,
         too-many-locals,
         wrong-import-order,
