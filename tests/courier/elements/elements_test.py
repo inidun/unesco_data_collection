@@ -91,7 +91,7 @@ def test_courier_issue_get_page_when_issue_has_double_pages_returns_expected():
     assert courier_issue._pdf_double_page_numbers == [10, 11, 24]  # pylint: disable=protected-access
     assert courier_issue.double_pages == [10, 12, 26]
 
-    assert courier_issue.get_page(11) == courier_issue.__getitem__(10) == courier_issue[10]
+    assert courier_issue.get_page(11) == courier_issue[10]
 
     assert isinstance(courier_issue.get_page(11), DoubleSpreadRightPage)
     assert isinstance(courier_issue.get_page(13), DoubleSpreadRightPage)
