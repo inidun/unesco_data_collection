@@ -116,7 +116,7 @@ def test_can_mock_http_request():
     httpretty.register_uri(httpretty.GET, url, body=body)
 
     # Act
-    response = requests.get(url)
+    response = requests.get(url)  # pylint: disable=missing-timeout
 
     # Asserts
     assert response.content.decode() == body
