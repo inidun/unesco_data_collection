@@ -8,6 +8,7 @@ from os.path import splitext
 from uuid import uuid4
 
 import click
+from loguru import logger
 
 
 def get_issue_articles(filename: str) -> dict[str, tuple]:
@@ -37,7 +38,7 @@ def get_issue_articles(filename: str) -> dict[str, tuple]:
             article_id: str = '@' + str(uuid4())[:6]
             article_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
             article_bag[article_id] = [(article_id, page_number, segment, f'Unknown article {article_id}')]
-            # print(f"added UNKNOWN_ARTICLE {article_id}!")
+            logger.info(f'Extracted unindexed article - {article_id}')
             continue
 
         article_match: re.Match[str] | None = re.match(r'^#{1,3}\s*(\d+):\s*(.*)\n', segment)
@@ -46,7 +47,7 @@ def get_issue_articles(filename: str) -> dict[str, tuple]:
             article_title: str = str(article_match.groups()[1])
             article_text = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
             article_bag[article_id].append((article_id, page_number, article_text, article_title))
-            # print(f"added article segment {article_id}: {article_title}")
+            logger.info(f'Extracted article segment {article_id}:{page_number} - {article_title}')
             continue
 
     articles: dict = {

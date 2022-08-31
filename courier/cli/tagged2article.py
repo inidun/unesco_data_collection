@@ -15,7 +15,7 @@ def main(filenames: list[str], target_folder: str) -> None:
         _, year, courier_id = splitext(basename(filename))[0].split('_')
         articles = get_issue_articles(filename)
         store_article_text(articles, target_folder, year, courier_id)
-        logger.info(basename(filename))
+        logger.info(f'Extracted {basename(filename)}')
 
 
 if __name__ == '__main__':
