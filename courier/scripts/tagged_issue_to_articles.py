@@ -37,7 +37,7 @@ def get_issue_articles(filename: str) -> dict[str, tuple]:
         if unknown_article_match is not None:
             article_id: str = '@' + str(uuid4())[:6]
             article_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
-            article_bag[article_id] = [(article_id, page_number, segment, f'Unknown article {article_id}')]
+            article_bag[article_id] = [(article_id, page_number, article_text, f'Unknown article {article_id}')]
             logger.info(f'Extracted unindexed article - {article_id}')
             continue
 
