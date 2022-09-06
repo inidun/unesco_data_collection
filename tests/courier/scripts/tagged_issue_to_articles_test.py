@@ -19,6 +19,7 @@ def test_get_issue_articles_returns_expected():
     assert '78910' in articles.keys()
     assert len([x for x in articles.keys() if x.startswith('@')]) == 1
     assert articles['78910'][2].startswith('article text')
+    assert '@123456-1' in articles.keys()
 
 
 @pytest.mark.parametrize(
@@ -54,3 +55,19 @@ def test_issues_have_expected_number_of_unindexed_articles(file, expected):
     articles = get_issue_articles(filename)
 
     assert len([x for x in articles.keys() if x.startswith('@')]) == expected, 'Incorrect number of unindexed'
+
+
+# TODO: Text if article text is correct
+@pytest.mark.parametrize(
+    'file, expected',
+    [
+        ('tagged_1234_123456.md', {'@123456-1'}),
+        ('tagged_1952_070990.md', {'@070990-3', '@070990-4', '@070990-5'}),
+    ],
+)
+def test_get_issue_articles_returns_unindexed_articles_with_expected_ids(file, expected):
+
+    filename = f'tests/fixtures/courier/tagged_issue/{file}'
+    articles = get_issue_articles(filename)
+
+    assert expected.issubset(articles.keys())

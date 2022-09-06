@@ -5,7 +5,6 @@ from collections import defaultdict
 from os.path import basename
 from os.path import join as jj
 from os.path import splitext
-from uuid import uuid4
 
 import click
 from loguru import logger
@@ -15,6 +14,8 @@ def get_issue_articles(filename: str) -> dict[str, tuple]:
 
     with open(filename, 'r', encoding='utf-8') as fp:
         issue_str: str = fp.read()
+
+    courier_id: str = splitext(basename(filename))[0].split('_')[2]
 
     segments: list[str] = re.split('\n#', issue_str, maxsplit=0)
 
@@ -35,7 +36,7 @@ def get_issue_articles(filename: str) -> dict[str, tuple]:
 
         unknown_article_match: re.Match[str] | None = re.match(r'^#{1,3}\s+UNINDEXED_ARTICLE', segment)
         if unknown_article_match is not None:
-            article_id: str = '@' + str(uuid4())[:6]
+            article_id = f'@{courier_id}-{str(page_number)}'
             article_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
             article_bag[article_id] = [(article_id, page_number, article_text, f'Unknown article {article_id}')]
             logger.info(f'Extracted unindexed article - {article_id}')
