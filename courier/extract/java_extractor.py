@@ -5,7 +5,7 @@ import os
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import jpype
 import jpype.imports
@@ -109,7 +109,7 @@ class JavaExtractor(ITextExtractor):
         filename: Union[str, os.PathLike],
         output_folder: Union[str, os.PathLike],
         first_page: int = 1,
-        last_page: int = None,
+        last_page: Optional[int] = None,
     ) -> None:
         basename = Path(filename).stem
         issue: ExtractedPages = self.extract_pages(filename)

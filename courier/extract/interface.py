@@ -15,7 +15,7 @@ class ITextExtractor(abc.ABC):
         filename: Union[str, os.PathLike],
         output_folder: Union[str, os.PathLike],
         first_page: int = 1,
-        last_page: int = None,
+        last_page: Optional[int] = None,
     ) -> None:
         """Extracts text from PDF-file and saves result as text files (one file per page).
 
