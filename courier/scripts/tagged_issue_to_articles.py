@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import re
 from collections import defaultdict
 from os.path import basename
@@ -10,7 +11,7 @@ import click
 from loguru import logger
 
 
-def get_issue_articles(filename: str) -> dict[str, tuple]:
+def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
 
     with open(filename, 'r', encoding='utf-8') as fp:
         issue_str: str = fp.read()
@@ -59,6 +60,9 @@ def get_issue_articles(filename: str) -> dict[str, tuple]:
 
 
 def store_article_text(articles: dict, folder: str, year: str, courier_id: str) -> None:
+
+    os.makedirs(folder, exist_ok=True)
+
     for article_id, (_, _, article_text) in articles.items():
         filename: str = jj(folder, f'{year}_{courier_id}_{article_id}.txt')
         with open(filename, encoding='utf-8', mode='w') as fp:
