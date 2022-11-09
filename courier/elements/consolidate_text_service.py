@@ -152,7 +152,7 @@ def title_is_one_word_and_candidate_contains_same_word(title: str, candidate: st
 
 
 def get_best_candidate(
-    title: str, title_candidates: List[Tuple[int, str]], functions: List[Callable[[str, str], int]] = None
+    title: str, title_candidates: List[Tuple[int, str]], functions: Optional[List[Callable[[str, str], int]]] = None
 ) -> Tuple[Optional[int], Optional[str]]:
     """Returns the candidate from a list of title candidates best matching title
 
