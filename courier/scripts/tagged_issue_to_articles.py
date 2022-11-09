@@ -35,8 +35,14 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
         if ignore_match is not None:
             continue
 
+        # TODO: #79 Extract unindexed supplements
+
+        # TODO: #80 Extract editorials
+
         unknown_article_match: re.Match[str] | None = re.match(r'^#{1,3}\s+UNINDEXED_ARTICLE', segment)
         if unknown_article_match is not None:
+            # FIXME: #78 Change naming of unindexed articles
+            # FIXME: Rename article_id
             article_id = f'@{courier_id}-{str(page_number)}'
             article_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
             article_bag[article_id] = [(article_id, page_number, article_text, f'Unknown article {article_id}')]
