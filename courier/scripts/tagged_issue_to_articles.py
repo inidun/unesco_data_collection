@@ -35,16 +35,22 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
         if ignore_match is not None:
             continue
 
-        # TODO: #79 Extract unindexed supplements
+        unknown_supplement_match: re.Match[str] | None = re.match(r'^#{1,3}\s+UNINDEXED_SUPPLEMENT', segment)
+        if unknown_supplement_match is not None:
+            supplement_id: str = f's{courier_id}-{str(page_number)}'
+            supplement_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
+            article_bag[supplement_id] = [(supplement_id, page_number, supplement_text, f'Unindexed supplement {supplement_id}')]
+            logger.info(f'Extracted unindexed supplement - {supplement_id}')
+            continue
 
         # TODO: #80 Extract editorials
 
-        unknown_article_match: re.Match[str] | None = re.match(r'^#{1,3}\s+UNINDEXED_ARTICLE', segment)
-        if unknown_article_match is not None:
-            article_id = f'a{courier_id}-{str(page_number)}'
-            article_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
-            article_bag[article_id] = [(article_id, page_number, article_text, f'Unknown article {article_id}')]
-            logger.info(f'Extracted unindexed article - {article_id}')
+        unindexed_article_match: re.Match[str] | None = re.match(r'^#{1,3}\s+UNINDEXED_ARTICLE', segment)
+        if unindexed_article_match is not None:
+            unindexed_id = f'a{courier_id}-{str(page_number)}'
+            unindexed_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
+            article_bag[unindexed_id] = [(unindexed_id, page_number, unindexed_text, f'Unindexed article {unindexed_id}')]
+            logger.info(f'Extracted unindexed article - {unindexed_id}')
             continue
 
         article_match: re.Match[str] | None = re.match(r'^#{1,3}\s*(\d+):\s*(.*)\n', segment)
