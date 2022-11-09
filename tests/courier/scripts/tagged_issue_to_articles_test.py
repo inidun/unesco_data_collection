@@ -17,9 +17,9 @@ def test_get_issue_articles_returns_expected():
 
     assert len(articles) == 2
     assert '78910' in articles.keys()
-    assert len([x for x in articles.keys() if x.startswith('@')]) == 1
+    assert len([x for x in articles.keys() if x.startswith('a')]) == 1
     assert articles['78910'][2].startswith('article text')
-    assert '@123456-1' in articles.keys()
+    assert 'a123456-1' in articles.keys()
 
 
 @pytest.mark.parametrize(
@@ -54,14 +54,14 @@ def test_issues_have_expected_number_of_unindexed_articles(file, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
     articles = get_issue_articles(filename)
 
-    assert len([x for x in articles.keys() if x.startswith('@')]) == expected, 'Incorrect number of unindexed'
+    assert len([x for x in articles.keys() if x.startswith('a')]) == expected, 'Incorrect number of unindexed'
 
 
 @pytest.mark.parametrize(
     'file, expected',
     [
-        ('tagged_1234_123456.md', {'@123456-1'}),
-        ('tagged_1952_070990.md', {'@070990-3', '@070990-4', '@070990-5'}),
+        ('tagged_1234_123456.md', {'a123456-1'}),
+        ('tagged_1952_070990.md', {'a070990-3', 'a070990-4', 'a070990-5'}),
     ],
 )
 def test_get_issue_articles_returns_unindexed_articles_with_expected_ids(file, expected):
@@ -75,10 +75,10 @@ def test_get_issue_articles_returns_unindexed_articles_with_expected_ids(file, e
 @pytest.mark.parametrize(
     'file, article_id, expected',
     [
-        ('tagged_1234_123456.md', '@123456-1', 'unindexed article text'),
-        ('tagged_1952_070990.md', '@070990-3', 'MARCH) 952 Page 3-UNESCO COURIER'),
-        ('tagged_1952_070990.md', '@070990-4', 'UNESCO COURIER-Page 4 MARCH 1952'),
-        ('tagged_1952_070990.md', '@070990-5', 'the League who invites all competent persons'),
+        ('tagged_1234_123456.md', 'a123456-1', 'unindexed article text'),
+        ('tagged_1952_070990.md', 'a070990-3', 'MARCH) 952 Page 3-UNESCO COURIER'),
+        ('tagged_1952_070990.md', 'a070990-4', 'UNESCO COURIER-Page 4 MARCH 1952'),
+        ('tagged_1952_070990.md', 'a070990-5', 'the League who invites all competent persons'),
     ],
 )
 def test_get_issue_articles_returns_unindexed_articles_with_expected_content(file, article_id, expected):
