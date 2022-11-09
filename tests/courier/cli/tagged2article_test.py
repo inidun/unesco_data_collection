@@ -25,9 +25,12 @@ def test_CLI_generates_expected_files(tmp_path):
     result = runner.invoke(main, [filepattern, str(tmp_path)])
 
     assert result.exit_code == 0
-    assert len(list(tmp_path.iterdir())) == 2
-    assert '1234_123456_a123456-1.txt' in [basename(x) for x in tmp_path.iterdir()]
-    assert '1234_123456_78910.txt' in [basename(x) for x in tmp_path.iterdir()]
+    assert len(list(tmp_path.iterdir())) == 3
+
+    output_filenames = [basename(x) for x in tmp_path.iterdir()]
+    assert '1234_123456_78910.txt' in output_filenames
+    assert '1234_123456_a123456-1.txt' in output_filenames
+    assert '1234_123456_s123456-1.txt' in output_filenames
 
 
 def test_CLI_with_directory_as_input_generates_expected_files(tmp_path):
@@ -35,6 +38,7 @@ def test_CLI_with_directory_as_input_generates_expected_files(tmp_path):
     expected = {
         '1234_123456_78910.txt',
         '1234_123456_a123456-1.txt',
+        '1234_123456_s123456-1.txt',
         '1952_070990_70992.txt',
         '1952_070990_70995.txt',
         '1952_070990_70996.txt',
@@ -61,5 +65,5 @@ def test_CLI_with_directory_as_input_generates_expected_files(tmp_path):
     result = runner.invoke(main, [filepattern, str(tmp_path)])
 
     assert result.exit_code == 0
-    assert len(list(tmp_path.iterdir())) == 19
+    assert len(list(tmp_path.iterdir())) == 20
     assert expected == {basename(x) for x in tmp_path.iterdir()}
