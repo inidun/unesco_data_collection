@@ -39,7 +39,9 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
         if unknown_supplement_match is not None:
             supplement_id: str = f's{courier_id}-{str(page_number)}'
             supplement_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
-            article_bag[supplement_id] = [(supplement_id, page_number, supplement_text, f'Unindexed supplement {supplement_id}')]
+            article_bag[supplement_id] = [
+                (supplement_id, page_number, supplement_text, f'Unindexed supplement {supplement_id}')
+            ]
             logger.info(f'Extracted unindexed supplement - {supplement_id}')
             continue
 
@@ -49,7 +51,9 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
         if unindexed_article_match is not None:
             unindexed_id = f'a{courier_id}-{str(page_number)}'
             unindexed_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
-            article_bag[unindexed_id] = [(unindexed_id, page_number, unindexed_text, f'Unindexed article {unindexed_id}')]
+            article_bag[unindexed_id] = [
+                (unindexed_id, page_number, unindexed_text, f'Unindexed article {unindexed_id}')
+            ]
             logger.info(f'Extracted unindexed article - {unindexed_id}')
             continue
 
