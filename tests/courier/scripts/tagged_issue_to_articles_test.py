@@ -15,7 +15,7 @@ def test_get_issue_articles_returns_expected():
 
     articles = get_issue_articles(filename)
 
-    assert len(articles) == 3
+    assert len(articles) == 4
 
     assert '78910' in articles.keys()
     assert articles['78910'][2].startswith('article text')
@@ -27,6 +27,10 @@ def test_get_issue_articles_returns_expected():
     assert len([x for x in articles.keys() if x.startswith('s')]) == 1
     assert 's123456-1' in articles.keys()
     assert articles['s123456-1'][2].startswith('unindexed supplement text')
+
+    assert len([x for x in articles.keys() if x.startswith('e')]) == 1
+    assert 'e123456-1' in articles.keys()
+    assert articles['e123456-1'][2].startswith('editorial text')
 
 
 @pytest.mark.parametrize(
@@ -134,6 +138,51 @@ def test_get_issue_articles_returns_unindexed_supplements_with_expected_ids(file
     ],
 )
 def test_get_issue_articles_returns_unindexed_supplements_with_expected_content(file, article_id, expected):
+
+    filename = f'tests/fixtures/courier/tagged_issue/{file}'
+    articles = get_issue_articles(filename)
+
+    assert articles[article_id][2].startswith(expected)
+
+
+@pytest.mark.parametrize(
+    'file, expected',
+    [
+        ('tagged_1234_123456.md', 1),
+        ('tagged_1952_070990.md', 0),
+        ('tagged_1972_052257.md', 0),
+    ],
+)
+def test_issues_have_expected_number_of_editorials(file, expected):
+
+    filename = f'tests/fixtures/courier/tagged_issue/{file}'
+    articles = get_issue_articles(filename)
+
+    assert len([x for x in articles.keys() if x.startswith('e')]) == expected, 'Incorrect number of unindexed articles'
+
+
+@pytest.mark.parametrize(
+    'file, expected',
+    [
+        ('tagged_1234_123456.md', {'e123456-1'}),
+        ('tagged_1952_070990.md', set()),
+    ],
+)
+def test_get_issue_articles_returns_editorials_with_expected_ids(file, expected):
+
+    filename = f'tests/fixtures/courier/tagged_issue/{file}'
+    articles = get_issue_articles(filename)
+
+    assert expected.issubset(articles.keys())
+
+
+@pytest.mark.parametrize(
+    'file, article_id, expected',
+    [
+        ('tagged_1234_123456.md', 'e123456-1', 'editorial text'),
+    ],
+)
+def test_get_issue_articles_returns_editorials_with_expected_content(file, article_id, expected):
 
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
     articles = get_issue_articles(filename)
