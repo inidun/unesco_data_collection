@@ -49,9 +49,7 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
         if editorial_match is not None:
             editorial_id: str = f'e{courier_id}-{str(page_number)}'
             editorial_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
-            article_bag[editorial_id] = [
-                (editorial_id, page_number, editorial_text, f'Editorial {editorial_id}')
-            ]
+            article_bag[editorial_id] = [(editorial_id, page_number, editorial_text, f'Editorial {editorial_id}')]
             logger.info(f'Extracted editorial - {editorial_id}')
             continue
 
