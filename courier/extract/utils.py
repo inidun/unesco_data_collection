@@ -10,7 +10,7 @@ def get_filenames(files: Union[str, os.PathLike], extension: str = 'pdf') -> Lis
         items = list(path.glob(f'*.{extension}'))
     elif path.is_file() and path.suffix == f'.{extension}':
         items.append(path)
-    return items
+    return sorted(items)
 
 
 if __name__ == '__main__':
