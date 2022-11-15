@@ -58,6 +58,22 @@ def test_CLI_with_directory_as_input_generates_expected_files(tmp_path):
         '1972_052257_52344.txt',
         '1972_052257_52354.txt',
         '1972_052257_52357.txt',
+        '1978_074803_45931.txt',
+        '1978_074803_45935.txt',
+        '1978_074803_45967.txt',
+        '1978_074803_45968.txt',
+        '1978_074803_45970.txt',
+        '1978_074803_45973.txt',
+        '1978_074803_45974.txt',
+        '1978_074803_45975.txt',
+        '1978_074803_45978.txt',
+        '1978_074803_45981.txt',
+        '1978_074803_45983.txt',
+        '1978_074803_e074803-4.txt',
+        '1978_074803_s074803-36.txt',
+        '1978_074803_s074803-37.txt',
+        '1978_074803_s074803-38.txt',
+        '1978_074803_s074803-39.txt',
     }
 
     filepattern: str = 'tests/fixtures/courier/tagged_issue/'
@@ -67,5 +83,5 @@ def test_CLI_with_directory_as_input_generates_expected_files(tmp_path):
     result = runner.invoke(main, [filepattern, str(tmp_path)])
 
     assert result.exit_code == 0
-    assert len(list(tmp_path.iterdir())) == 21
+    assert len(list(tmp_path.iterdir())) == 37
     assert expected == {basename(x) for x in tmp_path.iterdir()}

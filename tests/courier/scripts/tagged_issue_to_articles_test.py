@@ -35,10 +35,7 @@ def test_get_issue_articles_returns_expected():
 
 @pytest.mark.parametrize(
     'file',
-    [
-        ('tagged_1952_070990.md'),
-        ('tagged_1972_052257.md'),
-    ],
+    [('tagged_1952_070990.md'), ('tagged_1972_052257.md'), ('tagged_1978_074803.md')],
 )
 def test_get_issue_articles_returns_values_agreeing_with_index(file):
 
@@ -58,6 +55,7 @@ def test_get_issue_articles_returns_values_agreeing_with_index(file):
         ('tagged_1234_123456.md', 1),
         ('tagged_1952_070990.md', 3),
         ('tagged_1972_052257.md', 0),
+        ('tagged_1978_074803.md', 0),
     ],
 )
 def test_issues_have_expected_number_of_unindexed_articles(file, expected):
@@ -106,6 +104,7 @@ def test_get_issue_articles_returns_unindexed_articles_with_expected_content(fil
         ('tagged_1234_123456.md', 1),
         ('tagged_1952_070990.md', 0),
         ('tagged_1972_052257.md', 0),
+        ('tagged_1978_074803.md', 4),
     ],
 )
 def test_issues_have_expected_number_of_unindexed_supplements(file, expected):
@@ -121,6 +120,15 @@ def test_issues_have_expected_number_of_unindexed_supplements(file, expected):
     [
         ('tagged_1234_123456.md', {'s123456-1'}),
         ('tagged_1952_070990.md', set()),
+        (
+            'tagged_1978_074803.md',
+            {
+                's074803-36',
+                's074803-37',
+                's074803-38',
+                's074803-39',
+            },
+        ),
     ],
 )
 def test_get_issue_articles_returns_unindexed_supplements_with_expected_ids(file, expected):
@@ -135,6 +143,10 @@ def test_get_issue_articles_returns_unindexed_supplements_with_expected_ids(file
     'file, article_id, expected',
     [
         ('tagged_1234_123456.md', 's123456-1', 'unindexed supplement text'),
+        ('tagged_1978_074803.md', 's074803-36', 'MAY 1978'),
+        ('tagged_1978_074803.md', 's074803-37', 'Donald Woods'),
+        ('tagged_1978_074803.md', 's074803-38', 'Journalists say'),
+        ('tagged_1978_074803.md', 's074803-39', 'Unesco Clubs'),
     ],
 )
 def test_get_issue_articles_returns_unindexed_supplements_with_expected_content(file, article_id, expected):
@@ -151,6 +163,7 @@ def test_get_issue_articles_returns_unindexed_supplements_with_expected_content(
         ('tagged_1234_123456.md', 1),
         ('tagged_1952_070990.md', 0),
         ('tagged_1972_052257.md', 0),
+        ('tagged_1978_074803.md', 1),
     ],
 )
 def test_issues_have_expected_number_of_editorials(file, expected):
@@ -166,6 +179,7 @@ def test_issues_have_expected_number_of_editorials(file, expected):
     [
         ('tagged_1234_123456.md', {'e123456-1'}),
         ('tagged_1952_070990.md', set()),
+        ('tagged_1978_074803.md', {'e074803-4'}),
     ],
 )
 def test_get_issue_articles_returns_editorials_with_expected_ids(file, expected):
@@ -180,6 +194,7 @@ def test_get_issue_articles_returns_editorials_with_expected_ids(file, expected)
     'file, article_id, expected',
     [
         ('tagged_1234_123456.md', 'e123456-1', 'editorial text'),
+        ('tagged_1978_074803.md', 'e074803-4', 'In most countries'),
     ],
 )
 def test_get_issue_articles_returns_editorials_with_expected_content(file, article_id, expected):
