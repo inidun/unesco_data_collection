@@ -136,7 +136,7 @@ def save_stats(
 
 @argh.arg('--match-function', choices=['regex', 'fuzzywuzzy'])  # type: ignore
 def main(
-    output_folder: str = str(CONFIG.metadata_dir),
+    output_folder: str = str(CONFIG.metadata_dir),  # noqa: B008
     match_function: str = 'regex',
 ) -> None:
     save_stats(CONFIG.article_index, output_folder, match_function)
