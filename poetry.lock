@@ -338,17 +338,6 @@ python-versions = ">=3.6.2,<4.0.0"
 flake8-plugin-utils = ">=1.3.2,<2.0.0"
 
 [[package]]
-name = "flake8-quotes"
-version = "3.3.1"
-description = "Flake8 lint for quotes."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-flake8 = "*"
-
-[[package]]
 name = "ftfy"
 version = "6.1.1"
 description = "Fixes mojibake and other problems with Unicode, after the fact"
@@ -1348,7 +1337,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "fd0f8a7116cff7f50f42a3d27048f18cfc9d422c1069d62c0d2492de3169a36a"
+content-hash = "3bcbb97d3eff4673702f4fae65126355f0e36451f843d6e13f9a22014b00a275"
 
 [metadata.files]
 appdirs = [
@@ -1638,9 +1627,6 @@ flake8-plugin-utils = [
 flake8-pytest-style = [
     {file = "flake8-pytest-style-1.6.0.tar.gz", hash = "sha256:c1175713e9e11b78cd1a035ed0bca0d1e41d09c4af329a952750b61d4194ddac"},
     {file = "flake8_pytest_style-1.6.0-py3-none-any.whl", hash = "sha256:5fedb371a950e9fe0e0e6bfc854be7d99151271208f34cd2cc517681ece27780"},
-]
-flake8-quotes = [
-    {file = "flake8-quotes-3.3.1.tar.gz", hash = "sha256:633adca6fb8a08131536af0d750b44d6985b9aba46f498871e21588c3e6f525a"},
 ]
 ftfy = [
     {file = "ftfy-6.1.1-py3-none-any.whl", hash = "sha256:0ffd33fce16b54cccaec78d6ec73d95ad370e5df5a25255c8966a6147bd667ca"},
