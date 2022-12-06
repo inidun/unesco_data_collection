@@ -128,7 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-*zip:Zone.Identifier
+*Zone.Identifier
 
 # own settings
 !.vscode/
