@@ -10,7 +10,7 @@ tidy: isort black
 
 lint: tidy pylint flake8
 
-lint-typing: lint mypy
+typing: lint mypy
 
 clean:
 	@rm -rf .coverage coverage.xml htmlcov .nox
@@ -58,7 +58,7 @@ retest: output-dir
 output-dir:
 	@mkdir -p ./tests/output
 
-.PHONY: retest test-coverage test-courier test-legal-instruments test-no-java test-java test-slow test-all lint-typing
+.PHONY: retest test-coverage test-courier test-legal-instruments test-no-java test-java test-slow test-all typing
 
 pylint:
 	@poetry run pylint --version | grep pylint
@@ -155,6 +155,7 @@ help:
 	@echo "Higher level recepies: "
 	@echo " make clean            Removes temporary files, caches, and build files"
 	@echo " make lint             Runs tidy, pylint, flake8 and mypy"
+	@echo " make typing           Runs lint and mypy"
 	@echo " make test             Runs tests with code coverage"
 	@echo " make tidy             Runs black and isort"
 	@echo "  "
