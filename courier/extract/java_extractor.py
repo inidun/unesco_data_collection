@@ -2,7 +2,6 @@
 # pylint: disable=import-error, wrong-import-position, import-outside-toplevel, consider-using-from-import
 
 import os
-import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
@@ -11,7 +10,7 @@ import jpype
 import jpype.imports
 from appdirs import AppDirs
 from loguru import logger
-from pkg_resources import parse_version
+from packaging.version import Version
 
 from courier.config import get_config
 from courier.extract.interface import ITextExtractor
@@ -27,10 +26,12 @@ def get_pdfbox_path() -> Path:
     file_list = list(cache_dir.glob('pdfbox-app-*.jar'))
     if not file_list:
         raise RuntimeError('PDFBox not found')
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        path = sorted(file_list, key=lambda x: parse_version(str(x)))[-1]
-    return path
+
+    versions = [file.stem.split('-')[-1] for file in file_list]
+    versions.sort(key=Version)
+    latest = versions[-1]
+
+    return Path(f'{cache_dir}/pdfbox-app-{latest}.jar')
 
 
 @dataclass

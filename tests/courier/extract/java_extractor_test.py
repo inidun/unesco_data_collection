@@ -1,5 +1,4 @@
 import filecmp
-import warnings
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List
@@ -15,11 +14,8 @@ from courier.extract.utils import get_filenames
 CONFIG = get_config()
 
 
-def test_get_pdfbox_path_returns_valid_path_and_emits_no_warning():
-    with warnings.catch_warnings(record=True) as w:
-        warnings.simplefilter('always')
-        assert get_pdfbox_path().exists()
-        assert len(w) == 0
+def test_get_pdfbox_path_returns_valid_path():
+    assert get_pdfbox_path().exists()
 
 
 @pytest.mark.java
