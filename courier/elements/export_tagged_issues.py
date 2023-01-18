@@ -7,6 +7,7 @@ from typing import List, Union
 
 from loguru import logger
 
+from courier.article_index import article_index_to_csv
 from courier.config import get_config
 from courier.elements.assign_page_service import AssignPageService
 from courier.elements.consolidate_text_service import ConsolidateTextService, get_best_candidate
@@ -68,6 +69,7 @@ def export_tagged_issue(
 
 def main() -> None:
     export_folder: Path = CONFIG.articles_dir / f'tagged_issues_{datetime.now().strftime("%Y-%m-%dT%H%M")}'
+    article_index_to_csv(CONFIG.article_index, export_folder)
     logger.info('courier_id;year;record_number;assigned;not_found;total')
 
     courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
