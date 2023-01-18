@@ -33,12 +33,12 @@ def test_save_overlapping_pages():
 @pytest.fixture
 def article_index():
     statistics = StringIO(
-        """courier_id;year;record_number;pages;catalogue_title
-111111;2020;111;[1];a1
-111111;2020;111;[1];a2
-111111;2020;111;[1];a3
-222222;2020;222;[1];b1
-222222;2020;222;[1];b2
+        """courier_id;year;record_number;pages;catalogue_title;authors
+111111;2020;111;[1];a1;a
+111111;2020;111;[1];a2;b
+111111;2020;111;[1];a3;
+222222;2020;222;[1];b1;d
+222222;2020;222;[1];b2;
 """
     )
     return pd.read_csv(statistics, sep=';')

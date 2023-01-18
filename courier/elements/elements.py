@@ -104,6 +104,7 @@ class Article:
         record_number: Optional[int] = None,
         pages: Optional[List[int]] = None,
         catalogue_title: Optional[str] = None,
+        authors: Optional[str] = None,
     ):
         self.courier_issue: 'CourierIssue' = courier_issue
         self.courier_id: Optional[str] = courier_id
@@ -111,6 +112,7 @@ class Article:
         self.record_number: Optional[int] = record_number
         self.page_numbers: List[int] = pages or []  # TODO: Change name of pages in article_index page_numbers
         self.catalogue_title: str = catalogue_title or ''
+        self.authors: str = authors or ''
         self.pages: List[Page] = []
         self.texts: List[Tuple[int, str]] = []
         self.errors: List[str] = []

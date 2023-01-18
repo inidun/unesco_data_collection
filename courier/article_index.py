@@ -108,6 +108,7 @@ def get_article_index_from_file(
     columns = [
         'Record number',
         'Catalogue - Title',
+        'Catalogue - Authors',
         'Languages',
         'Document type',
         'Host item',
@@ -119,6 +120,7 @@ def get_article_index_from_file(
     article_index.columns = [
         'record_number',
         'catalogue_title',
+        'authors',
         'languages',
         'document_type',
         'host_item',
@@ -149,7 +151,7 @@ def get_article_index_from_file(
     article_index = article_index.set_index(article_index['courier_id'].astype('uint32'))
     article_index.index.rename('id', inplace=True)
 
-    return article_index[['courier_id', 'year', 'record_number', 'pages', 'catalogue_title']]
+    return article_index[['courier_id', 'year', 'record_number', 'pages', 'catalogue_title', 'authors']]
 
 
 def article_index_to_csv(

@@ -92,20 +92,14 @@ def test_get_expanded_article_pages_returns_exptected_values(test_input_page_ref
 def test_get_article_index_from_file_returns_dataframe_with_expected_shape_and_content():
     article_index = get_article_index_from_file(CONFIG.metadata_file)
     assert len(article_index) == 7612
-    assert article_index.shape == (7612, 5)
-    assert not article_index.isnull().values.any()
+    assert article_index.shape == (7612, 6)
+    assert not article_index[['courier_id', 'year', 'record_number', 'pages', 'catalogue_title']].isnull().values.any()
 
-    expected_columns = [
-        'courier_id',
-        'year',
-        'record_number',
-        'pages',
-        'catalogue_title',
-    ]
+    expected_columns = ['courier_id', 'year', 'record_number', 'pages', 'catalogue_title', 'authors']
 
     assert set(article_index.columns) == set(expected_columns)
     assert article_index.columns.to_list() == expected_columns
-    assert article_index.dtypes.to_list() == ['O', 'uint16', 'uint32', 'O', 'O']
+    assert article_index.dtypes.to_list() == ['O', 'uint16', 'uint32', 'O', 'O', 'O']
 
 
 @pytest.mark.parametrize(
