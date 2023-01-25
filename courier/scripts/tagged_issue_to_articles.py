@@ -12,6 +12,16 @@ from loguru import logger
 
 
 def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
+    """Extracts articles from a markdown encoded Courier issue file.
+
+    Returns a dictionary where the key is the `article_id`. If the article is indexed, i.e. it has a `record_number`, the `article_id` is the same as the article's `record_number`, otherwise a new `article_id` is generated. The dictionary's value is a tuple containing the `article_id`, a list of pages where the article is found, and the complete text of the article.
+
+        Args:
+            filename (str | os.PathLike): Path to tagged Courier issue
+
+        Returns:
+            dict[str, tuple]: A dict with `article_id` as key and (`article_id`, list of pages, article text) as value
+    """
 
     with open(filename, 'r', encoding='utf-8') as fp:
         issue_str: str = fp.read()
