@@ -28,7 +28,7 @@ tqdm = "^4.63.0"
 untangle = "^1.1.1"
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.10.0"
+black = "^23.1.0"
 flake8 = "^6.0.0"
 flake8-black = "^0.3.3"
 flake8-bugbear = "^23.1.20"
