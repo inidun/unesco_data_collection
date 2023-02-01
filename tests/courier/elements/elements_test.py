@@ -26,7 +26,6 @@ def test_create_ExtractionError():
     ],
 )
 def test_create_page(input_pn, input_text, expected_pn, expected_text):
-
     result = Page(input_pn, input_text)
     assert isinstance(result, Page)
 

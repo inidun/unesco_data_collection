@@ -165,7 +165,6 @@ class Article:
 
 class CourierIssue:
     def __init__(self, courier_id: str):
-
         self.courier_id = courier_id
 
         if len(courier_id) != 6:

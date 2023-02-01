@@ -35,7 +35,6 @@ def test_if_test_working():
 
 
 def test_extract_where_and_when_with_city_succeeds():
-
     info = "Paris, 13 November 2017"
     date, city = parser.extract_where_and_when(info)
 
@@ -44,7 +43,6 @@ def test_extract_where_and_when_with_city_succeeds():
 
 
 def test_extract_where_and_when_with_spajsy_city_succeeds():
-
     info = "New York, 13 November 2017"
     date, city = parser.extract_where_and_when(info)
 
@@ -53,7 +51,6 @@ def test_extract_where_and_when_with_spajsy_city_succeeds():
 
 
 def test_extract_where_and_when_without_city_succeeds():
-
     info = "13 November 2017"
     date, city = parser.extract_where_and_when(info)
 
@@ -62,7 +59,6 @@ def test_extract_where_and_when_without_city_succeeds():
 
 
 def test_extract_text_when_valid_page_returns_text():
-
     # Arrange
     page = get_sample_convention_html()
 
@@ -76,7 +72,6 @@ def test_extract_text_when_valid_page_returns_text():
 
 
 def test_extract_links_when_valid_page_returns_links():
-
     # Arrange
     page = get_sample_convention_index_html()
 
@@ -89,7 +84,6 @@ def test_extract_links_when_valid_page_returns_links():
 
 
 def test_can_create_item():
-
     # Arrange
     item_type = "XYZ"
     href = 'http://portal.unesco.org/en/ev.php-URL_ID=12025&URL_DO=DO_TOPIC&URL_SECTION=-471.html'
@@ -109,7 +103,6 @@ def test_can_create_item():
 
 @httpretty.activate
 def test_can_mock_http_request():
-
     # Arrange
     url = "http://portal.unesco.org/en/ev.php-URL_ID=12025&URL_DO=DO_TOPIC&URL_SECTION=-471.html"
     body = get_sample_convention_index_html()
@@ -124,7 +117,6 @@ def test_can_mock_http_request():
 
 @httpretty.activate
 def test_pipeline():
-
     # Arrange
     url_index = "http://index.dumma.du"
     url_text = "http://text.dumma.du"

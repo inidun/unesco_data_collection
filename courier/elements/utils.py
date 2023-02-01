@@ -29,7 +29,6 @@ def read_xml(filename: Union[str, bytes, os.PathLike]) -> untangle.Element:
 
 # NOTE: Needed for test discovery (WIP). Remove later if deemed deprecated.
 def get_xml_issue_content(courier_id: str) -> ExtractedPages:
-
     if len(courier_id) != 6:
         raise ValueError(f'Not a valid courier id "{courier_id}')
     if courier_id not in CONFIG.article_index.courier_id.values:

@@ -16,7 +16,6 @@ CONFIG = get_config()
 
 @pytest.mark.java
 def test_python_pdfbox_extract_text_generates_correct_output():
-
     file = CONFIG.test_files_dir / 'test.pdf'
     expected_output = CONFIG.test_files_dir / 'test.txt'
     p = pdfbox.PDFBox()

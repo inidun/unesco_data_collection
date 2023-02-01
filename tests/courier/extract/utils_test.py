@@ -2,7 +2,6 @@ from courier.extract.utils import get_filenames
 
 
 def test_get_filenames_returns_only_files_with_expected_extension(tmp_path):
-
     pdf_file = tmp_path / 'test.pdf'
     pdf_file.touch()
     txt_file = tmp_path / 'test.txt'

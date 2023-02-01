@@ -12,7 +12,6 @@ from courier.extract.interface import ITextExtractor
 
 @dataclass
 class TesseractExtractor(ITextExtractor):
-
     dpi: int = 350
     fmt: str = 'tiff'
     grayscale: bool = True

@@ -36,7 +36,6 @@ def read_double_pages(
 
 @dataclass
 class CourierConfig:  # pylint: disable=too-many-instance-attributes
-
     # Base paths
     base_data_dir: Path = (Path.home() / 'data/courier').resolve()
     project_root: Path = get_project_root()

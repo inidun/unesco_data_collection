@@ -44,7 +44,6 @@ def export_articles(
 
 
 def save_overlap(statistics: pd.DataFrame, filename: Optional[Union[str, os.PathLike]] = None) -> pd.DataFrame:
-
     statistics['case'] = statistics.case.astype('str')
     overlap = (
         statistics.groupby(['courier_id', 'page'])['case']

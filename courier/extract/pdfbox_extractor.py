@@ -15,7 +15,6 @@ from courier.extract.interface import ITextExtractor
 
 @dataclass
 class PDFBoxExtractor(ITextExtractor):
-
     p: pdfbox.PDFBox = pdfbox.PDFBox()
     encoding: str = 'utf-8'
     html: bool = False
@@ -62,7 +61,6 @@ class PDFBoxExtractor(ITextExtractor):
         first_page: int = 1,
         last_page: Optional[int] = None,
     ) -> None:
-
         logfile = Path(output_folder) / 'extract.log'
         if logfile.exists():
             files = self._skip_completed(files, logfile)

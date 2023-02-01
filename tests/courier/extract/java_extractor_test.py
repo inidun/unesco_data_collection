@@ -76,7 +76,6 @@ def test_extract_issue_returns_expected_content():
     ],
 )
 def test_title_position(filename, title, page_number):
-
     extractor: JavaExtractor = JavaExtractor()
     issue: ExtractedPages = extractor.extract_pages(filename)
 

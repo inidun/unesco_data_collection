@@ -6,7 +6,6 @@ from courier.cli.tagged2article import main
 
 
 def test_CLI_option_help_returns_expected():
-
     runner = CliRunner()
 
     result = runner.invoke(main, ['--help'])
@@ -16,7 +15,6 @@ def test_CLI_option_help_returns_expected():
 
 
 def test_CLI_generates_expected_files(tmp_path):
-
     file: str = 'tagged_1234_123456.md'
     filepattern: str = f'tests/fixtures/courier/tagged_issue/{file}'
 
@@ -35,7 +33,6 @@ def test_CLI_generates_expected_files(tmp_path):
 
 
 def test_CLI_with_directory_as_input_generates_expected_files(tmp_path):
-
     expected = {
         '1234_123456_78910.txt',
         '1234_123456_a123456-1.txt',

@@ -16,7 +16,6 @@ class ConsolidateTextService:
                 self._assign_segment(article, page, min_second_article_position)
 
     def _assign_segment(self, article: Article, page: Page, min_second_article_position: int = 80) -> None:
-
         if page.number_of_articles == 1:
             article.texts.append((page.page_number, page.text))
 

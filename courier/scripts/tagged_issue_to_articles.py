@@ -35,7 +35,6 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
     article_bag.default_factory = list
 
     for segment in segments:
-
         page_match: re.Match[str] | None = re.match(r'^#\s*\[Page\s*(\d+)\]', segment)
         if page_match is not None:
             page_number = int(page_match.groups(0)[0])
@@ -90,7 +89,6 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
 
 
 def store_article_text(articles: dict, folder: str, year: str, courier_id: str) -> None:
-
     os.makedirs(folder, exist_ok=True)
 
     for article_id, (_, _, article_text) in articles.items():
@@ -103,7 +101,6 @@ def store_article_text(articles: dict, folder: str, year: str, courier_id: str) 
 @click.argument('filename')
 @click.argument('target_folder')
 def main(filename: str, target_folder: str) -> None:
-
     _, year, courier_id = splitext(basename(filename))[0].split('_')
     articles = get_issue_articles(filename)
     store_article_text(articles, target_folder, year, courier_id)

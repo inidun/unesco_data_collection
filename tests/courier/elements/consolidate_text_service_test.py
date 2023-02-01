@@ -47,7 +47,6 @@ def test_issue_has_no_consolidated_pages_as_default():
     # fmt: on
 )
 def test_ConsolidateArticleTexts(issue_number, page_number, record_number, article_title, expected, comment):
-
     issue = CourierIssue(issue_number)
     AssignPageService().assign(issue)
 

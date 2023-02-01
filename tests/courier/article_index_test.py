@@ -185,7 +185,6 @@ def test_expand_page_ref_returns_expected():
 
 # TODO: Replace index
 def test_new_article_index():
-
     columns = [
         'Record number',
         'Catalogue - Title',

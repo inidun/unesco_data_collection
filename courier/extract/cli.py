@@ -38,7 +38,6 @@ def extract(
     last_page: Optional[int] = None,
     extractor: str = 'PDFBox',
 ) -> None:
-
     Path(output_folder).mkdir(exist_ok=True, parents=True)
     files: List[Path] = get_filenames(input_path)
 

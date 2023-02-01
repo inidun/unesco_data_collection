@@ -43,7 +43,6 @@ def test_double_pages_returns_expected_values(courier_id, default_value, expecte
 
 
 def test_double_pages_returns_empty_list_for_excluded_issue():
-
     with open(CONFIG.exclusions_file, newline='', encoding='utf-8') as fp:
         reader = csv.reader(fp, delimiter=';')
         exclusions = [line[0] for line in reader]
@@ -53,7 +52,6 @@ def test_double_pages_returns_empty_list_for_excluded_issue():
 
 
 def test_get_issue_article_index():
-
     courier_id: str = '069916'
     index: List[Dict] = CONFIG.get_issue_article_index(courier_id)
 

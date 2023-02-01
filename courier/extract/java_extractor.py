@@ -71,7 +71,6 @@ class JavaExtractor(ITextExtractor):
         title_font_size: float = 5.5,
         min_title_length: int = 8,
     ):
-
         self.title_font_size = title_font_size
         self.min_title_length = min_title_length
 

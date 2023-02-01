@@ -18,7 +18,6 @@ def test_file_logger():
 
 def test_file_logger_wrapping():
     with TemporaryDirectory() as output_dir:
-
         logfile1 = Path(output_dir) / 'test1.log'
         logfile2 = Path(output_dir) / 'test2.log'
         logfile3 = Path(output_dir) / 'test3.log'

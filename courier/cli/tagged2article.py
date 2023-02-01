@@ -11,7 +11,6 @@ from courier.scripts.tagged_issue_to_articles import get_issue_articles, store_a
 @click.argument('source', nargs=1)
 @click.argument('target_folder', nargs=1)
 def main(source: str, target_folder: str) -> None:
-
     for filename in get_filenames(source, 'md'):
         _, year, courier_id = splitext(basename(filename))[0].split('_')
         articles = get_issue_articles(filename)

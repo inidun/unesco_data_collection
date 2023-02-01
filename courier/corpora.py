@@ -24,7 +24,6 @@ class PDFCorporaExtractor:
         filename: Union[str, os.PathLike],
         level: Literal['page', 'issue'],
     ) -> Iterable[Tuple[str, str]]:
-
         basename = Path(filename).stem
         courier_id = basename[:6]
         issue_article_index = CONFIG.get_issue_article_index(courier_id)
@@ -52,7 +51,6 @@ class PDFCorporaExtractor:
         filenames: List[Path],
         level: Literal['page', 'issue'],
     ) -> Iterable[Tuple[str, str]]:
-
         pbar = tqdm(filenames)
         for filename in pbar:
             pbar.set_description(f'{filename.stem:<10}')
@@ -75,7 +73,6 @@ def extraxt_raw_corpora(
 
 
 if __name__ == '__main__':
-
     date = datetime.now().strftime('%Y%m%d')
 
     extraxt_raw_corpora(

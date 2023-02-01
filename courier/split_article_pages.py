@@ -57,13 +57,11 @@ def corrected_page_number(courier_id: str, page_number: int) -> int:
 def get_stats(
     article_index: pd.DataFrame, overlap: pd.DataFrame, match_function: Callable[[str, str], bool] = match_regex
 ) -> pd.DataFrame:
-
     index = article_index[['courier_id', 'catalogue_title', 'pages']]
     overlap['courier_id'] = overlap.courier_id.apply(lambda x: str(x).zfill(6))
     found = []
 
     for row in overlap.to_dict('records'):
-
         articles_on_page = index[
             (index.courier_id == row['courier_id']) & index.pages.apply(lambda x, r=row: r['page'] in x)
         ]
@@ -115,7 +113,6 @@ def save_stats(
     sep: str = '\t',
     save_index: bool = False,
 ) -> None:
-
     if isinstance(match_function, str):
         match_function = get_match_function(match_function)
 

@@ -36,7 +36,6 @@ def export_tagged_issue(
     num_issue_errors = 0
 
     for page in issue.pages:
-
         num_issue_errors += len(page.errors)
         texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number}) {str(len(page.errors))}')
 
@@ -44,7 +43,6 @@ def export_tagged_issue(
             texts.append(non_article_heading)
             texts.append(page.text)
         else:
-
             sorted_positioned_articles: list[tuple[int, Article]] = sorted(
                 [(get_best_candidate(a.catalogue_title, page.titles)[0] or 0, a) for a in page.articles],
                 key=lambda x: x[0],
@@ -82,5 +80,4 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-
     main()

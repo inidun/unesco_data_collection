@@ -11,7 +11,6 @@ CONFIG = get_config()
 
 @dataclass
 class IssueStatistics:
-
     issue: CourierIssue
 
     total_pages: int = field(init=False)
@@ -26,7 +25,6 @@ class IssueStatistics:
     num_errors: int = field(init=False)
 
     def __post_init__(self) -> None:
-
         self.total_pages: int = len(self.issue)
         self.assigned_pages: int = len(self.issue.get_assigned_pages())
         self.consolidated_pages: int = len(self.issue.get_consolidated_pages())
