@@ -49,7 +49,6 @@ types-toml = "^0.10.8"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-
 [tool.black]
 line-length = 120
 skip-string-normalization = true
@@ -98,3 +97,55 @@ exclude_lines = [
 ]
 show_missing = true
 sort = "Name"
+
+[tool.pylint.main]
+exit-zero = true
+ignore-paths = "deprecated"
+# ignore-patterns = ["^\\.#"]
+jobs = 0
+py-version = "3.10"
+
+[tool.pylint.design]
+max-args = 8
+max-attributes = 14
+
+[tool.pylint.exceptions]
+overgeneral-exceptions = ["builtins.BaseException", "builtins.Exception"]
+
+[tool.pylint.format]
+expected-line-ending-format = "LF"
+max-line-length = 120
+
+[tool.pylint."messages control"]
+disable = [
+    "duplicate-code",  # FIXME: temporary,
+    "consider-using-generator",  # FIXME: temporary
+    "invalid-name",
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "line-too-long",
+    "pointless-string-statement",
+    "global-statement",
+    "c-extension-no-member",
+    "too-few-public-methods",
+    "logging-format-interpolation",
+    "logging-fstring-interpolation",
+    "consider-using-enumerate",
+    "unnecessary-comprehension",
+    "too-many-branches",
+    "too-many-locals",
+    "wrong-import-order",
+    "wrong-spelling-in-comment",
+    "wrong-spelling-in-docstring"
+]
+
+[tool.pylint.miscellaneous]
+notes = ""
+
+[tool.pylint.refactoring]
+never-returning-functions = ["sys.exit", "argparse.parse_error"]
+
+[tool.pylint.reports]
+output-format = "colorized"
+score = false
