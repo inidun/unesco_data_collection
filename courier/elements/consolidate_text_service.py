@@ -197,10 +197,10 @@ def get_best_candidate(
     )
 
     best_match, score = max(
-        [
+        (
             ((position, candidate), evaluate_functions(functions, (title, candidate)))
             for position, candidate in title_candidates
-        ],
+        ),
         key=itemgetter(1),
         default=((None, None), [0]),
     )
