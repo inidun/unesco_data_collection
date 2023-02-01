@@ -35,7 +35,7 @@ class IssueStatistics:
             (x.courier_id or '', x.record_number or 0, len(x.pages) - len(x.texts)) for x in self.issue.articles
         ]
         self.num_missing_pages: int = sum(
-            [len(x.pages) - len(x.texts) for x in self.issue.articles]
+            len(x.pages) - len(x.texts) for x in self.issue.articles
         )  # FIXME: Should return (expected - consolidated) instead? Rename?
         self.errors: List[Dict[str, Any]] = flatten(
             [[error.asdict for error in page.errors] for page in self.issue.pages if len(page.errors) != 0]

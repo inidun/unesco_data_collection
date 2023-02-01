@@ -81,7 +81,7 @@ def test_all_articles_extracted(method, path, extension):
 
 @pytest.mark.slow
 def test_all_articles_exported():
-    path = max([x for x in CONFIG.articles_dir.iterdir() if x.is_dir() and x.stem.startswith('exported')])
+    path = max(x for x in CONFIG.articles_dir.iterdir() if x.is_dir() and x.stem.startswith('exported'))
     expected = len(CONFIG.article_index)
     extracted = len(get_filenames(path, 'txt'))
     assert 7612 == extracted == expected
