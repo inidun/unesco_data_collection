@@ -23,7 +23,7 @@ test: output-dir
 	@poetry run pytest -m "not slow" --durations=0 tests/
 	@rm -rf ./tests/output/*
 
-test-coverage: output-dir
+coverage: output-dir
 	@poetry run pytest -m "not slow" --durations=0 --cov=legal_instruments --cov=courier --cov-report=xml --cov-report=html --cov-branch tests/
 	@rm -rf ./tests/output/*
 
@@ -58,7 +58,7 @@ retest: output-dir
 output-dir:
 	@mkdir -p ./tests/output
 
-.PHONY: retest test-coverage test-courier test-legal-instruments test-no-java test-java test-slow test-all typing
+.PHONY: retest coverage test-courier test-legal-instruments test-no-java test-java test-slow test-all typing
 
 pylint:
 	@poetry run pylint --version | grep pylint
@@ -156,7 +156,8 @@ help:
 	@echo " make clean            Removes temporary files, caches, and build files"
 	@echo " make lint             Runs tidy, pylint, flake8 and mypy"
 	@echo " make typing           Runs lint and mypy"
-	@echo " make test             Runs tests with code coverage"
+	@echo " make test             Runs tests"
+	@echo " make coverage         Runs tests with code coverage"
 	@echo " make tidy             Runs black and isort"
 	@echo "  "
 	@echo "Lower level recepies: "
