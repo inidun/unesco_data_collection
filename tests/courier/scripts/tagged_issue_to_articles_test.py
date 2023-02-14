@@ -194,3 +194,20 @@ def test_get_issue_articles_returns_editorials_with_expected_content(file, artic
     articles = get_issue_articles(filename, extract_editorials=True)
 
     assert articles[article_id][2].startswith(expected)
+
+
+@pytest.mark.parametrize(
+    'issue_file, article_id, article_file',
+    [
+        ('tagged_1972_052257.md', '52256', '52256.txt'),
+    ],
+)
+def test_extracted_article_text_is_as_expected(issue_file, article_id, article_file):
+    tagged_issue = f'tests/fixtures/courier/tagged_issue/{issue_file}'
+    articles = get_issue_articles(tagged_issue)
+    article_text = articles[article_id][2]
+
+    with open(f'tests/fixtures/courier/articles_from_tagged/{article_file}', encoding='utf-8', mode='r') as fp:
+        expected = fp.read()
+
+    assert article_text == expected
