@@ -12,7 +12,9 @@ CONFIG = get_config()
 def test_get_issue_articles_returns_expected():
     filename = 'tests/fixtures/courier/tagged_issue/tagged_1234_123456.md'
 
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(
+        filename, extract_editorials=True, extract_supplements=True, extract_unindexed_articles=True
+    )
 
     assert len(articles) == 4
 
@@ -58,7 +60,7 @@ def test_get_issue_articles_returns_values_agreeing_with_index(file):
 )
 def test_issues_have_expected_number_of_unindexed_articles(file, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_unindexed_articles=True)
 
     assert len([x for x in articles.keys() if x.startswith('a')]) == expected, 'Incorrect number of unindexed articles'
 
@@ -72,7 +74,7 @@ def test_issues_have_expected_number_of_unindexed_articles(file, expected):
 )
 def test_get_issue_articles_returns_unindexed_articles_with_expected_ids(file, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_unindexed_articles=True)
 
     assert expected.issubset(articles.keys())
 
@@ -88,7 +90,7 @@ def test_get_issue_articles_returns_unindexed_articles_with_expected_ids(file, e
 )
 def test_get_issue_articles_returns_unindexed_articles_with_expected_content(file, article_id, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_unindexed_articles=True)
 
     assert articles[article_id][2].startswith(expected)
 
@@ -104,7 +106,7 @@ def test_get_issue_articles_returns_unindexed_articles_with_expected_content(fil
 )
 def test_issues_have_expected_number_of_unindexed_supplements(file, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_supplements=True)
 
     assert len([x for x in articles.keys() if x.startswith('s')]) == expected, 'Incorrect number of unindexed articles'
 
@@ -127,7 +129,7 @@ def test_issues_have_expected_number_of_unindexed_supplements(file, expected):
 )
 def test_get_issue_articles_returns_unindexed_supplements_with_expected_ids(file, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_supplements=True)
 
     assert expected.issubset(articles.keys())
 
@@ -144,7 +146,7 @@ def test_get_issue_articles_returns_unindexed_supplements_with_expected_ids(file
 )
 def test_get_issue_articles_returns_unindexed_supplements_with_expected_content(file, article_id, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_supplements=True)
 
     assert articles[article_id][2].startswith(expected)
 
@@ -160,7 +162,7 @@ def test_get_issue_articles_returns_unindexed_supplements_with_expected_content(
 )
 def test_issues_have_expected_number_of_editorials(file, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_editorials=True)
 
     assert len([x for x in articles.keys() if x.startswith('e')]) == expected, 'Incorrect number of unindexed articles'
 
@@ -175,7 +177,7 @@ def test_issues_have_expected_number_of_editorials(file, expected):
 )
 def test_get_issue_articles_returns_editorials_with_expected_ids(file, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_editorials=True)
 
     assert expected.issubset(articles.keys())
 
@@ -189,6 +191,6 @@ def test_get_issue_articles_returns_editorials_with_expected_ids(file, expected)
 )
 def test_get_issue_articles_returns_editorials_with_expected_content(file, article_id, expected):
     filename = f'tests/fixtures/courier/tagged_issue/{file}'
-    articles = get_issue_articles(filename)
+    articles = get_issue_articles(filename, extract_editorials=True)
 
     assert articles[article_id][2].startswith(expected)
