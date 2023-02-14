@@ -11,16 +11,24 @@ import click
 from loguru import logger
 
 
-def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
+def get_issue_articles(  # pylint: disable=too-many-statements
+    filename: str | os.PathLike,
+    extract_editorials: bool = False,
+    extract_supplements: bool = False,
+    extract_unindexed_articles: bool = False,
+) -> dict[str, tuple]:
     """Extracts articles from a markdown encoded Courier issue file.
 
     Returns a dictionary where the key is the `article_id`. If the article is indexed, i.e. it has a `record_number`, the `article_id` is the same as the article's `record_number`, otherwise a new `article_id` is generated. The dictionary's value is a tuple containing the `article_id`, a list of pages where the article is found, and the complete text of the article.
 
-        Args:
-            filename (str | os.PathLike): Path to tagged Courier issue
+    Args:
+        filename (str | os.PathLike): Path to tagged Courier issue
+        extract_editorials (bool, optional): Extract unindexed editorials. Defaults to False.
+        extract_supplements (bool, optional): Extract unindexed supplements. Defaults to False.
+        extract_unindexed_articles (bool, optional): Extract unindexed articles. Defaults to False.
 
-        Returns:
-            dict[str, tuple]: A dict with `article_id` as key and (`article_id`, list of pages, article text) as value
+    Returns:
+        dict[str, tuple]: A dict with `article_id` as key and (`article_id`, list of pages, article text) as value
     """
 
     with open(filename, 'r', encoding='utf-8') as fp:
@@ -46,30 +54,42 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
 
         unknown_supplement_match: re.Match[str] | None = re.match(r'^#{1,3}\s+UNINDEXED_SUPPLEMENT', segment)
         if unknown_supplement_match is not None:
+            if not extract_supplements:
+                logger.info(f'Skipped supplement {basename(filename)}:{page_number}')
+                continue
+
             supplement_id: str = f's{courier_id}-{str(page_number)}'
             supplement_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
             article_bag[supplement_id] = [
                 (supplement_id, page_number, supplement_text, f'Unindexed supplement {supplement_id}')
             ]
-            logger.info(f'Extracted unindexed supplement - {supplement_id}')
+            logger.debug(f'Extracted supplement - {supplement_id}')
             continue
 
         editorial_match: re.Match[str] | None = re.match(r'^#{1,3}\s+EDITORIAL', segment)
         if editorial_match is not None:
+            if not extract_editorials:
+                logger.info(f'Skipped editorial {basename(filename)}:{page_number}')
+                continue
+
             editorial_id: str = f'e{courier_id}-{str(page_number)}'
             editorial_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
             article_bag[editorial_id] = [(editorial_id, page_number, editorial_text, f'Editorial {editorial_id}')]
-            logger.info(f'Extracted editorial - {editorial_id}')
+            logger.debug(f'Extracted editorial - {editorial_id}')
             continue
 
         unindexed_article_match: re.Match[str] | None = re.match(r'^#{1,3}\s+UNINDEXED_ARTICLE', segment)
         if unindexed_article_match is not None:
+            logger.warning(f'Unindexed article {basename(filename)}:{page_number}')
+            if not extract_unindexed_articles:
+                continue
+
             unindexed_id = f'a{courier_id}-{str(page_number)}'
             unindexed_text: str = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
             article_bag[unindexed_id] = [
                 (unindexed_id, page_number, unindexed_text, f'Unindexed article {unindexed_id}')
             ]
-            logger.info(f'Extracted unindexed article - {unindexed_id}')
+            logger.debug(f'Extracted unindexed article - {unindexed_id}')
             continue
 
         article_match: re.Match[str] | None = re.match(r'^#{1,3}\s*(\d+):\s*(.*)\n', segment)
@@ -78,7 +98,7 @@ def get_issue_articles(filename: str | os.PathLike) -> dict[str, tuple]:
             article_title: str = str(article_match.groups()[1])
             article_text = ''.join(segment.split(sep='\n', maxsplit=2)[1:])
             article_bag[article_id].append((article_id, page_number, article_text, article_title))
-            logger.info(f'Extracted article segment {article_id}:{page_number} - {article_title}')
+            logger.debug(f'Extracted article segment {article_id}:{page_number} - {article_title}')
             continue
 
     articles: dict = {
