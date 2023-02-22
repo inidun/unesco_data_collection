@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import ast
 import os
 import re
 from collections import defaultdict
+from io import StringIO
 from os.path import basename
 from os.path import join as jj
 from os.path import splitext
 
 import click
+import pandas as pd
 from loguru import logger
 
 
@@ -108,7 +111,36 @@ def get_issue_articles(  # pylint: disable=too-many-statements
     return articles
 
 
+def verify_articles(articles: dict, index: pd.DataFrame) -> None:
+    """Verifies articles using article index
+
+    Args:
+        articles (dict): Dict with article data
+        index (pd.DataFrame): Article index
+
+    Raises:
+        ValueError: Raises ValueError if article record number is not in article index
+        ValueError: Raises ValueError if pages in article data are different from pages in article index
+    """
+    for record_number, data in articles.items():
+        record_number = int(record_number)
+        if record_number not in index.index:
+            raise ValueError(f'Record number not in article index: {record_number}')
+        index_pages = ast.literal_eval(index.loc[record_number]['pages'])
+        article_pages = list(dict.fromkeys(data[1]))
+        if not all(page in index_pages for page in article_pages):
+            raise ValueError(f'Page mismatch: {record_number}. Expected {index_pages} got {article_pages}')
+
+
 def store_article_text(articles: dict, folder: str, year: str, courier_id: str) -> None:
+    """Saves articles to folder. One file per article.
+
+    Args:
+        articles (dict): Dict containing article data
+        folder (str): Output folder
+        year (str): Puplication year
+        courier_id (str): Courier ID
+    """
     os.makedirs(folder, exist_ok=True)
 
     for article_id, (_, _, article_text) in articles.items():
@@ -117,12 +149,31 @@ def store_article_text(articles: dict, folder: str, year: str, courier_id: str) 
             fp.write(article_text)
 
 
+def load_article_index(filename: str | os.PathLike | StringIO) -> pd.DataFrame:
+    """Loads article index from disk and returns it as a DataFrame
+
+    Args:
+        filename (str | os.PathLike | StringIO): Path to article index
+
+    Returns:
+        pd.DataFrame: Article index
+    """
+    if str(filename).endswith('.xlsx'):
+        article_index = pd.read_excel(filename, sheet_name='article_index').set_index('record_number')
+    if str(filename).endswith('.csv') or isinstance(filename, StringIO):
+        article_index = pd.read_csv(filename, sep=';').set_index('record_number')
+    return article_index
+
+
 @click.command()
 @click.argument('filename')
 @click.argument('target_folder')
-def main(filename: str, target_folder: str) -> None:
+@click.argument('article_index')
+def main(filename: str, target_folder: str, article_index: str) -> None:
     _, year, courier_id = splitext(basename(filename))[0].split('_')
     articles = get_issue_articles(filename)
+    article_index: pd.DataFrame = load_article_index(article_index)
+    verify_articles(articles, article_index)
     store_article_text(articles, target_folder, year, courier_id)
 
 
