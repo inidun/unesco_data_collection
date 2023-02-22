@@ -1,10 +1,11 @@
+from io import StringIO
 from os.path import basename, splitext
 
 import pandas as pd
 import pytest
 
 from courier.config import get_config
-from courier.scripts.tagged_issue_to_articles import get_issue_articles
+from courier.scripts.tagged_issue_to_articles import get_issue_articles, load_article_index, verify_articles
 
 CONFIG = get_config()
 
@@ -211,3 +212,32 @@ def test_extracted_article_text_is_as_expected(issue_file, article_id, article_f
         expected = fp.read()
 
     assert article_text == expected
+
+
+@pytest.fixture(name='minimal_article_index')
+def fixture_article_index() -> pd.DataFrame:
+    csv = StringIO(
+        """courier_id;year;record_number;pages;catalogue_title;authors
+10000;1999;10000;[1,2];Title;Author"""
+    )
+    return load_article_index(csv)
+
+
+def test_verify_articles_with_incorrect_record_number_raises_value_error(minimal_article_index):
+    articles = {'20000': ('20000', [1, 2], 'text')}
+    with pytest.raises(ValueError, match=r'Record number not in article index: \d+'):
+        verify_articles(articles, minimal_article_index)
+
+
+def test_verify_articles_with_incorrect_page_numbers_raises_value_error(minimal_article_index):
+    articles = {'10000': ('10000', [1, 2, 3], 'text')}
+    with pytest.raises(ValueError, match=r'Page mismatch: \d+. Expected \[.*\] got \[.*\]'):
+        verify_articles(articles, minimal_article_index)
+
+
+def test_verify_articles_with_matching_record_number_and_page_numbers_data_raises_no_exceptions(minimal_article_index):
+    articles = {'10000': ('10000', [1, 2], 'text')}
+    try:
+        verify_articles(articles, minimal_article_index)
+    except Exception as e:  # pylint: disable=broad-except
+        raise AssertionError(f"'verify_articles' raised an exception: {e}") from e
