@@ -17,8 +17,9 @@ from courier.scripts.tagged_issue_to_articles import get_issue_articles, store_a
 def main(source: str, target_folder: str, editorials: bool, supplements: bool, unindexed: bool) -> None:
     os.makedirs(target_folder, exist_ok=True)
 
-    logger.add(f'{target_folder}/info.log', format='{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | {message}', level='INFO')
-    logger.add(f'{target_folder}/warnings.log', level='WARNING')
+    logging_format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | {message}'
+    logger.add(f'{target_folder}/info.log', format=logging_format, level='INFO')
+    logger.add(f'{target_folder}/warnings.log', format=logging_format, level='WARNING')
 
     for filename in get_filenames(source, 'md'):
         _, year, courier_id = splitext(basename(filename))[0].split('_')
