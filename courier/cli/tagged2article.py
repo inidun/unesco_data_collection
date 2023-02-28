@@ -13,6 +13,7 @@ from courier.scripts.tagged_issue_to_articles import (
     verify_articles,
 )
 
+
 @click.command()
 @click.option('--editorials/--no-editorials', default=False)
 @click.option('--supplements/--no-supplements', default=False)

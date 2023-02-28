@@ -154,7 +154,6 @@ def store_article_text(articles: dict, folder: str, year: str, courier_id: str) 
             fp.write(article_text)
 
 
-
 def load_article_index(filename: str | os.PathLike | StringIO) -> pd.DataFrame:
     """Loads article index from disk and returns it as a DataFrame
 
