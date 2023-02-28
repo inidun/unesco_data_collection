@@ -214,11 +214,39 @@ def test_extracted_article_text_is_as_expected(issue_file, article_id, article_f
     assert article_text == expected
 
 
+def test_load_article_index():
+    csv_index = StringIO(
+        """courier_id;year;record_number;pages;catalogue_title;authors
+90000;1999;10000;[1,2];Some Title; Some Author
+90001;2000;10001;[1,3];Other Title; Other Author"""
+    )
+    article_index = load_article_index(csv_index)
+
+    assert all(
+        article_index.columns
+        == ['courier_id', 'year', 'record_number', 'pages', 'catalogue_title', 'authors', 'filename']
+    )
+    assert article_index.dtypes.to_list() == ['int64', 'int64', 'int64', 'O', 'O', 'O', 'O']
+    assert article_index.index.name == 'document_id'
+
+
+def test_load_article_index_from_xlsx():
+    xlsx_index = 'tests/fixtures/courier/tagged_issue/minimal_excel_article_index.xlsx'
+    article_index = load_article_index(xlsx_index)
+
+    assert all(
+        article_index.columns
+        == ['courier_id', 'year', 'record_number', 'pages', 'catalogue_title', 'authors', 'filename']
+    )
+    assert article_index.dtypes.to_list() == ['int64', 'int64', 'int64', 'O', 'O', 'O', 'O']
+    assert article_index.index.name == 'document_id'
+
+
 @pytest.fixture(name='minimal_article_index')
 def fixture_article_index() -> pd.DataFrame:
     csv = StringIO(
         """courier_id;year;record_number;pages;catalogue_title;authors
-10000;1999;10000;[1,2];Title;Author"""
+90000;1999;10000;[1,2];Some Title; Some Author"""
     )
     return load_article_index(csv)
 
@@ -247,7 +275,7 @@ def test_verify_articles_logs_incorrect_page_numbers(minimal_article_index, capl
 def fixture_corrupt_article_index() -> pd.DataFrame:
     csv = StringIO(
         """courier_id;year;record_number;pages;catalogue_title;authors
-10000;1999;10000;[1,2, ,3];Title;Author"""
+90000;1999;10000;[1,2, ,3];Some Title;Some Author"""
     )
     return load_article_index(csv)
 
