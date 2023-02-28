@@ -223,21 +223,40 @@ def fixture_article_index() -> pd.DataFrame:
     return load_article_index(csv)
 
 
-def test_verify_articles_with_incorrect_record_number_raises_value_error(minimal_article_index):
+def test_verify_articles_logs_incorrect_record_numbers(minimal_article_index, caplog):
     articles = {'20000': ('20000', [1, 2], 'text')}
-    with pytest.raises(ValueError, match=r'Record number not in article index: \d+'):
-        verify_articles(articles, minimal_article_index)
+
+    verify_articles(articles, minimal_article_index)
+
+    assert len(caplog.messages)
+    assert 'ERROR' in caplog.text
+    assert 'Record number not in article index' in caplog.text
 
 
-def test_verify_articles_with_incorrect_page_numbers_raises_value_error(minimal_article_index):
+def test_verify_articles_logs_incorrect_page_numbers(minimal_article_index, caplog):
     articles = {'10000': ('10000', [1, 2, 3], 'text')}
-    with pytest.raises(ValueError, match=r'Page mismatch: \d+. Expected \[.*\] got \[.*\]'):
-        verify_articles(articles, minimal_article_index)
+
+    verify_articles(articles, minimal_article_index)
+
+    assert len(caplog.messages)
+    assert 'ERROR' in caplog.text
+    assert 'Page mismatch' in caplog.text
 
 
-def test_verify_articles_with_matching_record_number_and_page_numbers_data_raises_no_exceptions(minimal_article_index):
+@pytest.fixture(name='corrupt_article_index')
+def fixture_corrupt_article_index() -> pd.DataFrame:
+    csv = StringIO(
+        """courier_id;year;record_number;pages;catalogue_title;authors
+10000;1999;10000;[1,2, ,3];Title;Author"""
+    )
+    return load_article_index(csv)
+
+
+def test_verify_articles_logs_articles_with_invalid_page_numbers(corrupt_article_index, caplog):
     articles = {'10000': ('10000', [1, 2], 'text')}
-    try:
-        verify_articles(articles, minimal_article_index)
-    except Exception as e:  # pylint: disable=broad-except
-        raise AssertionError(f"'verify_articles' raised an exception: {e}") from e
+
+    verify_articles(articles, corrupt_article_index)
+
+    assert len(caplog.messages)
+    assert 'ERROR' in caplog.text
+    assert 'Invalid page numbers' in caplog.text
