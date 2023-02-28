@@ -118,18 +118,23 @@ def verify_articles(articles: dict, index: pd.DataFrame) -> None:
         articles (dict): Dict with article data
         index (pd.DataFrame): Article index
 
-    Raises:
-        ValueError: Raises ValueError if article record number is not in article index
-        ValueError: Raises ValueError if pages in article data are different from pages in article index
     """
     for record_number, data in articles.items():
         record_number = int(record_number)
         if record_number not in index.index:
-            raise ValueError(f'Record number not in article index: {record_number}')
-        index_pages = ast.literal_eval(index.loc[record_number]['pages'])
+            logger.error(f'Record number not in article index: {record_number}')
+            continue
+        try:
+            index_pages = ast.literal_eval(index.loc[record_number]['pages'])
+        except SyntaxError as e:
+            logger.error(f'Invalid page numbers in index. Record number: {record_number}. {e.msg}: {e.text}')
+            continue
         article_pages = list(dict.fromkeys(data[1]))
         if not all(page in index_pages for page in article_pages):
-            raise ValueError(f'Page mismatch: {record_number}. Expected {index_pages} got {article_pages}')
+            logger.error(
+                f'Page mismatch. Record number: {record_number}. Pages according to index: {index_pages}. Pages found in tagged file: {article_pages}.'
+            )
+            continue
 
 
 def store_article_text(articles: dict, folder: str, year: str, courier_id: str) -> None:
@@ -159,7 +164,7 @@ def load_article_index(filename: str | os.PathLike | StringIO) -> pd.DataFrame:
         pd.DataFrame: Article index
     """
     if str(filename).endswith('.xlsx'):
-        article_index = pd.read_excel(filename, sheet_name='article_index').set_index('record_number')
+        article_index = pd.read_excel(filename).set_index('record_number')
     if str(filename).endswith('.csv') or isinstance(filename, StringIO):
         article_index = pd.read_csv(filename, sep=';').set_index('record_number')
     return article_index
