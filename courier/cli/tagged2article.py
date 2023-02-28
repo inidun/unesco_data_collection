@@ -13,7 +13,6 @@ from courier.scripts.tagged_issue_to_articles import (
     verify_articles,
 )
 
-
 @click.command()
 @click.option('--editorials/--no-editorials', default=False)
 @click.option('--supplements/--no-supplements', default=False)
@@ -37,6 +36,7 @@ def main(
 
     if article_index:
         index: pd.DataFrame = load_article_index(article_index)
+        index.to_csv(os.path.join(target_folder, 'document_index.csv'), sep='\t', encoding='utf-8')
 
     for filename in get_filenames(source, 'md'):
         _, year, courier_id = splitext(basename(filename))[0].split('_')
