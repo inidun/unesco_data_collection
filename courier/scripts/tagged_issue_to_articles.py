@@ -121,11 +121,11 @@ def verify_articles(articles: dict, index: pd.DataFrame) -> None:
     """
     for record_number, data in articles.items():
         record_number = int(record_number)
-        if record_number not in index.index:
+        if record_number not in index.record_number.values:
             logger.error(f'Record number not in article index: {record_number}')
             continue
         try:
-            index_pages = ast.literal_eval(index.loc[record_number]['pages'])
+            index_pages = ast.literal_eval(index[index.record_number == record_number]['pages'].values[0])
         except SyntaxError as e:
             logger.error(f'Invalid page numbers in index. Record number: {record_number}. {e.msg}: {e.text}')
             continue
@@ -154,6 +154,7 @@ def store_article_text(articles: dict, folder: str, year: str, courier_id: str) 
             fp.write(article_text)
 
 
+
 def load_article_index(filename: str | os.PathLike | StringIO) -> pd.DataFrame:
     """Loads article index from disk and returns it as a DataFrame
 
@@ -164,9 +165,23 @@ def load_article_index(filename: str | os.PathLike | StringIO) -> pd.DataFrame:
         pd.DataFrame: Article index
     """
     if str(filename).endswith('.xlsx'):
-        article_index = pd.read_excel(filename).set_index('record_number')
+        article_index = pd.read_excel(filename)
     if str(filename).endswith('.csv') or isinstance(filename, StringIO):
-        article_index = pd.read_csv(filename, sep=';').set_index('record_number')
+        article_index = pd.read_csv(filename, sep=';', encoding='utf-8')
+
+    article_index.columns = ['courier_id', 'year', 'record_number', 'pages', 'catalogue_title', 'authors']
+    article_index.sort_values(by=['year', 'courier_id', 'record_number'], inplace=True)
+    article_index['filename'] = (
+        article_index.year.astype(str)
+        + '_'
+        + article_index.courier_id.astype(str).str.zfill(6)
+        + '_'
+        + article_index.record_number.astype(str)
+        + '.txt'
+    )
+    article_index.reset_index(drop=True, inplace=True)
+    article_index['document_id'] = article_index.index
+    article_index.set_index('document_id', drop=True, inplace=True)
     return article_index
 
 
