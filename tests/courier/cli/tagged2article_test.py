@@ -86,3 +86,26 @@ def test_CLI_with_directory_as_input_generates_expected_files(tmp_path):
     assert result.exit_code == 0
     assert len(list(tmp_path.iterdir())) == 39
     assert expected == {basename(x) for x in tmp_path.iterdir()}
+
+
+def test_CLI_using_article_index(tmp_path):
+    file: str = 'tagged_1972_052257.md'
+    filepattern: str = f'tests/fixtures/courier/tagged_issue/{file}'
+
+    article_index = 'tests/fixtures/courier/tagged_issue/article_index_052257.csv'
+
+    runner = CliRunner()
+
+    result = runner.invoke(
+        main, [filepattern, str(tmp_path), article_index, '--no-supplements', '--no-editorials', '--no-unindexed']
+    )
+
+    assert result.exit_code == 0
+
+    output_filenames = [basename(x) for x in tmp_path.iterdir()]
+    assert len(output_filenames) == 11
+    assert len([file for file in output_filenames if file.endswith('.txt')]) == 8
+    assert 'info.log' in output_filenames
+    assert 'warnings.log' in output_filenames
+    # TODO: Add more extensive tests. Check content in generated index
+    assert 'document_index.csv' in output_filenames
