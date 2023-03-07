@@ -1,5 +1,7 @@
+import ast
 import os
 from os.path import basename, splitext
+from pathlib import Path
 
 import click
 import pandas as pd
@@ -54,6 +56,34 @@ def main(
 
         store_article_text(articles, target_folder, year, courier_id)
         logger.info(f'Extracted {basename(filename)}')
+
+    if article_index:
+        verify_extracted(target_folder, index)
+
+
+def verify_extracted(target_folder: str | os.PathLike, index: pd.DataFrame) -> None:
+    year_mismatch = index[~index.duplicated(subset=['courier_id', 'year'], keep=False)]['record_number'].to_list()
+    if year_mismatch:
+        logger.error(f'Articles with mismatching years: {", ".join(map(str, year_mismatch))}')
+
+    n_extracted = len([x for x in Path(target_folder).iterdir() if x.suffix == '.txt'])
+    n_expected = index.shape[0]
+    missing = n_expected - n_extracted
+    if missing:
+        logger.error(f'Missing {missing} articles. Extracted {n_extracted}. Expected {index.shape[0]}')
+
+    articles_with_no_pages = index[index.pages.apply(lambda x: len(ast.literal_eval(x))) == 0].record_number.to_list()
+    if articles_with_no_pages:
+        logger.error(f'Missing (no pages in index): {", ".join(str(x) for x in articles_with_no_pages)}')
+
+    missing_articles = []
+    for _, row in index.iterrows():
+        if not os.path.isfile(os.path.join(target_folder, row['filename'])):
+            missing_articles.append(row['record_number'])
+
+    not_extracted = [x for x in missing_articles if x not in year_mismatch and x not in articles_with_no_pages]
+
+    logger.error(f'Missing (unknown reason): {", ".join(map(str, not_extracted))}')
 
 
 if __name__ == '__main__':
