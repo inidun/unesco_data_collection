@@ -1537,14 +1537,13 @@ files = [
 
 [[package]]
 name = "pdf2image"
-version = "1.16.2"
+version = "1.16.3"
 description = "A wrapper around the pdftoppm and pdftocairo command line tools to convert PDF to a PIL Image list."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "pdf2image-1.16.2-py3-none-any.whl", hash = "sha256:1469335050a17657f94c2f1ef3a23e57807d631ad5bcbaec997c2c42a8186f4a"},
-    {file = "pdf2image-1.16.2.tar.gz", hash = "sha256:86761091eee35f4641ea98dfddb254254361d018be698a199aff7c1d37331803"},
+    {file = "pdf2image-1.16.3-py3-none-any.whl", hash = "sha256:b6154164af3677211c22cbb38b2bd778b43aca02758e962fe1e231f6d3b0e380"},
 ]
 
 [package.dependencies]
@@ -2791,4 +2790,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ca89ea166b9e26c5115daf438eef0808a6aa4cb6366fc756ef26e38a83c04b1a"
+content-hash = "5e63b469689c923d34bbabd71e5258ca87f1b288a2bba0c71c027956e648c316"
