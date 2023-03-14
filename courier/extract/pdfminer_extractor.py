@@ -24,7 +24,7 @@ class PDFMinerExtractor(ITextExtractor):
         last_page: Optional[int] = None,
     ) -> None:
         basename = Path(filename).stem
-        num_pages = pdf2image.pdfinfo_from_path(filename)['Pages']
+        num_pages = pdf2image.pdfinfo_from_path(str(filename))['Pages']
         if last_page is None or last_page > num_pages:
             last_page = int(num_pages)
         pagestr = StringIO()

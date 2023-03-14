@@ -29,9 +29,9 @@ class TesseractExtractor(ITextExtractor):
     ) -> None:
         basename = Path(filename).stem
         images = convert_from_path(
-            filename,
+            str(filename),
             first_page=first_page,
-            last_page=last_page,
+            last_page=last_page,  # type: ignore
             dpi=self.dpi,
             fmt=self.fmt,
             grayscale=self.grayscale,

@@ -14,7 +14,7 @@ CONFIG = get_config()
 def pdf_stats() -> Dict[str, int]:
     tot_pages = []
     for file in Path(CONFIG.pdf_dir).glob('*.pdf'):
-        tot_pages.append(pdf2image.pdfinfo_from_path(file)['Pages'])
+        tot_pages.append(pdf2image.pdfinfo_from_path(str(file))['Pages'])
     return {
         'files': len(tot_pages),
         'pages': sum(tot_pages),
