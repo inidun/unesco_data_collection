@@ -107,5 +107,21 @@ def test_CLI_using_article_index(tmp_path):
     assert len([file for file in output_filenames if file.endswith('.txt')]) == 8
     assert 'info.log' in output_filenames
     assert 'warnings.log' in output_filenames
-    # TODO: Add more extensive tests. Check content in generated index
     assert 'document_index.csv' in output_filenames
+
+
+def test_verify_extracted_logs_duplicated_record_numbers(caplog, tmp_path):
+    filepath: str = 'tests/fixtures/courier/tagged_issue/tagged_1972_052257.md'
+    article_index = 'tests/fixtures/courier/tagged_issue/article_index_052257_with_duplicates.csv'
+
+    runner = CliRunner()
+
+    result = runner.invoke(
+        main, [filepath, str(tmp_path), article_index, '--no-supplements', '--no-editorials', '--no-unindexed']
+    )
+
+    assert result.exit_code == 0
+
+    assert 'ERROR' in caplog.text
+    assert caplog.text.count('ERROR') == 1
+    assert 'Index error. Duplicated record_numbers: 52344, 188090' in caplog.text

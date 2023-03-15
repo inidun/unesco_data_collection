@@ -66,9 +66,15 @@ def verify_extracted(target_folder: str | os.PathLike, index: pd.DataFrame) -> N
     if year_mismatch:
         logger.error(f'Articles with mismatching years: {", ".join(map(str, year_mismatch))}')
 
+    duplicated_record_numbers = set(
+        index[index.duplicated(subset=['record_number'], keep=False)]['record_number'].to_list()
+    )
+    if duplicated_record_numbers:
+        logger.error(f'Index error. Duplicated record_numbers: {", ".join(map(str, duplicated_record_numbers))}')
+
     n_extracted = len([x for x in Path(target_folder).iterdir() if x.suffix == '.txt'])
     n_expected = index.shape[0]
-    missing = n_expected - n_extracted
+    missing = n_expected - n_extracted - len(duplicated_record_numbers)
     if missing:
         logger.error(f'Missing {missing} articles. Extracted {n_extracted}. Expected {index.shape[0]}')
 
@@ -83,7 +89,8 @@ def verify_extracted(target_folder: str | os.PathLike, index: pd.DataFrame) -> N
 
     not_extracted = [x for x in missing_articles if x not in year_mismatch and x not in articles_with_no_pages]
 
-    logger.error(f'Missing (unknown reason): {", ".join(map(str, not_extracted))}')
+    if not_extracted:
+        logger.error(f'Missing (unknown reason): {", ".join(map(str, not_extracted))}')
 
 
 if __name__ == '__main__':
