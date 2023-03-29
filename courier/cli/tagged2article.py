@@ -62,7 +62,9 @@ def main(
 
 
 def verify_extracted(target_folder: str | os.PathLike, index: pd.DataFrame) -> None:
-    year_mismatch = index[~index.duplicated(subset=['courier_id', 'year'], keep=False)]['record_number'].to_list()
+    year_mismatch = index[
+        (index.courier_id.duplicated(keep=False)) & (~index.duplicated(subset=['courier_id', 'year'], keep=False))
+    ]['record_number'].to_list()
     if year_mismatch:
         logger.error(f'Articles with mismatching years: {", ".join(map(str, year_mismatch))}')
 
