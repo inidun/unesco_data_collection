@@ -1,8 +1,12 @@
+from io import StringIO
 from os.path import basename
 
+import pandas as pd
+import pytest
 from click.testing import CliRunner
 
-from courier.cli.tagged2article import main
+from courier.cli.tagged2article import main, verify_extracted
+from courier.scripts.tagged_issue_to_articles import load_article_index
 
 
 def test_CLI_option_help_returns_expected():
@@ -125,3 +129,29 @@ def test_verify_extracted_logs_duplicated_record_numbers(caplog, tmp_path):
     assert 'ERROR' in caplog.text
     assert caplog.text.count('ERROR') == 1
     assert 'Index error. Duplicated record_numbers: 52344, 188090' in caplog.text
+
+
+@pytest.fixture(name='article_index_issue_with_mismatching_years')
+def fixture_article_index_issue_with_mismatching_years() -> pd.DataFrame:
+    csv = StringIO(
+        """courier_id;year;record_number;pages;catalogue_title;authors
+10000;1999;11000;[1,2,3];Some Title;Some Author - Only one article in issue
+20000;1999;21000;[1,2,3];Some Title;Some Author
+20000;1999;22000;[1,2,3];Some Title;Some Author
+20000;2000;23000;[1,2,3];Some Title;Some Author - Mismatching year"""
+    )
+    return load_article_index(csv)
+
+
+def test_verify_extracted_logs_articles_with_mismatching_years(
+    tmp_path, article_index_issue_with_mismatching_years, caplog
+):
+    verify_extracted(tmp_path, article_index_issue_with_mismatching_years)
+    assert 'mismatching years: 23000' in caplog.text
+
+
+def test_verify_extracted_does_not_log_articles_in_issues_with_only_one_article_as_having_mismatching_years(
+    tmp_path, article_index_issue_with_mismatching_years, caplog
+):
+    verify_extracted(tmp_path, article_index_issue_with_mismatching_years)
+    assert 'mismatching years: 11000' not in caplog.text
