@@ -15,8 +15,6 @@ from courier.elements.elements import Article, CourierIssue
 from courier.utils import flatten, split_by_idx
 
 CONFIG = get_config()
-# CONFIG.pdf_dir = CONFIG.base_data_dir / 'pdf_reocr/all'
-# CONFIG.articles_dir = CONFIG.base_data_dir / 'pdf_reocr/all_out'
 
 
 def export_tagged_issue(
@@ -67,11 +65,15 @@ def export_tagged_issue(
 
 def main() -> None:
     export_folder: Path = CONFIG.articles_dir / f'tagged_issues_{datetime.now().strftime("%Y-%m-%dT%H%M")}'
+    logger.add(
+        export_folder / 'extract.log',
+        format='{time:YYYY-MM-DD HH:mm:ss.SSS} | {module}:{function}:{line} | {level} | {message}',
+        level='DEBUG',
+    )
     article_index_to_csv(CONFIG.article_index, export_folder)
-    logger.info('courier_id;year;record_number;assigned;not_found;total')
+    Path(export_folder).mkdir(parents=True, exist_ok=True)
 
     courier_ids = [x[:6] for x in CONFIG.get_courier_ids()]
-
     for courier_id in courier_ids:
         try:
             export_tagged_issue(courier_id, export_folder)
