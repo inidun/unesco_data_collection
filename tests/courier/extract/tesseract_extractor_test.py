@@ -2,12 +2,20 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List
 
+import pytesseract
+
 from courier.config import get_config
 from courier.extract.interface import ITextExtractor
 from courier.extract.tesseract_extractor import TesseractExtractor
 from courier.extract.utils import get_filenames
 
 CONFIG = get_config()
+
+
+def test_tesseract_installation():
+    assert set(pytesseract.get_languages()) >= {'eng', 'osd'}
+    assert pytesseract.get_tesseract_version().release >= (5, 3, 0)
+    assert pytesseract.get_tesseract_version().public == '5.3.1'
 
 
 def test_extract_extracts_right_amount_of_files():
