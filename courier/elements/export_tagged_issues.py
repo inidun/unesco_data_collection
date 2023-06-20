@@ -35,6 +35,7 @@ def export_tagged_issue(
 
     for page in issue.pages:
         num_issue_errors += len(page.errors)
+        # FIXME: #102 Handle offset error in pdf link page numbers
         texts.append(f'## [Page {page.page_number}]({url}#page={page.page_number}) {str(len(page.errors))}')
 
         if len(page.articles) == 0:
