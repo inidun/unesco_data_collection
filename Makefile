@@ -108,6 +108,7 @@ articles:
 PDFS = ~/data/courier/pdf
 PAGES = ~/data/courier/pages
 XML = ~/data/courier/xml
+REPORT = ~/data/courier/report
 
 # extract_pages: extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber
 
@@ -142,7 +143,14 @@ compile_issues_tesseract:
 
 compile_issues: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract
 
-.PHONY: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract compile_issues
+report-dir:
+	@mkdir -p $(REPORT)
+
+corpus_report: report-dir
+	@export PYTHONPATH=.
+	@poetry run python courier/scripts/corpus_report.py $(REPORT)
+
+.PHONY: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract compile_issues corpus_report
 
 .PHONY: help
 .PHONY: clean
@@ -173,3 +181,4 @@ help:
 	@echo " make articles         Extract artcles"
 	@echo " make pages_pbfbox     Extract pages from PDF:s using PDFBox"
 	@echo " make pages_tesseract  Extract pages from PDF:s using Tesseract"
+	@echo " make corpus_report    Generate corpus report"
