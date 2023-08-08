@@ -990,13 +990,13 @@ files = [
 
 [[package]]
 name = "more-itertools"
-version = "9.1.0"
+version = "10.1.0"
 description = "More routines for operating on iterables, beyond itertools"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "more-itertools-9.1.0.tar.gz", hash = "sha256:cabaa341ad0389ea83c17a94566a53ae4c9d07349861ecb14dc6d0345cf9ac5d"},
-    {file = "more_itertools-9.1.0-py3-none-any.whl", hash = "sha256:d2bc7f02446e86a68911e58ded76d6561eea00cddfb2a91e7019bbb586c799f3"},
+    {file = "more-itertools-10.1.0.tar.gz", hash = "sha256:626c369fa0eb37bac0291bce8259b332fd59ac792fa5497b59837309cd5b114a"},
+    {file = "more_itertools-10.1.0-py3-none-any.whl", hash = "sha256:64e0735fcfdc6f3464ea133afe8ea4483b1c5fe3a3d69852e6503b43a0b222e6"},
 ]
 
 [[package]]
@@ -1252,19 +1252,19 @@ image = ["Pillow"]
 
 [[package]]
 name = "pdfplumber"
-version = "0.9.0"
+version = "0.10.2"
 description = "Plumb a PDF for detailed information about each char, rectangle, and line."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "pdfplumber-0.9.0-py3-none-any.whl", hash = "sha256:b396f2919670eb863124f649a907dc846c8653bbb6ba8024fe274952de121077"},
-    {file = "pdfplumber-0.9.0.tar.gz", hash = "sha256:a43a213e125ed72b2358c0d3428f9b72f83939109ec33b77ef9325eeab9846f0"},
+    {file = "pdfplumber-0.10.2-py3-none-any.whl", hash = "sha256:0f168b19630a3bf8fba3bf71900ec9ecdacc58bdaafc0fa6b2bd557c791713aa"},
+    {file = "pdfplumber-0.10.2.tar.gz", hash = "sha256:60db7de9258e95e7b92ddb745e2e3e294da7a4a55d18fb85750cc4f8d994734c"},
 ]
 
 [package.dependencies]
 "pdfminer.six" = "20221105"
 Pillow = ">=9.1"
-Wand = ">=0.6.10"
+pypdfium2 = ">=4.18.0"
 
 [[package]]
 name = "pillow"
@@ -1487,6 +1487,27 @@ tomlkit = ">=0.10.1"
 [package.extras]
 spelling = ["pyenchant (>=3.2,<4.0)"]
 testutils = ["gitpython (>3)"]
+
+[[package]]
+name = "pypdfium2"
+version = "4.18.0"
+description = "Python bindings to PDFium"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pypdfium2-4.18.0-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:aa682c7cd859522e61b7730190e188d5f8298077ec4ddf2c98abde8743500baf"},
+    {file = "pypdfium2-4.18.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:4dba0f58ab4a4a1ecc280ad6c69c2cb4dc811b168b43455db28e43e09edf780b"},
+    {file = "pypdfium2-4.18.0-py3-none-manylinux_2_17_aarch64.whl", hash = "sha256:2d96d6d064126fee88c03a5f5d0b1615f5a4d5fd82e634e545b6f64ac9b1815e"},
+    {file = "pypdfium2-4.18.0-py3-none-manylinux_2_17_armv7l.whl", hash = "sha256:cdb00af9b9c13369808206479bead17d2ed58f0ca2a8fef786f165bb734914e3"},
+    {file = "pypdfium2-4.18.0-py3-none-manylinux_2_17_i686.whl", hash = "sha256:72659da24f028565929418a0a44e0c1671dc53b60893a0ce5e8588b454feaed8"},
+    {file = "pypdfium2-4.18.0-py3-none-manylinux_2_17_x86_64.whl", hash = "sha256:3f816600000723e1ef3a6296ed0f4404fa3f5607c62c0de2fc35ad0b3f300c17"},
+    {file = "pypdfium2-4.18.0-py3-none-musllinux_1_1_i686.whl", hash = "sha256:70e1b3e50a153900722b7e80e66c358326f0aa7acf8b100f6bd1728c6cb9a88f"},
+    {file = "pypdfium2-4.18.0-py3-none-musllinux_1_1_x86_64.whl", hash = "sha256:6d42b94f316ba5233f65946a9aae143a4b36463b316da18657a4cf415baf7d3a"},
+    {file = "pypdfium2-4.18.0-py3-none-win32.whl", hash = "sha256:f3bb10fc8ccde0344fd63f618a4093eb4d19e4ffa85a5e773c98c34c291a3d2f"},
+    {file = "pypdfium2-4.18.0-py3-none-win_amd64.whl", hash = "sha256:add05ec5193f573454114d42e12c10d98406623b18727e27e9dc392f975c0f05"},
+    {file = "pypdfium2-4.18.0-py3-none-win_arm64.whl", hash = "sha256:9e9a1d5b8605c229ef6a173c0aa3a45a4fb507ae8ebcfe670167da14abfdf62a"},
+    {file = "pypdfium2-4.18.0.tar.gz", hash = "sha256:c937121dc475942697fbb3e04ffa7b28d36afc2b76cc9aac22fbd327c6dc6d61"},
+]
 
 [[package]]
 name = "pytesseract"
@@ -1933,13 +1954,13 @@ types-urllib3 = "*"
 
 [[package]]
 name = "types-setuptools"
-version = "67.8.0.0"
+version = "68.0.0.3"
 description = "Typing stubs for setuptools"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-setuptools-67.8.0.0.tar.gz", hash = "sha256:95c9ed61871d6c0e258433373a4e1753c0a7c3627a46f4d4058c7b5a08ab844f"},
-    {file = "types_setuptools-67.8.0.0-py3-none-any.whl", hash = "sha256:6df73340d96b238a4188b7b7668814b37e8018168aef1eef94a3b1872e3f60ff"},
+    {file = "types-setuptools-68.0.0.3.tar.gz", hash = "sha256:d57ae6076100b5704b3cc869fdefc671e1baf4c2cd6643f84265dfc0b955bf05"},
+    {file = "types_setuptools-68.0.0.3-py3-none-any.whl", hash = "sha256:fec09e5c18264c5c09351c00be01a34456fb7a88e457abe97401325f84ad9d36"},
 ]
 
 [[package]]
@@ -2016,21 +2037,6 @@ brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)"]
 secure = ["certifi", "cryptography (>=1.9)", "idna (>=2.0.0)", "pyopenssl (>=17.1.0)", "urllib3-secure-extra"]
 socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
-
-[[package]]
-name = "wand"
-version = "0.6.11"
-description = "Ctypes-based simple MagickWand API binding for Python"
-optional = false
-python-versions = "*"
-files = [
-    {file = "Wand-0.6.11-py2.py3-none-any.whl", hash = "sha256:1b77e25439ace57f665d1ccc6cff2766fad0834005b89ae3e7aaf3ba12b124b0"},
-    {file = "Wand-0.6.11.tar.gz", hash = "sha256:b661700da9f8f1e931e52726e4fc643a565b9514f5883d41b773e3c37c9fa995"},
-]
-
-[package.extras]
-doc = ["Sphinx (>=5.3.0)"]
-test = ["pytest (>=7.2.0)"]
 
 [[package]]
 name = "wcwidth"
@@ -2144,4 +2150,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0cd28a43fef4c1ae27ee10d64e08730ca6c30714aedd44313c765b1a741e4b43"
+content-hash = "33a869f6bcbc5677899bd386d1bc44644df6e27b4040362e08cbd58a225dedc2"
