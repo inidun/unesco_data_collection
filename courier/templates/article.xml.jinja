@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<article courier_id="{{ article.courier_id }}" record_number="{{ article.record_number }}" title="{{ article.title }}" year="{{ article.year }}">
-{% for page in article.pages %}
-<page page_number="{{ page.page_number }}" page_index="{{ loop.index }}">
-{{ page.text|trim|valid_xml|cdata }}
-</page>
-{% endfor %}
-</article>

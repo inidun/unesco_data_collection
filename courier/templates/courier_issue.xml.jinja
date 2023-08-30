@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document id="{{ basename[:6] }}">
-{% for page in pages %}
-<page number="{{ loop.index }}">
-{{ page|trim|valid_xml|cdata }}
-</page>
-{% endfor %}
-</document>

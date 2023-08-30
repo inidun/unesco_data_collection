@@ -54,7 +54,6 @@ class CourierConfig:  # pylint: disable=too-many-instance-attributes
     exclusions_file: Path = metadata_dir / 'double_pages_exclusions.csv'
     overlap_file: Path = metadata_dir / 'overlap.csv'
     correction_file: Path = metadata_dir / 'article_index_page_corrections.csv'
-    default_template: str = 'article.xml.jinja'
 
     issue_index: pd.DataFrame = None
     double_pages: Dict[str, List[int]] = field(default_factory=dict)
