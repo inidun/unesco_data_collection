@@ -5,36 +5,51 @@ Script and code related to collecting and curating UNESCO data.
 
 Code related to extracting and curating data for the Courier corpus.
 
-### Extracting with PDFBox
+## Scripts
+### Export tagged issues
 
-__Prerequisites:__
-
-- Java. Must be in path.
-
-__Usage:__
-
-    extract_text_pdfbox.py [-h] files output-folder
-
-### Extracting with Tesseract
-
-__Prerequisites:__
-
-- Poppler. Install with: `sudo apt install poppler-utils`
-- Tesseract OCR. Install with: `sudo apt install tesseract-ocr`
-
-__Usage:__
-
-    extract_text_tesseract.py [-h] [--first-page FIRST_PAGE] [-l LAST_PAGE] [-d DPI] [--fmt FMT] files output-folder
+	python courier/elements/export_tagged_issues.py
 
 
-__Current corpus stats:__
+### Extract articles from tagged issues 
 
-    Documents:			671
-    Artcles:
-	in metadata index		8313
-    	 - of type article	7639
-    	 - in english		7612
-    Pages:				27336
+	python courier/cli/tagged2article.py
+
+```bash
+Usage: tagged2article.py [OPTIONS] SOURCE TARGET_FOLDER [ARTICLE_INDEX]
+
+Options:
+  --editorials / --no-editorials
+  --supplements / --no-supplements
+  --unindexed / --no-unindexed
+```
+
+### Generate corpus report
+
+    python courier/scripts/corpus_report.py [OUTPUT_FOLDER]
+
+
+### Extract raw issue and page corpora
+
+	python courier/corpora.py
+
+### Deprecated
+
+#### Generate overlapping article statistics
+
+	python courier/split_article_pages.py
+
+```bash
+usage: split_article_pages.py [-h] [-o OUTPUT_FOLDER] [--match-function {regex,fuzzywuzzy}]
+
+options:
+  -o OUTPUT_FOLDER, --output-folder 	OUTPUT_FOLDER
+  --match-function {regex,fuzzywuzzy}	'regex'
+```
+
+#### Export articles
+
+	courier/elements/export_articles.py
 
 
 ## Legal instruments
