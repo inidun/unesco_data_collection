@@ -150,6 +150,16 @@ corpus_report: report-dir
 	@export PYTHONPATH=.
 	@poetry run python courier/scripts/corpus_report.py $(REPORT)
 
+lib-dir:
+	@mkdir -p courier/lib
+
+download_pdfextract: lib-dir
+	@wget -q -O courier/lib/pdfextract-1.0-SNAPSHOT.jar https://github.com/inidun/pdfextract/releases/download/1.0-SNAPSHOT/pdfextract-1.0-SNAPSHOT.jar
+
+setup: download_pdfextract
+
+.PHONY: setup
+
 .PHONY: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract compile_issues corpus_report
 
 .PHONY: help
@@ -167,6 +177,7 @@ help:
 	@echo " make test             Runs tests"
 	@echo " make coverage         Runs tests with code coverage"
 	@echo " make tidy             Runs black and isort"
+	@echo " make setup            Setup environment"
 	@echo "  "
 	@echo "Lower level recepies: "
 	@echo " make black            Runs black"
@@ -178,7 +189,7 @@ help:
 	@echo " make pylint_diff      Runs pylint on changed files only"
 	@echo "  "
 	@echo "Extracting: "
-	@echo " make articles         Extract artcles"
+	@echo " make articles         Extract articles"
 	@echo " make pages_pbfbox     Extract pages from PDF:s using PDFBox"
 	@echo " make pages_tesseract  Extract pages from PDF:s using Tesseract"
 	@echo " make corpus_report    Generate corpus report"
