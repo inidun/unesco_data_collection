@@ -24,24 +24,20 @@ test: output-dir
 	@rm -rf ./tests/output/*
 
 coverage: output-dir
-	@poetry run pytest -m "not slow" --durations=0 --cov=legal_instruments --cov=courier --cov-report=xml --cov-report=html --cov-branch tests/
+	@poetry run pytest -m "not slow" --durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html --cov-branch tests/
 	@rm -rf ./tests/output/*
 
 test-courier: output-dir
-	@poetry run pytest --durations=0 --cov=courier --cov-report=xml --cov-report=html --cov-branch tests/courier
-	@rm -rf ./tests/output/*
-
-test-legal-instruments: output-dir
-	@poetry run pytest --durations=0 --cov=legal_instruments --cov-report=xml --cov-report=html --cov-branch tests/legal_instruments
+	@poetry run pytest --durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html --cov-branch tests/$(PACKAGE_FOLDER)
 	@rm -rf ./tests/output/*
 
 test-no-java: output-dir
-	@poetry run pytest -m "not java" --durations=0 tests/courier
+	@poetry run pytest -m "not java" --durations=0 tests/$(PACKAGE_FOLDER)
 	@rm -rf ./tests/output/*
 
 test-java: output-dir
-	# @poetry run pytest -m "java" -p no:faulthandler tests/courier
-	@poetry run pytest -m "java" tests/courier
+	# @poetry run pytest -m "java" -p no:faulthandler tests/$(PACKAGE_FOLDER)
+	@poetry run pytest -m "java" tests/$(PACKAGE_FOLDER)
 	@rm -rf ./tests/output/*
 
 test-slow: output-dir
@@ -49,7 +45,7 @@ test-slow: output-dir
 	@rm -rf ./tests/output/*
 
 test-all: output-dir
-	@poetry run pytest --durations=0 --cov=legal_instruments --cov=courier --cov-report=xml --cov-report=html --cov-branch tests/
+	@poetry run pytest --durations=0 --cov=$(PACKAGE_FOLDER) --cov-report=xml --cov-report=html --cov-branch tests/
 	@rm -rf ./tests/output/*
 
 retest: output-dir
@@ -58,7 +54,7 @@ retest: output-dir
 output-dir:
 	@mkdir -p ./tests/output
 
-.PHONY: retest coverage test-courier test-legal-instruments test-no-java test-java test-slow test-all typing
+.PHONY: retest coverage test-courier test-no-java test-java test-slow test-all typing
 
 pylint:
 	@poetry run pylint --version | grep pylint
