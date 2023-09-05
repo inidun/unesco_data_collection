@@ -13,20 +13,20 @@ files = [
 
 [[package]]
 name = "argh"
-version = "0.28.1"
+version = "0.29.3"
 description = "An unobtrusive argparse wrapper with natural syntax"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "argh-0.28.1-py3-none-any.whl", hash = "sha256:10e7311f3ea54a78a366e5456900d8b81049f44d8d653b524eb90cf7d29a71ee"},
-    {file = "argh-0.28.1.tar.gz", hash = "sha256:b2093086f0e809a3ecc24b64a2145309ee8f56d034936cd59e57c558a357329d"},
+    {file = "argh-0.29.3-py3-none-any.whl", hash = "sha256:f3d12ba5617e68aee513872f88e3e90137de86858de78e797aeb017e2969a698"},
+    {file = "argh-0.29.3.tar.gz", hash = "sha256:58e438ce9169aaa2e6de147e3ceb34ceacfe26556a2306f50e2d46f52779acb1"},
 ]
 
 [package.extras]
 completion = ["argcomplete (>=2.0)"]
 docs = ["readthedocs-sphinx-search (==0.2.0)", "sphinx (>=6.1)", "sphinx-pyproject (==0.1.0)", "sphinx_rtd_theme (>=1.2.0)"]
 linters = ["pre-commit (>=3.0.4)"]
-test = ["iocapture (>=0.1.2)", "pytest (>=7.2)", "pytest-cov (>=4.0)", "tox (>=4.4)"]
+test = ["pytest (>=7.2)", "pytest-cov (>=4.0)", "tox (>=4.4)"]
 
 [[package]]
 name = "astroid"
@@ -2137,4 +2137,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "33a869f6bcbc5677899bd386d1bc44644df6e27b4040362e08cbd58a225dedc2"
+content-hash = "e56bf40ca7185845c00860a4063d9ebd225ffb4eec1f4e03f4b5465dda1d91bf"
