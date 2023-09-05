@@ -82,7 +82,7 @@ profile = "black"
 line_length = 120
 py_version = "auto"
 float_to_top = true
-src_paths = [ "courier", "legal_instruments", "tests" ]
+src_paths = [ "courier", "tests" ]
 
 [tool.mypy]
 python_version = "3.10"
