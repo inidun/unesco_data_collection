@@ -1,9 +1,5 @@
 # unesco_data_collection
-Script and code related to collecting and curating UNESCO data.
-
-## Courier
-
-Code related to extracting and curating data for the Courier corpus.
+Scripts and code related to collecting and curating the UNESCO Courier corpus.
 
 ## Scripts
 ### Export tagged issues
@@ -51,17 +47,3 @@ options:
 
 	courier/elements/export_articles.py
 
-
-## Legal instruments
-
-Script and code related to collecting (scraping) SSI (legal instruments) corpus data from the UNESCO website. This is the first of three text corpora of UNESCO documents.
-
-### Main loop:
-
-```python
-index = GetIndexUrls()
-for item in index:
-    pageHtml = getHtmlPage(index.url)
-    conventionText = ConventionParser().extract(pageHtml)
-    storeText(genFilename(item), conventionText)
-```
