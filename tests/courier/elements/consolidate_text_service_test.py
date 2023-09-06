@@ -1,7 +1,6 @@
 from typing import List, Tuple
 
 import pytest
-from thefuzz import process
 
 from courier.config import get_config
 from courier.elements import AssignPageService, ConsolidateTextService, CourierIssue, IssueStatistics
@@ -143,7 +142,7 @@ def test_cosolidated_pages():
         ),
     ],
 )
-def test_fuzzy_find_title(title, candidate_titles, expected):
+def test_get_best_candidate_returns_expected(title, candidate_titles, expected):
     result = get_best_candidate(title, candidate_titles)
     assert result == expected
 
@@ -193,40 +192,11 @@ def test_get_article_title():
         ('062404', 62421, 26),
     ],
 )
-def test_fuzzy_find_title_returns_title(courier_id, record_number, page):
+def test_get_best_candidate_returns_title(courier_id, record_number, page):
     title = get_article_title(record_number)
     candidate_titles = get_page_titles(courier_id, page)
     _, result = get_best_candidate(title, candidate_titles)
     assert result is not None, title
-
-
-@pytest.mark.parametrize(
-    'courier_id, record_number, page',
-    [
-        ('066285', 66288, 17),
-        ('050399', 50404, 20),
-        ('074808', 46517, 28),
-        ('074817', 48081, 12),
-        ('074642', 41135, 26),
-        ('074642', 41135, 26),
-        ('074758', 41073, 10),
-        ('074686', 52513, 17),
-        ('074686', 52554, 25),
-        ('074826', 49572, 28),
-        ('078370', 21124, 22),
-        ('074875', 50320, 16),
-        ('074686', 52575, 28),
-        ('074816', 48053, 14),
-        ('066943', 66935, 27),
-        ('068108', 68120, 11),
-        ('076565', 76562, 38),
-    ],
-)
-def test_fuzzywuzzy(courier_id, record_number, page):
-    title = get_article_title(record_number)
-    candidate_titles = get_page_titles(courier_id, page)
-    _, result = process.extractOne(title, candidate_titles)[0]
-    assert all(result), title
 
 
 def test_bow_removes_special_characters():
