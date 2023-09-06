@@ -578,16 +578,6 @@ files = [
 attrs = ">=19.3"
 
 [[package]]
-name = "httpretty"
-version = "1.1.4"
-description = "HTTP client mock for Python"
-optional = false
-python-versions = ">=3"
-files = [
-    {file = "httpretty-1.1.4.tar.gz", hash = "sha256:20de0e5dd5a18292d36d928cc3d6e52f8b2ac73daec40d41eb62dee154933b68"},
-]
-
-[[package]]
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
@@ -1841,20 +1831,6 @@ slack = ["slack-sdk"]
 telegram = ["requests"]
 
 [[package]]
-name = "types-requests"
-version = "2.31.0.2"
-description = "Typing stubs for requests"
-optional = false
-python-versions = "*"
-files = [
-    {file = "types-requests-2.31.0.2.tar.gz", hash = "sha256:6aa3f7faf0ea52d728bb18c0a0d1522d9bfd8c72d26ff6f61bfc3d06a411cf40"},
-    {file = "types_requests-2.31.0.2-py3-none-any.whl", hash = "sha256:56d181c85b5925cbc59f4489a57e72a8b2166f18273fd8ba7b6fe0c0b986f12a"},
-]
-
-[package.dependencies]
-types-urllib3 = "*"
-
-[[package]]
 name = "types-setuptools"
 version = "68.1.0.1"
 description = "Typing stubs for setuptools"
@@ -1874,17 +1850,6 @@ python-versions = "*"
 files = [
     {file = "types-toml-0.10.8.7.tar.gz", hash = "sha256:58b0781c681e671ff0b5c0319309910689f4ab40e8a2431e205d70c94bb6efb1"},
     {file = "types_toml-0.10.8.7-py3-none-any.whl", hash = "sha256:61951da6ad410794c97bec035d59376ce1cbf4453dc9b6f90477e81e4442d631"},
-]
-
-[[package]]
-name = "types-urllib3"
-version = "1.26.25.14"
-description = "Typing stubs for urllib3"
-optional = false
-python-versions = "*"
-files = [
-    {file = "types-urllib3-1.26.25.14.tar.gz", hash = "sha256:229b7f577c951b8c1b92c1bc2b2fdb0b49847bd2af6d1cc2a2e3dd340f3bda8f"},
-    {file = "types_urllib3-1.26.25.14-py3-none-any.whl", hash = "sha256:9683bbb7fb72e32bfe9d2be6e04875fbe1b3eeec3cbb4ea231435aa7fd6b4f0e"},
 ]
 
 [[package]]
@@ -2035,4 +2000,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "cea8649c7b975a339dcd7b9002d9fd3443b66ad60468f2eb90ce04b38774b3eb"
+content-hash = "7d97e6aa8fb3799cbf81f0a9c817247a6cf7fe1388a83b09cb54680d2f8128cb"
