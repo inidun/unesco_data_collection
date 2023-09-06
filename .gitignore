@@ -139,11 +139,12 @@ dmypy.json
 *.bak
 
 # project specific
-archive/
-tmp/
-notes/
-deprecated/
 *.out
-tests/output/*
-data/courier/tmp
 ~$*
+archive/
+data/courier/tmp
+deprecated/
+notes/
+report/
+tests/output/*
+tmp/
