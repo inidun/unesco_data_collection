@@ -36,18 +36,6 @@ Options:
 
 ### Deprecated
 
-#### Generate overlapping article statistics
-
-	python courier/split_article_pages.py
-
-```bash
-usage: split_article_pages.py [-h] [-o OUTPUT_FOLDER] [--match-function {regex,fuzzywuzzy}]
-
-options:
-  -o OUTPUT_FOLDER, --output-folder 	OUTPUT_FOLDER
-  --match-function {regex,fuzzywuzzy}	'regex'
-```
-
 #### Export articles
 
 	courier/elements/export_articles.py
