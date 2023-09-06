@@ -29,6 +29,11 @@ Options:
 
 	python courier/corpora.py
 
+### Find double spreads/centerfolds in PDFs
+
+    find_double_pages.sh <dir>
+
+
 ### Deprecated
 
 #### Generate overlapping article statistics
