@@ -33,10 +33,3 @@ Options:
 
     find_double_pages.sh <dir>
 
-
-### Deprecated
-
-#### Export articles
-
-	courier/elements/export_articles.py
-
