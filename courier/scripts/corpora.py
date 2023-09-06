@@ -58,7 +58,7 @@ class PDFCorporaExtractor:
                 yield x
 
 
-def extraxt_raw_corpora(
+def extract_raw_corpora(
     folder: Union[str, os.PathLike],
     level: Literal['page', 'issue'],
     target_filename: Union[str, os.PathLike],
@@ -75,10 +75,10 @@ def extraxt_raw_corpora(
 if __name__ == '__main__':
     date = datetime.now().strftime('%Y%m%d')
 
-    extraxt_raw_corpora(
+    extract_raw_corpora(
         CONFIG.pdf_dir, 'issue', CONFIG.base_data_dir / f'corpora/{date}_courier_issue_corpus_article_pages_only.zip'
     )
 
-    extraxt_raw_corpora(
+    extract_raw_corpora(
         CONFIG.pdf_dir, 'page', CONFIG.base_data_dir / f'corpora/{date}_courier_page_corpus_article_pages_only.zip'
     )
