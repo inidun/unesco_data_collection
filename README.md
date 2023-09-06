@@ -27,7 +27,7 @@ Options:
 
 ### Extract raw issue and page corpora
 
-	python courier/corpora.py
+	python courier/scripts/corpora.py
 
 ### Find double spreads/centerfolds in PDFs
 
