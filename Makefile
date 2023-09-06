@@ -88,56 +88,10 @@ isort:
 	@echo isort `poetry run isort --vn`
 	@poetry run isort $(ISORT_ARGS) $(SOURCE_FOLDERS)
 
-articles:
-	@echo Etracting articles
-	@poetry run python courier/extract_articles.py
-	@poetry run python courier/extract_articles.py -t 'article.txt.jinja'
-
-# pages_pbfbox:
-# 	@echo Extracting pages
-# 	@poetry run python courier/pdfbox_extract.py ~/data/courier/pdf/ ~/data/courier/pages/pdfbox 2>/dev/null
-
-# pages_tesseract:
-# 	@echo Extracting pages
-# 	@poetry run python courier/tesseract_extract.py ~/data/courier/pdf/ ~/data/courier/pages/tesseract
-
 PDFS = ~/data/courier/pdf
 PAGES = ~/data/courier/pages
 XML = ~/data/courier/xml
 REPORT = ~/data/courier/report
-
-# extract_pages: extract_pages_pdfbox extract_pages_pdfminer extract_pages_pdfplumber
-
-extract_pages_pdfbox:
-	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfbox --extractor PDFBox 2>/dev/null
-
-extract_pages_java_extractor:
-	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/java_extractor --extractor JavaExtractor 2>/dev/null
-
-extract_pages_pdfminer:
-	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfminer --extractor PDFMiner
-
-extract_pages_pdfplumber:
-	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/pdfplumber --extractor PDFPlumber
-
-extract_pages_tesseract:
-	@poetry run python courier/extract/cli.py $(PDFS) $(PAGES)/tesseract --extractor Tesseract
-
-.PHONY: extract_pages_pdfbox extract_pages_java_extractor extract_pages_pdfminer extract_pages_pdfplumber extract_pages_tesseract
-
-compile_issues_pdfbox:
-	@poetry run python courier/compile_issues.py $(PAGES)/pdfbox $(XML)/pdfbox
-
-compile_issues_pdfminer:
-	@poetry run python courier/compile_issues.py $(PAGES)/pdfminer $(XML)/pdfminer
-
-compile_issues_pdfplumber:
-	@poetry run python courier/compile_issues.py $(PAGES)/pdfplumber $(XML)/pdfplumber
-
-compile_issues_tesseract:
-	@poetry run python courier/compile_issues.py $(PAGES)/tesseract $(XML)/tesseract
-
-compile_issues: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract
 
 report-dir:
 	@mkdir -p $(REPORT)
@@ -156,14 +110,13 @@ setup: download_pdfextract
 
 .PHONY: setup
 
-.PHONY: compile_issues_pdfbox compile_issues_pdfminer compile_issues_pdfplumber compile_issues_tesseract compile_issues corpus_report
+.PHONY: corpus_report
 
 .PHONY: help
 .PHONY: clean
 .PHONY: test
 .PHONY: lint pylint flake8 mypy pylint_diff notes
 .PHONY: tidy black isort
-.PHONY: articles
 
 help:
 	@echo "Higher level recepies: "
@@ -184,8 +137,4 @@ help:
 	@echo " make pylint           Runs pylint"
 	@echo " make pylint_diff      Runs pylint on changed files only"
 	@echo "  "
-	@echo "Extracting: "
-	@echo " make articles         Extract articles"
-	@echo " make pages_pbfbox     Extract pages from PDF:s using PDFBox"
-	@echo " make pages_tesseract  Extract pages from PDF:s using Tesseract"
 	@echo " make corpus_report    Generate corpus report"
