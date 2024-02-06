@@ -233,12 +233,14 @@ class PagesExtractor:
         num_pages = len(content.pages) + len(issue.double_pages)
 
         pages = [
-            DoubleSpreadRightPage(page_number)
-            if page_number - 1 in issue.double_pages
-            else Page(
-                page_number=page_number,
-                text=content.pages[issue.to_pdf_page_number(page_number)].content,
-                titles=content.pages[issue.to_pdf_page_number(page_number)].titles,
+            (
+                DoubleSpreadRightPage(page_number)
+                if page_number - 1 in issue.double_pages
+                else Page(
+                    page_number=page_number,
+                    text=content.pages[issue.to_pdf_page_number(page_number)].content,
+                    titles=content.pages[issue.to_pdf_page_number(page_number)].titles,
+                )
             )
             for page_number in range(1, num_pages + 1)
         ]
