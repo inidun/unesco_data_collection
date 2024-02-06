@@ -13,18 +13,18 @@ files = [
 
 [[package]]
 name = "argh"
-version = "0.30.5"
-description = "An unobtrusive argparse wrapper with natural syntax"
+version = "0.31.2"
+description = "Plain Python functions as CLI commands without boilerplate"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "argh-0.30.5-py3-none-any.whl", hash = "sha256:3844e955d160f0689a3cdca06a59dfcfbf1fcea70029d67d473f73503341e0d8"},
-    {file = "argh-0.30.5.tar.gz", hash = "sha256:b37dfd617a09d19a4a7bcaed0e060b288bc7ac8dfdc0facf886a49a25ff33728"},
+    {file = "argh-0.31.2-py3-none-any.whl", hash = "sha256:81a9ab43dacfc0d8e08794a140cda7927908417c8f89a969e6554cfc2e872e14"},
+    {file = "argh-0.31.2.tar.gz", hash = "sha256:db1c34885804f7d4646c385dc2fb19b45298561322f4c15eae1b133993f9e323"},
 ]
 
 [package.extras]
 completion = ["argcomplete (>=2.0)"]
-docs = ["readthedocs-sphinx-search (==0.2.0)", "sphinx (>=6.1)", "sphinx-pyproject (==0.1.0)", "sphinx_rtd_theme (>=1.2.0)"]
+docs = ["readthedocs-sphinx-search (==0.3.2)", "sphinx (>=7.2)", "sphinx-pyproject (==0.3)", "sphinx_rtd_theme (>=2.0)"]
 linters = ["pre-commit (>=3.4.0)"]
 test = ["pytest (>=7.4)", "pytest-cov (>=4.1)", "tox (>=4.11.3)"]
 
@@ -1512,4 +1512,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "85d0d8241dddd4e3181bf460caf9faf45c5920910937006b7ddad952e61baaf3"
+content-hash = "976b2f923aedfd2906491f659e03ba067da369ef01070d88c200d3c645c971ed"
