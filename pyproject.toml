@@ -158,5 +158,5 @@ markers = [
 filterwarnings = [
     "ignore:pkg_resources is deprecated as an API:DeprecationWarning:pkg_resources.*:",
     "ignore:pkg_resources is deprecated as an API:DeprecationWarning:pdfbox.*:",
-    "ignore::DeprecationWarning",
+    'ignore:\nPyarrow:DeprecationWarning',
 ]
