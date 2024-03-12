@@ -54,8 +54,7 @@ class PDFCorporaExtractor:
         pbar = tqdm(filenames)
         for filename in pbar:
             pbar.set_description(f'{filename.stem:<10}')
-            for x in self.extract(filename, level):
-                yield x
+            yield from self.extract(filename, level)
 
 
 def extract_raw_corpora(
