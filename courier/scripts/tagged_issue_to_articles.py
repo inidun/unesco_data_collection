@@ -163,12 +163,15 @@ def load_article_index(filename: str | os.PathLike | StringIO) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Article index
     """
+    article_index = None
+
     if str(filename).endswith('.xlsx'):
         article_index = pd.read_excel(filename)
     if str(filename).endswith('.csv') or isinstance(filename, StringIO):
         article_index = pd.read_csv(filename, sep=';', encoding='utf-8')
 
-    article_index.columns = ['courier_id', 'year', 'record_number', 'pages', 'catalogue_title', 'authors']
+    if article_index is not None:
+        article_index.columns = ['courier_id', 'year', 'record_number', 'pages', 'catalogue_title', 'authors']
     article_index.sort_values(by=['year', 'courier_id', 'record_number'], inplace=True)
     article_index['filename'] = (
         article_index.year.astype(str)
