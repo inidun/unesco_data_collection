@@ -18,8 +18,8 @@ def test_tesseract_language_support():
 
 
 def test_tesseract_version():
-    assert pytesseract.get_tesseract_version().release >= (5, 3, 0)
-    assert pytesseract.get_tesseract_version().public == '5.3.4'
+    assert pytesseract.get_tesseract_version().release >= (5, 4, 0)
+    assert pytesseract.get_tesseract_version().public == '5.4.1'
 
 
 def test_extract_extracts_right_amount_of_files():
